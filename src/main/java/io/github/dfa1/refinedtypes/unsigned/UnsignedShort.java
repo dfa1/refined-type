@@ -1,4 +1,4 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.unsigned;
 
 /**
  * Unsigned 16-bit integer: range [0, 65_535].

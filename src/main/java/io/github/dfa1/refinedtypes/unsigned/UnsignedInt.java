@@ -1,4 +1,4 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.unsigned;
 
 /**
  * Unsigned 32-bit integer: range [0, 4_294_967_295].

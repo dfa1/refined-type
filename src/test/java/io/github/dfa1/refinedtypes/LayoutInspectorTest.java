@@ -1,5 +1,6 @@
 package io.github.dfa1.refinedtypes;
 
+import io.github.dfa1.refinedtypes.unsigned.UnsignedInt;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jol.info.ClassLayout;
 import org.openjdk.jol.info.GraphLayout;

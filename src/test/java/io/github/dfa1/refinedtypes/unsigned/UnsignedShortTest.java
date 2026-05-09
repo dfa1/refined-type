@@ -1,4 +1,6 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.unsigned;
+
+import io.github.dfa1.refinedtypes.unsigned.UnsignedShort;
 
 import org.junit.jupiter.api.Test;
 
