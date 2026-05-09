@@ -1,4 +1,4 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.cache;
 
 import java.util.function.Supplier;
 
