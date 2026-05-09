@@ -2,108 +2,197 @@ package io.github.dfa1.refinedtypes;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UnsignedIntTest {
 
     // ── construction ────────────────────────────────────────────────────────
 
     @Test
-    void zero_is_valid() {
-        var u = new UnsignedInt(0L);
-        assertEquals(0L, u.value());
+    void zeroIsValid() {
+        // Given
+        var sut = new UnsignedInt(0L);
+
+        // When
+        long result = sut.value();
+
+        // Then
+        assertThat(result).isZero();
     }
 
     @Test
-    void max_value_is_valid() {
-        var u = new UnsignedInt(UnsignedInt.MAX_VALUE); // 4_294_967_295
-        assertEquals(4_294_967_295L, u.value());
+    void maxValueIsValid() {
+        // Given
+        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+
+        // When
+        long result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo(4_294_967_295L);
     }
 
     @Test
-    void negative_long_is_rejected() {
-        assertThrows(IllegalArgumentException.class, () -> new UnsignedInt(-1L));
+    void negativeRejected() {
+        // Given
+        long input = -1L;
+
+        // When / Then
+        assertThatThrownBy(() -> new UnsignedInt(input))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void above_max_is_rejected() {
-        assertThrows(IllegalArgumentException.class, () -> new UnsignedInt(4_294_967_296L));
+    void aboveMaxRejected() {
+        // Given
+        long input = 4_294_967_296L;
+
+        // When / Then
+        assertThatThrownBy(() -> new UnsignedInt(input))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     // ── unsigned bit-pattern semantics ──────────────────────────────────────
 
     @Test
-    void value_above_signed_max_stored_correctly() {
+    void valueAboveSignedMaxRecoveredCorrectly() {
         // 2^31 = 2_147_483_648 — raw bits are Integer.MIN_VALUE (negative signed),
         // but Integer.toUnsignedLong must recover the correct unsigned value.
-        long unsignedPow31 = 2_147_483_648L;
-        var u = new UnsignedInt(unsignedPow31);
+        // Given
+        var sut = new UnsignedInt(2_147_483_648L);
 
-        assertEquals(unsignedPow31, u.value());
-        assertEquals(Integer.MIN_VALUE, u.rawBits()); // confirm the bit-pattern trick
+        // When
+        long result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo(2_147_483_648L);
+        assertThat(sut.rawBits()).isEqualTo(Integer.MIN_VALUE);
     }
 
     @Test
-    void value_preserves_all_32_bits() {
-        // 0xDEADBEEF = 3_735_928_559 — classic unsigned sentinel
-        long deadbeef = 0xDEAD_BEEFL;
-        var u = new UnsignedInt(deadbeef);
-        assertEquals(deadbeef, u.value());
-        assertEquals(Integer.toUnsignedString(u.rawBits()), "3735928559");
+    void valuePreservesAll32Bits() {
+        // 0xDEADBEEF = 3_735_928_559
+        // Given
+        var sut = new UnsignedInt(0xDEAD_BEEFL);
+
+        // When
+        long result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo(3_735_928_559L);
+        assertThat(Integer.toUnsignedString(sut.rawBits())).isEqualTo("3735928559");
     }
 
     // ── comparison ──────────────────────────────────────────────────────────
 
     @Test
-    void comparison_uses_unsigned_order() {
-        // 2_147_483_648 > 1 in unsigned space,
-        // but raw bits of 2_147_483_648 are negative — signed compare would flip the result.
-        var big = new UnsignedInt(2_147_483_648L);
-        var small = new UnsignedInt(1L);
+    void compareToReturnsPositiveWhenUnsignedGreater() {
+        // 2_147_483_648 > 1 in unsigned space even though raw bits are negative
+        // Given
+        var sut = new UnsignedInt(2_147_483_648L);
+        var other = new UnsignedInt(1L);
 
-        assertTrue(big.compareTo(small) > 0);
-        assertTrue(small.compareTo(big) < 0);
-        assertEquals(0, big.compareTo(new UnsignedInt(2_147_483_648L)));
+        // When
+        int result = sut.compareTo(other);
+
+        // Then
+        assertThat(result).isPositive();
     }
 
     @Test
-    void max_is_greater_than_signed_max() {
-        var max = new UnsignedInt(UnsignedInt.MAX_VALUE);
-        var signedMax = new UnsignedInt(Integer.MAX_VALUE); // 2_147_483_647
+    void compareToReturnsNegativeWhenUnsignedSmaller() {
+        // Given
+        var sut = new UnsignedInt(1L);
+        var other = new UnsignedInt(2_147_483_648L);
 
-        assertTrue(max.compareTo(signedMax) > 0);
+        // When
+        int result = sut.compareTo(other);
+
+        // Then
+        assertThat(result).isNegative();
+    }
+
+    @Test
+    void compareToReturnsZeroForEqualValues() {
+        // Given
+        var sut = new UnsignedInt(2_147_483_648L);
+        var other = new UnsignedInt(2_147_483_648L);
+
+        // When
+        int result = sut.compareTo(other);
+
+        // Then
+        assertThat(result).isZero();
+    }
+
+    @Test
+    void maxIsGreaterThanSignedMax() {
+        // Given
+        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var signedMax = new UnsignedInt(Integer.MAX_VALUE);
+
+        // When
+        int result = sut.compareTo(signedMax);
+
+        // Then
+        assertThat(result).isPositive();
     }
 
     // ── Integer unsigned API ─────────────────────────────────────────────────
 
     @Test
-    void unsigned_divide_and_remainder() {
-        // 4_000_000_000 / 3 = 1_333_333_333 remainder 1
-        var dividend = new UnsignedInt(4_000_000_000L);
+    void unsignedDivide() {
+        // 4_000_000_000 / 3 = 1_333_333_333
+        // Given
+        var sut = new UnsignedInt(4_000_000_000L);
         var divisor = new UnsignedInt(3L);
 
-        int q = Integer.divideUnsigned(dividend.rawBits(), divisor.rawBits());
-        int r = Integer.remainderUnsigned(dividend.rawBits(), divisor.rawBits());
+        // When
+        int result = Integer.divideUnsigned(sut.rawBits(), divisor.rawBits());
 
-        assertEquals(1_333_333_333L, Integer.toUnsignedLong(q));
-        assertEquals(1L, Integer.toUnsignedLong(r));
+        // Then
+        assertThat(Integer.toUnsignedLong(result)).isEqualTo(1_333_333_333L);
     }
 
     @Test
-    void parse_unsigned_string_round_trips() {
-        var u = new UnsignedInt(4_294_967_295L);
-        String s = Integer.toUnsignedString(u.rawBits());
-        assertEquals("4294967295", s);
+    void unsignedRemainder() {
+        // 4_000_000_000 % 3 = 1
+        // Given
+        var sut = new UnsignedInt(4_000_000_000L);
+        var divisor = new UnsignedInt(3L);
 
-        int parsed = Integer.parseUnsignedInt(s);
-        assertEquals(u.rawBits(), parsed);
+        // When
+        int result = Integer.remainderUnsigned(sut.rawBits(), divisor.rawBits());
+
+        // Then
+        assertThat(Integer.toUnsignedLong(result)).isEqualTo(1L);
+    }
+
+    @Test
+    void parseUnsignedStringRoundTrips() {
+        // Given
+        var sut = new UnsignedInt(4_294_967_295L);
+
+        // When
+        String result = Integer.toUnsignedString(sut.rawBits());
+
+        // Then
+        assertThat(result).isEqualTo("4294967295");
+        assertThat(Integer.parseUnsignedInt(result)).isEqualTo(sut.rawBits());
     }
 
     // ── toString ────────────────────────────────────────────────────────────
 
     @Test
-    void toString_shows_unsigned_representation() {
-        var u = new UnsignedInt(UnsignedInt.MAX_VALUE);
-        assertEquals("UnsignedInt(4294967295)", u.toString());
+    void toStringShowsUnsignedRepresentation() {
+        // Given
+        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+
+        // When
+        String result = sut.toString();
+
+        // Then
+        assertThat(result).isEqualTo("UnsignedInt(4294967295)");
     }
 }

@@ -55,6 +55,28 @@ mvn verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
 - No nulls — value classes cannot be null
 - Benchmark classes in `src/main/java` (JMH convention), named `*Benchmark`
 
+## Test conventions
+
+- Test method names: camelCase, no underscores
+- All tests structured with `// Given`, `// When`, `// Then` comments
+- Variable named `sut` for the system under test
+- Variable named `result` for the return value of the method under test in `// When`
+- Use AssertJ (`assertThat`) — never JUnit `assertEquals` / `assertThrows` etc.
+
+```java
+@Test
+void validEmailAccepted() {
+    // Given
+    var sut = new Email("user@example.com");
+
+    // When
+    String result = sut.value();
+
+    // Then
+    assertThat(result).isEqualTo("user@example.com");
+}
+```
+
 ## What to build next
 
 1. `value class PositiveInt implements RefinedInt` — simplest case

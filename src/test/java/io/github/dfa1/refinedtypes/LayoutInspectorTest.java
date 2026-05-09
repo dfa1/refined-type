@@ -5,7 +5,7 @@ import org.openjdk.jol.info.ClassLayout;
 import org.openjdk.jol.info.GraphLayout;
 import org.openjdk.jol.vm.VM;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LayoutInspectorTest {
 
@@ -23,26 +23,25 @@ public class LayoutInspectorTest {
     }
 
     @Test
-    void unsignedInt_array_total_footprint_smaller_than_Integer_array() {
+    void unsignedIntArrayFootprintSmallerThanIntegerArray() {
+        // Given
         int n = 100;
-
-        UnsignedInt[] valueArray = new UnsignedInt[n];
-        for (int i = 0; i < n; i++) valueArray[i] = new UnsignedInt(i);
-
+        UnsignedInt[] sut = new UnsignedInt[n];
+        for (int i = 0; i < n; i++) sut[i] = new UnsignedInt(i);
         Integer[] boxedArray = new Integer[n];
         for (int i = 256; i < 256 + n; i++) boxedArray[i - 256] = i; // avoid JVM Integer cache
 
+        // When
         // UnsignedInt[] stores values inline — array shell includes element data.
         // Integer[] stores references; each Integer object is a separate heap allocation.
-        long valueBytes = ClassLayout.parseInstance(valueArray).instanceSize();
-        long boxedBytes = ClassLayout.parseInstance(boxedArray).instanceSize()
+        long result = ClassLayout.parseInstance(sut).instanceSize();
+        long boxedTotal = ClassLayout.parseInstance(boxedArray).instanceSize()
                 + (long) n * ClassLayout.parseClass(Integer.class).instanceSize();
 
-        System.out.printf("UnsignedInt[%d]: %d bytes (inline)%n", n, valueBytes);
-        System.out.printf("   Integer[%d]: %d bytes (array shell + %d objects)%n", n, boxedBytes, n);
+        System.out.printf("UnsignedInt[%d]: %d bytes (inline)%n", n, result);
+        System.out.printf("   Integer[%d]: %d bytes (array shell + %d objects)%n", n, boxedTotal, n);
 
-        assertTrue(valueBytes < boxedBytes,
-                "UnsignedInt[%d] (%d bytes) must be smaller than Integer[%d] (%d bytes)"
-                        .formatted(n, valueBytes, n, boxedBytes));
+        // Then
+        assertThat(result).isLessThan(boxedTotal);
     }
 }
