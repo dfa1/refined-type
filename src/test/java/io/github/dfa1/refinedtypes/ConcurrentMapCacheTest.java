@@ -73,4 +73,21 @@ class ConcurrentMapCacheTest {
         // Then
         assertThat(result).isZero();
     }
+
+    @Test
+    void usagePatternStaticFactory() {
+        // Intended use: caller wraps construction with the cache,
+        // e.g. in a static factory method on the LowCardinality type.
+        // Given
+        var sut = new ConcurrentMapCache();
+        var calls = new AtomicInteger(0);
+
+        // When — simulate two calls to Country.of("DE") backed by cache
+        Country first  = sut.get(Country.class, "DE", () -> { calls.incrementAndGet(); return new Country("DE"); });
+        Country second = sut.get(Country.class, "DE", () -> { calls.incrementAndGet(); return new Country("DE"); });
+
+        // Then — constructor (and validation) runs once
+        assertThat(calls.get()).isEqualTo(1);
+        assertThat(first.value()).isEqualTo(second.value());
+    }
 }

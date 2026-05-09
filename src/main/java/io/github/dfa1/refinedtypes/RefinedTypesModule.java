@@ -15,22 +15,15 @@ import java.lang.invoke.MethodType;
 
 public class RefinedTypesModule extends SimpleModule {
 
-    private final RefinedTypeCache cache;
-
     public RefinedTypesModule() {
-        this(RefinedTypeCache.NO_OP);
-    }
-
-    public RefinedTypesModule(RefinedTypeCache cache) {
         super("RefinedTypesModule");
-        this.cache = cache;
     }
 
     @Override
     public void setupModule(SetupContext context) {
         super.setupModule(context);
         context.addSerializers(new RefinedSerializers());
-        context.addDeserializers(new RefinedDeserializers(cache));
+        context.addDeserializers(new RefinedDeserializers());
     }
 
     // ── serializers ──────────────────────────────────────────────────────────
@@ -66,20 +59,14 @@ public class RefinedTypesModule extends SimpleModule {
     // ── deserializers ────────────────────────────────────────────────────────
 
     private static class RefinedDeserializers extends Deserializers.Base {
-        private final RefinedTypeCache cache;
-
-        RefinedDeserializers(RefinedTypeCache cache) {
-            this.cache = cache;
-        }
-
         @Override
         public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) {
             Class<?> raw = type.getRawClass();
             if (RefinedString.class.isAssignableFrom(raw)) {
-                return new StringDeserializer<>(raw.asSubclass(RefinedString.class), cache);
+                return new StringDeserializer<>(raw.asSubclass(RefinedString.class));
             }
             if (RefinedInt.class.isAssignableFrom(raw)) {
-                return new IntDeserializer<>(raw.asSubclass(RefinedInt.class), cache);
+                return new IntDeserializer<>(raw.asSubclass(RefinedInt.class));
             }
             return null;
         }
@@ -88,13 +75,9 @@ public class RefinedTypesModule extends SimpleModule {
     private static class StringDeserializer<T extends RefinedString> extends JsonDeserializer<T> {
         private final Class<T> type;
         private final MethodHandle ctor;
-        private final boolean lowCardinality;
-        private final RefinedTypeCache cache;
 
-        StringDeserializer(Class<T> type, RefinedTypeCache cache) {
+        StringDeserializer(Class<T> type) {
             this.type = type;
-            this.cache = cache;
-            this.lowCardinality = LowCardinality.class.isAssignableFrom(type);
             try {
                 MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(type, MethodHandles.lookup());
                 ctor = lookup.findConstructor(type, MethodType.methodType(void.class, String.class));
@@ -110,21 +93,9 @@ public class RefinedTypesModule extends SimpleModule {
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             String raw = p.getText();
             try {
-                if (lowCardinality) {
-                    return cache.get(type, raw, () -> construct(raw));
-                }
-                return construct(raw);
-            } catch (IllegalArgumentException e) {
-                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private T construct(String raw) {
-            try {
                 return (T) ctor.invoke(raw);
             } catch (IllegalArgumentException e) {
-                throw e;
+                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
@@ -134,13 +105,9 @@ public class RefinedTypesModule extends SimpleModule {
     private static class IntDeserializer<T extends RefinedInt> extends JsonDeserializer<T> {
         private final Class<T> type;
         private final MethodHandle ctor;
-        private final boolean lowCardinality;
-        private final RefinedTypeCache cache;
 
-        IntDeserializer(Class<T> type, RefinedTypeCache cache) {
+        IntDeserializer(Class<T> type) {
             this.type = type;
-            this.cache = cache;
-            this.lowCardinality = LowCardinality.class.isAssignableFrom(type);
             try {
                 MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(type, MethodHandles.lookup());
                 ctor = lookup.findConstructor(type, MethodType.methodType(void.class, int.class));
@@ -156,21 +123,9 @@ public class RefinedTypesModule extends SimpleModule {
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             int raw = p.getIntValue();
             try {
-                if (lowCardinality) {
-                    return cache.get(type, raw, () -> construct(raw));
-                }
-                return construct(raw);
-            } catch (IllegalArgumentException e) {
-                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        private T construct(int raw) {
-            try {
                 return (T) ctor.invoke(raw);
             } catch (IllegalArgumentException e) {
-                throw e;
+                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }

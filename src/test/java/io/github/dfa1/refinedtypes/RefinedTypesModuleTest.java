@@ -159,45 +159,4 @@ class RefinedTypesModuleTest {
                 .isInstanceOf(InvalidFormatException.class);
     }
 
-    // ── LowCardinality cache ─────────────────────────────────────────────────
-
-    @Test
-    void lowCardinalityTypePopulatesCache() throws Exception {
-        // Given
-        var cache = new ConcurrentMapCache();
-        var cachedMapper = new ObjectMapper().registerModule(new RefinedTypesModule(cache));
-
-        // When
-        cachedMapper.readValue("\"DE\"", Country.class);
-        cachedMapper.readValue("\"DE\"", Country.class);
-
-        // Then — factory called once despite two deserializations
-        assertThat(cache.size(Country.class)).isEqualTo(1);
-    }
-
-    @Test
-    void nonLowCardinalityTypeDoesNotPopulateCache() throws Exception {
-        // Given
-        var cache = new ConcurrentMapCache();
-        var cachedMapper = new ObjectMapper().registerModule(new RefinedTypesModule(cache));
-
-        // When
-        cachedMapper.readValue("\"US0378331005\"", Isin.class);
-        cachedMapper.readValue("\"US0378331005\"", Isin.class);
-
-        // Then — Isin is not LowCardinality; cache stays empty
-        assertThat(cache.size(Isin.class)).isZero();
-    }
-
-    @Test
-    void noOpCacheIsDefaultBehaviour() throws Exception {
-        // Given — default module uses NO_OP, no cache involved
-        String json = "\"DE\"";
-
-        // When
-        Country result = mapper.readValue(json, Country.class);
-
-        // Then
-        assertThat(result.value()).isEqualTo("DE");
-    }
 }
