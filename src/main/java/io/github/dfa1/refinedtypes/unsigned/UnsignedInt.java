@@ -28,6 +28,31 @@ public value class UnsignedInt implements Comparable<UnsignedInt> {
         return bits;
     }
 
+    /** Wraps mod 2^32. */
+    public UnsignedInt add(UnsignedInt other) {
+        return ofBits(this.bits + other.bits);
+    }
+
+    /** Wraps mod 2^32. */
+    public UnsignedInt sub(UnsignedInt other) {
+        return ofBits(this.bits - other.bits);
+    }
+
+    /** Lower 32 bits of product; wraps mod 2^32. */
+    public UnsignedInt mul(UnsignedInt other) {
+        return ofBits(this.bits * other.bits);
+    }
+
+    /** @throws ArithmeticException if other is zero */
+    public UnsignedInt div(UnsignedInt other) {
+        return ofBits(Integer.divideUnsigned(this.bits, other.bits));
+    }
+
+    /** @throws ArithmeticException if other is zero */
+    public UnsignedInt rem(UnsignedInt other) {
+        return ofBits(Integer.remainderUnsigned(this.bits, other.bits));
+    }
+
     @Override
     public int compareTo(UnsignedInt that) {
         return Integer.compareUnsigned(this.bits, that.bits);
@@ -36,5 +61,10 @@ public value class UnsignedInt implements Comparable<UnsignedInt> {
     @Override
     public String toString() {
         return "UnsignedInt(" + Integer.toUnsignedString(bits) + ")";
+    }
+
+    // Integer.toUnsignedLong always returns a value in [0, MAX_VALUE] — constructor never throws.
+    private static UnsignedInt ofBits(int bits) {
+        return new UnsignedInt(Integer.toUnsignedLong(bits));
     }
 }
