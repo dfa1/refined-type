@@ -145,37 +145,6 @@ Ready-to-use refined types demonstrating the pattern:
 | `Isin` | 12-char `[A-Z]{2}[A-Z0-9]{9}[0-9]` |
 | `Velocity` | `value >= 0` (non-negative float) |
 
-### Jackson integration (`jackson` package)
-
-`RefinedTypesModule` — annotation-free Jackson serialization for any refined type.
-
-- Uses `MethodHandles.privateLookupIn` instead of `setAccessible` — works with value classes, JIT-inlinable
-- Single-value types serialize as their unwrapped primitive
-- Register once, works for all refined types:
-
-```java
-ObjectMapper mapper = new ObjectMapper()
-    .registerModule(new RefinedTypesModule());
-
-String json  = mapper.writeValueAsString(new Email("user@example.com")); // "user@example.com"
-Email  email = mapper.readValue(json, Email.class);
-```
-
-### Pluggable cache (`cache` package)
-
-`RefinedTypeCache` — optional interning for low-cardinality types (country codes, statuses, etc.).
-
-```java
-private static final RefinedTypeCache CACHE = new ConcurrentMapCache();
-
-// In a static factory method:
-public static Country of(String code) {
-    return CACHE.get(Country.class, code, () -> new Country(code));
-}
-```
-
-`RefinedTypeCache.NO_OP` is a zero-overhead pass-through for types where caching is not needed.
-
 ---
 
 ## Design principles
@@ -185,4 +154,3 @@ public static Country of(String code) {
 - **Fail fast, succeed forever.** Validation runs once at the boundary. Hot paths carry guaranteed-valid values.
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
 - **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — familiar to any Java developer.
-- **No reflection.** `MethodHandles.privateLookupIn` for constructor access — compatible with value classes and the module system.
