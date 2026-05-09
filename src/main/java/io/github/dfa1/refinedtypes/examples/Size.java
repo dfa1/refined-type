@@ -12,7 +12,7 @@ import io.github.dfa1.refinedtypes.RefinedLong;
  * as the JDK ({@code Files.size}, {@code Runtime.totalMemory}). For decimal
  * bases use {@link #ofBytes(long)} directly.
  */
-public value class Size implements RefinedLong, Comparable<Size> {
+public value class Size implements RefinedLong {
 
     public static final long KB = 1024L;
     public static final long MB = 1024L * KB;
@@ -59,11 +59,6 @@ public value class Size implements RefinedLong, Comparable<Size> {
 
     public boolean isZero() {
         return bytes == 0L;
-    }
-
-    @Override
-    public int compareTo(Size that) {
-        return Long.compare(this.bytes, that.bytes);
     }
 
     /** Human-readable form: bytes for &lt;1 KiB, then KiB, MiB, GiB, TiB with one decimal. */

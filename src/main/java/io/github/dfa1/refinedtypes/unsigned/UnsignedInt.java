@@ -7,7 +7,7 @@ import io.github.dfa1.refinedtypes.RefinedLong;
  * Stored as raw int bits; unsigned semantics via Integer.toUnsignedLong / compareUnsigned.
  * Implements {@link RefinedLong} because every unsigned 32-bit value fits in a positive long.
  */
-public value class UnsignedInt implements RefinedLong, Comparable<UnsignedInt> {
+public value class UnsignedInt implements RefinedLong {
 
     public static final long MIN_VALUE = 0L;
     public static final long MAX_VALUE = 0xFFFFFFFFL; // 4_294_967_295
@@ -76,11 +76,6 @@ public value class UnsignedInt implements RefinedLong, Comparable<UnsignedInt> {
     /** @throws ArithmeticException if other is zero */
     public UnsignedInt remainder(UnsignedInt other) {
         return ofBits(Integer.remainderUnsigned(this.bits, other.bits));
-    }
-
-    @Override
-    public int compareTo(UnsignedInt that) {
-        return Integer.compareUnsigned(this.bits, that.bits);
     }
 
     @Override
