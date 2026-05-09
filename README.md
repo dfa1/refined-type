@@ -16,7 +16,7 @@ void setAge(Age age) { ... }
 
 Classic Java implementation requires heap allocation per instance. Valhalla **value classes** eliminate object identity, enabling flat/inline layout — so `Age` can be as cheap as a bare `int` on the JVM.
 
-Reference: [original gist](https://gist.github.com/dfa1/f6fdca0513730dc7dc7d6a5d89629709)
+Inspired by: [Refined types in practice](https://kwark.github.io/refined-in-practice/#1) — Reference: [original gist](https://gist.github.com/dfa1/f6fdca0513730dc7dc7d6a5d89629709)
 
 ## Hypothesis
 
