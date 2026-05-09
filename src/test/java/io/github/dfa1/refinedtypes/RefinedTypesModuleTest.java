@@ -11,6 +11,18 @@ class RefinedTypesModuleTest {
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new RefinedTypesModule());
 
+    // package-private constructor — used to verify MethodHandles.privateLookupIn path
+    static value class InternalCode implements RefinedString {
+        private final String value;
+
+        InternalCode(String value) { // package-private
+            if (value == null || value.isBlank()) throw new IllegalArgumentException("blank");
+            this.value = value;
+        }
+
+        @Override public String value() { return value; }
+    }
+
     // ── RefinedString serialization ──────────────────────────────────────────
 
     @Test
@@ -85,6 +97,18 @@ class RefinedTypesModuleTest {
 
         // Then
         assertThat(result.value()).isEqualTo("DE");
+    }
+
+    @Test
+    void packagePrivateConstructorDeserializedViaSetAccessible() throws Exception {
+        // Given
+        String json = "\"INTERNAL\"";
+
+        // When
+        InternalCode result = mapper.readValue(json, InternalCode.class);
+
+        // Then
+        assertThat(result.value()).isEqualTo("INTERNAL");
     }
 
     @Test

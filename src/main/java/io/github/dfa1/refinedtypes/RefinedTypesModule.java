@@ -9,8 +9,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.Serializers;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 
 public class RefinedTypesModule extends SimpleModule {
 
@@ -72,48 +73,60 @@ public class RefinedTypesModule extends SimpleModule {
     }
 
     private static class StringDeserializer<T extends RefinedString> extends JsonDeserializer<T> {
-        private final Constructor<T> ctor;
+        private final MethodHandle ctor;
+        private final Class<T> type;
 
         StringDeserializer(Class<T> type) {
+            this.type = type;
             try {
-                ctor = type.getDeclaredConstructor(String.class);
+                MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(type, MethodHandles.lookup());
+                ctor = lookup.findConstructor(type, MethodType.methodType(void.class, String.class));
             } catch (NoSuchMethodException e) {
                 throw new IllegalStateException(type.getName() + " must have a (String) constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("cannot access constructor of " + type.getName(), e);
             }
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             String raw = p.getText();
             try {
-                return ctor.newInstance(raw);
-            } catch (InvocationTargetException e) {
-                throw InvalidFormatException.from(p, e.getCause().getMessage(), raw, ctor.getDeclaringClass());
-            } catch (ReflectiveOperationException e) {
+                return (T) ctor.invoke(raw);
+            } catch (IllegalArgumentException e) {
+                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
+            } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
     private static class IntDeserializer<T extends RefinedInt> extends JsonDeserializer<T> {
-        private final Constructor<T> ctor;
+        private final MethodHandle ctor;
+        private final Class<T> type;
 
         IntDeserializer(Class<T> type) {
+            this.type = type;
             try {
-                ctor = type.getDeclaredConstructor(int.class);
+                MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(type, MethodHandles.lookup());
+                ctor = lookup.findConstructor(type, MethodType.methodType(void.class, int.class));
             } catch (NoSuchMethodException e) {
                 throw new IllegalStateException(type.getName() + " must have a (int) constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("cannot access constructor of " + type.getName(), e);
             }
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             int raw = p.getIntValue();
             try {
-                return ctor.newInstance(raw);
-            } catch (InvocationTargetException e) {
-                throw InvalidFormatException.from(p, e.getCause().getMessage(), raw, ctor.getDeclaringClass());
-            } catch (ReflectiveOperationException e) {
+                return (T) ctor.invoke(raw);
+            } catch (IllegalArgumentException e) {
+                throw InvalidFormatException.from(p, e.getMessage(), raw, type);
+            } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
         }
