@@ -142,147 +142,147 @@ class UnsignedLongTest {
     }
 
     @Test
-    void subSimple() {
+    void subtractSimple() {
         // Given
         var sut = new UnsignedLong(5L);
 
         // When
-        UnsignedLong result = sut.sub(new UnsignedLong(3L));
+        UnsignedLong result = sut.subtract(new UnsignedLong(3L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(2L);
     }
 
     @Test
-    void subWrapsAroundZero() {
+    void subtractWrapsAroundZero() {
         // 0 - 1 must wrap to MAX
         // Given
         var sut = UnsignedLong.ZERO;
 
         // When
-        UnsignedLong result = sut.sub(new UnsignedLong(1L));
+        UnsignedLong result = sut.subtract(new UnsignedLong(1L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(UnsignedLong.MAX.rawBits());
     }
 
     @Test
-    void subSelf() {
+    void subtractSelf() {
         // Given
         var sut = UnsignedLong.fromString("9999999999999999999");
 
         // When
-        UnsignedLong result = sut.sub(sut);
+        UnsignedLong result = sut.subtract(sut);
 
         // Then
         assertThat(result.rawBits()).isZero();
     }
 
     @Test
-    void mulSimple() {
+    void multiplySimple() {
         // Given
         var sut = new UnsignedLong(1_000_000_000L);
 
         // When
-        UnsignedLong result = sut.mul(new UnsignedLong(1_000_000_000L));
+        UnsignedLong result = sut.multiply(new UnsignedLong(1_000_000_000L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000_000_000_000_000L);
     }
 
     @Test
-    void mulWrapsAroundMax() {
+    void multiplyWrapsAroundMax() {
         // MAX * MAX mod 2^64 = 1  (same identity as unsigned short/int)
         // Given
         var sut = UnsignedLong.MAX;
 
         // When
-        UnsignedLong result = sut.mul(UnsignedLong.MAX);
+        UnsignedLong result = sut.multiply(UnsignedLong.MAX);
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1L);
     }
 
     @Test
-    void mulByOne() {
+    void multiplyByOne() {
         // Given
         var sut = UnsignedLong.fromString("12345678901234567890");
 
         // When
-        UnsignedLong result = sut.mul(new UnsignedLong(1L));
+        UnsignedLong result = sut.multiply(new UnsignedLong(1L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(sut.rawBits());
     }
 
     @Test
-    void divSimple() {
+    void divideSimple() {
         // Given
         var sut = new UnsignedLong(1_000_000_000_000L);
 
         // When
-        UnsignedLong result = sut.div(new UnsignedLong(1_000_000L));
+        UnsignedLong result = sut.divide(new UnsignedLong(1_000_000L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000L);
     }
 
     @Test
-    void divAboveSignedMax() {
+    void divideAboveSignedMax() {
         // 2^63 / 2 = 2^62
         // Given
         var sut = UnsignedLong.fromString("9223372036854775808");
 
         // When
-        UnsignedLong result = sut.div(new UnsignedLong(2L));
+        UnsignedLong result = sut.divide(new UnsignedLong(2L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(Long.MAX_VALUE / 2 + 1);
     }
 
     @Test
-    void divByZeroThrows() {
+    void divideByZeroThrows() {
         // Given
         var sut = new UnsignedLong(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.div(UnsignedLong.ZERO))
+        assertThatThrownBy(() -> sut.divide(UnsignedLong.ZERO))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
-    void remSimple() {
+    void remainderSimple() {
         // Given
         var sut = new UnsignedLong(1_000_000_007L);
 
         // When
-        UnsignedLong result = sut.rem(new UnsignedLong(3L));
+        UnsignedLong result = sut.remainder(new UnsignedLong(3L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000_007L % 3L);
     }
 
     @Test
-    void remByZeroThrows() {
+    void remainderByZeroThrows() {
         // Given
         var sut = new UnsignedLong(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.rem(UnsignedLong.ZERO))
+        assertThatThrownBy(() -> sut.remainder(UnsignedLong.ZERO))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
-    void divRemRelationship() {
+    void divideRemainderRelationship() {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
         var sut = UnsignedLong.fromString("12345678901234567890");
         var divisor = new UnsignedLong(1_000_000_007L);
 
         // When
-        UnsignedLong q = sut.div(divisor);
-        UnsignedLong r = sut.rem(divisor);
-        UnsignedLong result = q.mul(divisor).add(r);
+        UnsignedLong q = sut.divide(divisor);
+        UnsignedLong r = sut.remainder(divisor);
+        UnsignedLong result = q.multiply(divisor).add(r);
 
         // Then
         assertThat(result.rawBits()).isEqualTo(sut.rawBits());

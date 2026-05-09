@@ -34,22 +34,22 @@ public value class UnsignedInt implements Comparable<UnsignedInt> {
     }
 
     /** Wraps mod 2^32. */
-    public UnsignedInt sub(UnsignedInt other) {
+    public UnsignedInt subtract(UnsignedInt other) {
         return ofBits(this.bits - other.bits);
     }
 
     /** Lower 32 bits of product; wraps mod 2^32. */
-    public UnsignedInt mul(UnsignedInt other) {
+    public UnsignedInt multiply(UnsignedInt other) {
         return ofBits(this.bits * other.bits);
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedInt div(UnsignedInt other) {
+    public UnsignedInt divide(UnsignedInt other) {
         return ofBits(Integer.divideUnsigned(this.bits, other.bits));
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedInt rem(UnsignedInt other) {
+    public UnsignedInt remainder(UnsignedInt other) {
         return ofBits(Integer.remainderUnsigned(this.bits, other.bits));
     }
 

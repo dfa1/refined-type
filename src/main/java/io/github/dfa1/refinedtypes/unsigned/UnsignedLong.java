@@ -35,22 +35,22 @@ public value class UnsignedLong implements Comparable<UnsignedLong> {
     }
 
     /** Wraps mod 2^64. */
-    public UnsignedLong sub(UnsignedLong other) {
+    public UnsignedLong subtract(UnsignedLong other) {
         return new UnsignedLong(this.bits - other.bits);
     }
 
     /** Lower 64 bits of product; wraps mod 2^64. */
-    public UnsignedLong mul(UnsignedLong other) {
+    public UnsignedLong multiply(UnsignedLong other) {
         return new UnsignedLong(this.bits * other.bits);
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedLong div(UnsignedLong other) {
+    public UnsignedLong divide(UnsignedLong other) {
         return new UnsignedLong(Long.divideUnsigned(this.bits, other.bits));
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedLong rem(UnsignedLong other) {
+    public UnsignedLong remainder(UnsignedLong other) {
         return new UnsignedLong(Long.remainderUnsigned(this.bits, other.bits));
     }
 

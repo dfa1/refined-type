@@ -181,163 +181,163 @@ class UnsignedIntTest {
     }
 
     @Test
-    void subSimple() {
+    void subtractSimple() {
         // Given
         var sut = new UnsignedInt(5L);
 
         // When
-        UnsignedInt result = sut.sub(new UnsignedInt(3L));
+        UnsignedInt result = sut.subtract(new UnsignedInt(3L));
 
         // Then
         assertThat(result.value()).isEqualTo(2L);
     }
 
     @Test
-    void subWrapsAroundZero() {
+    void subtractWrapsAroundZero() {
         // 0 - 1 must wrap to MAX
         // Given
         var sut = new UnsignedInt(0L);
 
         // When
-        UnsignedInt result = sut.sub(new UnsignedInt(1L));
+        UnsignedInt result = sut.subtract(new UnsignedInt(1L));
 
         // Then
         assertThat(result.value()).isEqualTo(UnsignedInt.MAX_VALUE);
     }
 
     @Test
-    void subSelf() {
+    void subtractSelf() {
         // a - a = 0 for any a
         // Given
         var sut = new UnsignedInt(3_000_000_000L);
 
         // When
-        UnsignedInt result = sut.sub(sut);
+        UnsignedInt result = sut.subtract(sut);
 
         // Then
         assertThat(result.value()).isZero();
     }
 
     @Test
-    void mulSimple() {
+    void multiplySimple() {
         // Given
         var sut = new UnsignedInt(1_000_000L);
 
         // When
-        UnsignedInt result = sut.mul(new UnsignedInt(1_000L));
+        UnsignedInt result = sut.multiply(new UnsignedInt(1_000L));
 
         // Then
         assertThat(result.value()).isEqualTo(1_000_000_000L);
     }
 
     @Test
-    void mulWrapsAroundMax() {
+    void multiplyWrapsAroundMax() {
         // MAX * 2 = (2^32 - 1) * 2 = 2^33 - 2 → lower 32 bits = MAX - 1 = 4_294_967_294
         // Given
         var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
 
         // When
-        UnsignedInt result = sut.mul(new UnsignedInt(2L));
+        UnsignedInt result = sut.multiply(new UnsignedInt(2L));
 
         // Then
         assertThat(result.value()).isEqualTo(4_294_967_294L);
     }
 
     @Test
-    void mulByZero() {
+    void multiplyByZero() {
         // Given
         var sut = new UnsignedInt(0xDEAD_BEEFL);
 
         // When
-        UnsignedInt result = sut.mul(new UnsignedInt(0L));
+        UnsignedInt result = sut.multiply(new UnsignedInt(0L));
 
         // Then
         assertThat(result.value()).isZero();
     }
 
     @Test
-    void mulByOne() {
+    void multiplyByOne() {
         // Given
         var sut = new UnsignedInt(0xDEAD_BEEFL);
 
         // When
-        UnsignedInt result = sut.mul(new UnsignedInt(1L));
+        UnsignedInt result = sut.multiply(new UnsignedInt(1L));
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());
     }
 
     @Test
-    void divSimple() {
+    void divideSimple() {
         // 4_000_000_000 / 3 = 1_333_333_333
         // Given
         var sut = new UnsignedInt(4_000_000_000L);
 
         // When
-        UnsignedInt result = sut.div(new UnsignedInt(3L));
+        UnsignedInt result = sut.divide(new UnsignedInt(3L));
 
         // Then
         assertThat(result.value()).isEqualTo(1_333_333_333L);
     }
 
     @Test
-    void divAboveSignedMax() {
+    void divideAboveSignedMax() {
         // dividend > Integer.MAX_VALUE — signed divide would give wrong answer
         // 3_000_000_000 / 2 = 1_500_000_000
         // Given
         var sut = new UnsignedInt(3_000_000_000L);
 
         // When
-        UnsignedInt result = sut.div(new UnsignedInt(2L));
+        UnsignedInt result = sut.divide(new UnsignedInt(2L));
 
         // Then
         assertThat(result.value()).isEqualTo(1_500_000_000L);
     }
 
     @Test
-    void divByZeroThrows() {
+    void divideByZeroThrows() {
         // Given
         var sut = new UnsignedInt(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.div(new UnsignedInt(0L)))
+        assertThatThrownBy(() -> sut.divide(new UnsignedInt(0L)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
-    void remSimple() {
+    void remainderSimple() {
         // 4_000_000_000 % 3 = 1
         // Given
         var sut = new UnsignedInt(4_000_000_000L);
 
         // When
-        UnsignedInt result = sut.rem(new UnsignedInt(3L));
+        UnsignedInt result = sut.remainder(new UnsignedInt(3L));
 
         // Then
         assertThat(result.value()).isEqualTo(1L);
     }
 
     @Test
-    void remByZeroThrows() {
+    void remainderByZeroThrows() {
         // Given
         var sut = new UnsignedInt(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.rem(new UnsignedInt(0L)))
+        assertThatThrownBy(() -> sut.remainder(new UnsignedInt(0L)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
-    void divRemRelationship() {
+    void divideRemainderRelationship() {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
         var sut = new UnsignedInt(4_000_000_000L);
         var divisor = new UnsignedInt(7L);
 
         // When
-        UnsignedInt q = sut.div(divisor);
-        UnsignedInt r = sut.rem(divisor);
-        UnsignedInt result = q.mul(divisor).add(r);
+        UnsignedInt q = sut.divide(divisor);
+        UnsignedInt r = sut.remainder(divisor);
+        UnsignedInt result = q.multiply(divisor).add(r);
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());

@@ -34,22 +34,22 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
     }
 
     /** Wraps mod 2^16. */
-    public UnsignedShort sub(UnsignedShort other) {
+    public UnsignedShort subtract(UnsignedShort other) {
         return ofBits(Short.toUnsignedInt(this.bits) - Short.toUnsignedInt(other.bits));
     }
 
     /** Lower 16 bits of product; wraps mod 2^16. */
-    public UnsignedShort mul(UnsignedShort other) {
+    public UnsignedShort multiply(UnsignedShort other) {
         return ofBits(Short.toUnsignedInt(this.bits) * Short.toUnsignedInt(other.bits));
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedShort div(UnsignedShort other) {
+    public UnsignedShort divide(UnsignedShort other) {
         return new UnsignedShort(Short.toUnsignedInt(this.bits) / Short.toUnsignedInt(other.bits));
     }
 
     /** @throws ArithmeticException if other is zero */
-    public UnsignedShort rem(UnsignedShort other) {
+    public UnsignedShort remainder(UnsignedShort other) {
         return new UnsignedShort(Short.toUnsignedInt(this.bits) % Short.toUnsignedInt(other.bits));
     }
 
