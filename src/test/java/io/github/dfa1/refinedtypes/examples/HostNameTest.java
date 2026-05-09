@@ -23,15 +23,16 @@ class HostNameTest {
     }
 
     @Test
-    void singleLabelAccepted() {
+    void singleLabelNonLocalhostAccepted() {
+        // Single-label hostnames are valid RFC-wise (e.g. internal search domains)
         // Given
-        var sut = new HostName("localhost");
+        var sut = new HostName("intranet");
 
         // When
         String result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo("localhost");
+        assertThat(result).isEqualTo("intranet");
     }
 
     @Test
@@ -80,6 +81,88 @@ class HostNameTest {
 
         // Then
         assertThat(result).isEqualTo("host42.example.com");
+    }
+
+    // ── SSRF guards ──────────────────────────────────────────────────────────
+
+    @Test
+    void localhostRejected() {
+        // When / Then
+        assertThatThrownBy(() -> new HostName("localhost"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void localhostCaseInsensitiveRejected() {
+        // When / Then
+        assertThatThrownBy(() -> new HostName("LOCALHOST"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void loopbackIpv4Rejected() {
+        // 127.0.0.1 — loopback
+        // When / Then
+        assertThatThrownBy(() -> new HostName("127.0.0.1"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void privateClassAIpv4Rejected() {
+        // 10.x.x.x — RFC 1918 class A
+        // When / Then
+        assertThatThrownBy(() -> new HostName("10.0.0.1"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void privateClassBIpv4Rejected() {
+        // 172.16–31.x.x — RFC 1918 class B
+        // When / Then
+        assertThatThrownBy(() -> new HostName("172.16.0.1"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void privateClassCIpv4Rejected() {
+        // 192.168.x.x — RFC 1918 class C
+        // When / Then
+        assertThatThrownBy(() -> new HostName("192.168.1.1"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void awsMetadataEndpointRejected() {
+        // 169.254.169.254 — AWS instance metadata (link-local)
+        // When / Then
+        assertThatThrownBy(() -> new HostName("169.254.169.254"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void publicIpv4Accepted() {
+        // 8.8.8.8 — Google public DNS, not in any blocked range
+        // Given
+        var sut = new HostName("8.8.8.8");
+
+        // When
+        String result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo("8.8.8.8");
+    }
+
+    @Test
+    void hostWithPrivateSubstringNotBlocked() {
+        // "10.example.com" has "10" as a label but is not an IPv4 literal
+        // Given
+        var sut = new HostName("10.example.com");
+
+        // When
+        String result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo("10.example.com");
     }
 
     // ── rejection ───────────────────────────────────────────────────────────
