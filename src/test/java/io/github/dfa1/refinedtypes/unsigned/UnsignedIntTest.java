@@ -356,6 +356,34 @@ class UnsignedIntTest {
         assertThat(Integer.parseUnsignedInt(result)).isEqualTo(sut.rawBits());
     }
 
+    // ── widening ─────────────────────────────────────────────────────────────
+
+    @Test
+    void toUnsignedLongPreservesValue() {
+        // Given
+        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+
+        // When
+        UnsignedLong result = sut.toUnsignedLong();
+
+        // Then
+        assertThat(Long.toUnsignedString(result.rawBits())).isEqualTo("4294967295");
+    }
+
+    @Test
+    void wideningEnablesCrossTypeArithmetic() {
+        // UnsignedInt + UnsignedLong — widen first, then add
+        // Given
+        var sut = new UnsignedInt(4_000_000_000L);
+        var other = UnsignedLong.fromString("9999999999999999999");
+
+        // When
+        UnsignedLong result = sut.toUnsignedLong().add(other);
+
+        // Then
+        assertThat(Long.toUnsignedString(result.rawBits())).isEqualTo("10000000003999999999");
+    }
+
     // ── toString ────────────────────────────────────────────────────────────
 
     @Test

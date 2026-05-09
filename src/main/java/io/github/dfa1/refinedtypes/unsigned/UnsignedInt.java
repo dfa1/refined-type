@@ -28,6 +28,23 @@ public value class UnsignedInt implements Comparable<UnsignedInt> {
         return bits;
     }
 
+    /**
+     * Widen to {@link UnsignedLong}.
+     *
+     * <p>Cross-type arithmetic is not provided as overloads — see
+     * {@link UnsignedShort#toUnsignedInt()} for the full rationale.
+     * Widen to the desired precision first, then use same-type arithmetic:
+     *
+     * <pre>{@code
+     * UnsignedInt  i = new UnsignedInt(4_000_000_000L);
+     * UnsignedLong l = UnsignedLong.fromString("9999999999999999999");
+     * UnsignedLong result = i.toUnsignedLong().add(l);
+     * }</pre>
+     */
+    public UnsignedLong toUnsignedLong() {
+        return new UnsignedLong(Integer.toUnsignedLong(bits));
+    }
+
     /** Wraps mod 2^32. */
     public UnsignedInt add(UnsignedInt other) {
         return ofBits(this.bits + other.bits);

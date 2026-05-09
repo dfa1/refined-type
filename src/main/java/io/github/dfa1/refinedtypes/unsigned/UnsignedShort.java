@@ -19,13 +19,41 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
     }
 
     /** Unsigned value as int (always non-negative). */
-    public int value() {
+    public int toInt() {
         return Short.toUnsignedInt(bits);
     }
 
     /** Raw bit pattern — use only when passing to Short.xxxUnsigned / Integer.xxxUnsigned methods. */
     public short rawBits() {
         return bits;
+    }
+
+    /**
+     * Widen to {@link UnsignedInt}.
+     *
+     * <p>Cross-type arithmetic (e.g. {@code UnsignedShort + UnsignedInt}) is intentionally
+     * not provided as overloads: supporting every combination across three types would require
+     * O(types²·ops) methods and force callers to reason about which overload wins.
+     * Instead, widen explicitly to the desired precision first — the same contract the JDK
+     * uses with {@link Short#toUnsignedInt} — then call the same-type arithmetic method.
+     *
+     * <pre>{@code
+     * UnsignedShort s = new UnsignedShort(1000);
+     * UnsignedInt   i = new UnsignedInt(3_000_000_000L);
+     * UnsignedInt result = s.toUnsignedInt().add(i);
+     * }</pre>
+     */
+    public UnsignedInt toUnsignedInt() {
+        return new UnsignedInt(Short.toUnsignedInt(bits));
+    }
+
+    /**
+     * Widen to {@link UnsignedLong}.
+     *
+     * <p>See {@link #toUnsignedInt()} for the rationale behind explicit widening.
+     */
+    public UnsignedLong toUnsignedLong() {
+        return new UnsignedLong(Short.toUnsignedLong(bits));
     }
 
     /** Wraps mod 2^16. */
