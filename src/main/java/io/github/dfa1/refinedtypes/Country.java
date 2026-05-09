@@ -1,6 +1,6 @@
 package io.github.dfa1.refinedtypes;
 
-public value class Country implements RefinedString, LowCardinality {
+public value class Country implements RefinedString {
 
     private final String value;
 
