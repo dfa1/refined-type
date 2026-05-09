@@ -1,7 +1,8 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import io.github.dfa1.refinedtypes.*;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,7 +101,7 @@ class RefinedTypesModuleTest {
     }
 
     @Test
-    void packagePrivateConstructorDeserializedViaSetAccessible() throws Exception {
+    void packagePrivateConstructorDeserializedViaPrivateLookup() throws Exception {
         // Given
         String json = "\"INTERNAL\"";
 
@@ -158,5 +159,4 @@ class RefinedTypesModuleTest {
         assertThatThrownBy(() -> mapper.readValue(json, PositiveInt.class))
                 .isInstanceOf(InvalidFormatException.class);
     }
-
 }

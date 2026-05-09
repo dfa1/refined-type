@@ -1,4 +1,4 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import io.github.dfa1.refinedtypes.RefinedInt;
+import io.github.dfa1.refinedtypes.RefinedString;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
