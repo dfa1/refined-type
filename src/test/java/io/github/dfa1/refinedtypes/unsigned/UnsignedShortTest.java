@@ -7,6 +7,33 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UnsignedShortTest {
 
+    // ── fromString ───────────────────────────────────────────────────────────
+
+    @Test
+    void fromStringZero() {
+        // Given / When
+        UnsignedShort result = UnsignedShort.fromString("0");
+
+        // Then
+        assertThat(result.value()).isZero();
+    }
+
+    @Test
+    void fromStringMaxValue() {
+        // Given / When
+        UnsignedShort result = UnsignedShort.fromString("65535");
+
+        // Then
+        assertThat(result.value()).isEqualTo(65_535);
+    }
+
+    @Test
+    void fromStringAboveMaxThrows() {
+        // Given / When / Then
+        assertThatThrownBy(() -> UnsignedShort.fromString("65536"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     // ── construction ────────────────────────────────────────────────────────
 
     @Test
@@ -15,7 +42,7 @@ class UnsignedShortTest {
         var sut = new UnsignedShort(0);
 
         // When
-        int result = sut.toInt();
+        int result = sut.value();
 
         // Then
         assertThat(result).isZero();
@@ -27,7 +54,7 @@ class UnsignedShortTest {
         var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
 
         // When
-        int result = sut.toInt();
+        int result = sut.value();
 
         // Then
         assertThat(result).isEqualTo(65_535);
@@ -63,7 +90,7 @@ class UnsignedShortTest {
         var sut = new UnsignedShort(32_768);
 
         // When
-        int result = sut.toInt();
+        int result = sut.value();
 
         // Then
         assertThat(result).isEqualTo(32_768);
@@ -77,7 +104,7 @@ class UnsignedShortTest {
         var sut = new UnsignedShort(0xBEEF);
 
         // When
-        int result = sut.toInt();
+        int result = sut.value();
 
         // Then
         assertThat(result).isEqualTo(48_879);
@@ -176,7 +203,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.add(new UnsignedShort(5_000));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(65_000);
+        assertThat(result.value()).isEqualTo(65_000);
     }
 
     @Test
@@ -189,7 +216,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.add(new UnsignedShort(1));
 
         // Then
-        assertThat(result.toInt()).isZero();
+        assertThat(result.value()).isZero();
     }
 
     @Test
@@ -201,7 +228,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.add(new UnsignedShort(0));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(sut.toInt());
+        assertThat(result.value()).isEqualTo(sut.value());
     }
 
     @Test
@@ -213,7 +240,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.subtract(new UnsignedShort(3));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(7);
+        assertThat(result.value()).isEqualTo(7);
     }
 
     @Test
@@ -226,7 +253,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.subtract(new UnsignedShort(1));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(UnsignedShort.MAX_VALUE);
+        assertThat(result.value()).isEqualTo(UnsignedShort.MAX_VALUE);
     }
 
     @Test
@@ -238,7 +265,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.subtract(sut);
 
         // Then
-        assertThat(result.toInt()).isZero();
+        assertThat(result.value()).isZero();
     }
 
     @Test
@@ -250,7 +277,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.multiply(new UnsignedShort(200));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(60_000);
+        assertThat(result.value()).isEqualTo(60_000);
     }
 
     @Test
@@ -263,7 +290,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.multiply(new UnsignedShort(UnsignedShort.MAX_VALUE));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(1);
+        assertThat(result.value()).isEqualTo(1);
     }
 
     @Test
@@ -275,7 +302,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.multiply(new UnsignedShort(0));
 
         // Then
-        assertThat(result.toInt()).isZero();
+        assertThat(result.value()).isZero();
     }
 
     @Test
@@ -287,7 +314,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.multiply(new UnsignedShort(1));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(sut.toInt());
+        assertThat(result.value()).isEqualTo(sut.value());
     }
 
     @Test
@@ -299,7 +326,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.divide(new UnsignedShort(3));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(20_000);
+        assertThat(result.value()).isEqualTo(20_000);
     }
 
     @Test
@@ -312,7 +339,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.divide(new UnsignedShort(2));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(20_000);
+        assertThat(result.value()).isEqualTo(20_000);
     }
 
     @Test
@@ -334,7 +361,7 @@ class UnsignedShortTest {
         UnsignedShort result = sut.remainder(new UnsignedShort(3));
 
         // Then
-        assertThat(result.toInt()).isEqualTo(65_000 % 3);
+        assertThat(result.value()).isEqualTo(65_000 % 3);
     }
 
     @Test
@@ -360,7 +387,7 @@ class UnsignedShortTest {
         UnsignedShort result = q.multiply(divisor).add(r);
 
         // Then
-        assertThat(result.toInt()).isEqualTo(sut.toInt());
+        assertThat(result.value()).isEqualTo(sut.value());
     }
 
     // ── widening ─────────────────────────────────────────────────────────────

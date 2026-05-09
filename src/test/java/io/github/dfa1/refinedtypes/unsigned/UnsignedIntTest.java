@@ -9,6 +9,33 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UnsignedIntTest {
 
+    // ── fromString ───────────────────────────────────────────────────────────
+
+    @Test
+    void fromStringZero() {
+        // Given / When
+        UnsignedInt result = UnsignedInt.fromString("0");
+
+        // Then
+        assertThat(result.value()).isZero();
+    }
+
+    @Test
+    void fromStringMaxValue() {
+        // Given / When
+        UnsignedInt result = UnsignedInt.fromString("4294967295");
+
+        // Then
+        assertThat(result.value()).isEqualTo(4_294_967_295L);
+    }
+
+    @Test
+    void fromStringAboveMaxThrows() {
+        // Given / When / Then
+        assertThatThrownBy(() -> UnsignedInt.fromString("4294967296"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     // ── construction ────────────────────────────────────────────────────────
 
     @Test

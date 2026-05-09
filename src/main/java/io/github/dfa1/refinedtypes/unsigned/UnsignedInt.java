@@ -1,10 +1,13 @@
 package io.github.dfa1.refinedtypes.unsigned;
 
+import io.github.dfa1.refinedtypes.RefinedLong;
+
 /**
  * Unsigned 32-bit integer: range [0, 4_294_967_295].
  * Stored as raw int bits; unsigned semantics via Integer.toUnsignedLong / compareUnsigned.
+ * Implements {@link RefinedLong} because every unsigned 32-bit value fits in a positive long.
  */
-public value class UnsignedInt implements Comparable<UnsignedInt> {
+public value class UnsignedInt implements RefinedLong, Comparable<UnsignedInt> {
 
     public static final long MIN_VALUE = 0L;
     public static final long MAX_VALUE = 0xFFFFFFFFL; // 4_294_967_295
@@ -21,6 +24,11 @@ public value class UnsignedInt implements Comparable<UnsignedInt> {
     /** Unsigned value as long (always non-negative). */
     public long value() {
         return Integer.toUnsignedLong(bits);
+    }
+
+    /** Parse an unsigned decimal string in [0, 4_294_967_295]. */
+    public static UnsignedInt fromString(String s) {
+        return new UnsignedInt(Long.parseLong(s));
     }
 
     /** Raw bit pattern — use only when passing to Integer.xxxUnsigned methods. */

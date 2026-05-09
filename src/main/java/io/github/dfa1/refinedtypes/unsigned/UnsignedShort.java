@@ -19,11 +19,16 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
     }
 
     /** Unsigned value as int (always non-negative). */
-    public int toInt() {
+    public int value() {
         return Short.toUnsignedInt(bits);
     }
 
-    /** Raw bit pattern — use only when passing to Short.xxxUnsigned / Integer.xxxUnsigned methods. */
+    /** Parse an unsigned decimal string in [0, 65535]. */
+    public static UnsignedShort fromString(String s) {
+        return new UnsignedShort(Integer.parseInt(s));
+    }
+
+    /** Raw bit pattern — use only when passing to Short.xxxUnsigned methods. */
     public short rawBits() {
         return bits;
     }
