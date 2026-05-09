@@ -28,6 +28,31 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
         return bits;
     }
 
+    /** Wraps mod 2^16. */
+    public UnsignedShort add(UnsignedShort other) {
+        return ofBits(Short.toUnsignedInt(this.bits) + Short.toUnsignedInt(other.bits));
+    }
+
+    /** Wraps mod 2^16. */
+    public UnsignedShort sub(UnsignedShort other) {
+        return ofBits(Short.toUnsignedInt(this.bits) - Short.toUnsignedInt(other.bits));
+    }
+
+    /** Lower 16 bits of product; wraps mod 2^16. */
+    public UnsignedShort mul(UnsignedShort other) {
+        return ofBits(Short.toUnsignedInt(this.bits) * Short.toUnsignedInt(other.bits));
+    }
+
+    /** @throws ArithmeticException if other is zero */
+    public UnsignedShort div(UnsignedShort other) {
+        return new UnsignedShort(Short.toUnsignedInt(this.bits) / Short.toUnsignedInt(other.bits));
+    }
+
+    /** @throws ArithmeticException if other is zero */
+    public UnsignedShort rem(UnsignedShort other) {
+        return new UnsignedShort(Short.toUnsignedInt(this.bits) % Short.toUnsignedInt(other.bits));
+    }
+
     @Override
     public int compareTo(UnsignedShort that) {
         return Integer.compareUnsigned(Short.toUnsignedInt(this.bits), Short.toUnsignedInt(that.bits));
@@ -36,5 +61,10 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
     @Override
     public String toString() {
         return "UnsignedShort(" + Short.toUnsignedInt(bits) + ")";
+    }
+
+    // Masks to lower 16 bits — constructor never throws for values in [0, 0xFFFF].
+    private static UnsignedShort ofBits(int bits) {
+        return new UnsignedShort(bits & 0xFFFF);
     }
 }

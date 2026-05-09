@@ -167,6 +167,204 @@ class UnsignedShortTest {
         assertThat(result).isEqualTo(65_535L);
     }
 
+    // ── arithmetic ───────────────────────────────────────────────────────────
+
+    @Test
+    void addSimple() {
+        // Given
+        var sut = new UnsignedShort(60_000);
+
+        // When
+        UnsignedShort result = sut.add(new UnsignedShort(5_000));
+
+        // Then
+        assertThat(result.value()).isEqualTo(65_000);
+    }
+
+    @Test
+    void addWrapsAroundMax() {
+        // MAX + 1 must wrap to 0
+        // Given
+        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+
+        // When
+        UnsignedShort result = sut.add(new UnsignedShort(1));
+
+        // Then
+        assertThat(result.value()).isZero();
+    }
+
+    @Test
+    void addIdentity() {
+        // Given
+        var sut = new UnsignedShort(0xBEEF);
+
+        // When
+        UnsignedShort result = sut.add(new UnsignedShort(0));
+
+        // Then
+        assertThat(result.value()).isEqualTo(sut.value());
+    }
+
+    @Test
+    void subSimple() {
+        // Given
+        var sut = new UnsignedShort(10);
+
+        // When
+        UnsignedShort result = sut.sub(new UnsignedShort(3));
+
+        // Then
+        assertThat(result.value()).isEqualTo(7);
+    }
+
+    @Test
+    void subWrapsAroundZero() {
+        // 0 - 1 must wrap to MAX
+        // Given
+        var sut = new UnsignedShort(0);
+
+        // When
+        UnsignedShort result = sut.sub(new UnsignedShort(1));
+
+        // Then
+        assertThat(result.value()).isEqualTo(UnsignedShort.MAX_VALUE);
+    }
+
+    @Test
+    void subSelf() {
+        // Given
+        var sut = new UnsignedShort(50_000);
+
+        // When
+        UnsignedShort result = sut.sub(sut);
+
+        // Then
+        assertThat(result.value()).isZero();
+    }
+
+    @Test
+    void mulSimple() {
+        // Given
+        var sut = new UnsignedShort(300);
+
+        // When
+        UnsignedShort result = sut.mul(new UnsignedShort(200));
+
+        // Then
+        assertThat(result.value()).isEqualTo(60_000);
+    }
+
+    @Test
+    void mulWrapsAroundMax() {
+        // MAX * MAX mod 2^16 = (2^16-1)^2 mod 2^16 = 1
+        // Given
+        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+
+        // When
+        UnsignedShort result = sut.mul(new UnsignedShort(UnsignedShort.MAX_VALUE));
+
+        // Then
+        assertThat(result.value()).isEqualTo(1);
+    }
+
+    @Test
+    void mulByZero() {
+        // Given
+        var sut = new UnsignedShort(0xBEEF);
+
+        // When
+        UnsignedShort result = sut.mul(new UnsignedShort(0));
+
+        // Then
+        assertThat(result.value()).isZero();
+    }
+
+    @Test
+    void mulByOne() {
+        // Given
+        var sut = new UnsignedShort(0xBEEF);
+
+        // When
+        UnsignedShort result = sut.mul(new UnsignedShort(1));
+
+        // Then
+        assertThat(result.value()).isEqualTo(sut.value());
+    }
+
+    @Test
+    void divSimple() {
+        // Given
+        var sut = new UnsignedShort(60_000);
+
+        // When
+        UnsignedShort result = sut.div(new UnsignedShort(3));
+
+        // Then
+        assertThat(result.value()).isEqualTo(20_000);
+    }
+
+    @Test
+    void divAboveSignedMax() {
+        // 40_000 / 2 = 20_000 — value above Short.MAX_VALUE
+        // Given
+        var sut = new UnsignedShort(40_000);
+
+        // When
+        UnsignedShort result = sut.div(new UnsignedShort(2));
+
+        // Then
+        assertThat(result.value()).isEqualTo(20_000);
+    }
+
+    @Test
+    void divByZeroThrows() {
+        // Given
+        var sut = new UnsignedShort(1);
+
+        // When / Then
+        assertThatThrownBy(() -> sut.div(new UnsignedShort(0)))
+                .isInstanceOf(ArithmeticException.class);
+    }
+
+    @Test
+    void remSimple() {
+        // Given
+        var sut = new UnsignedShort(65_000);
+
+        // When
+        UnsignedShort result = sut.rem(new UnsignedShort(3));
+
+        // Then
+        assertThat(result.value()).isEqualTo(65_000 % 3);
+    }
+
+    @Test
+    void remByZeroThrows() {
+        // Given
+        var sut = new UnsignedShort(1);
+
+        // When / Then
+        assertThatThrownBy(() -> sut.rem(new UnsignedShort(0)))
+                .isInstanceOf(ArithmeticException.class);
+    }
+
+    @Test
+    void divRemRelationship() {
+        // a = (a / b) * b + (a % b)  for all b != 0
+        // Given
+        var sut = new UnsignedShort(65_000);
+        var divisor = new UnsignedShort(7);
+
+        // When
+        UnsignedShort q = sut.div(divisor);
+        UnsignedShort r = sut.rem(divisor);
+        UnsignedShort result = q.mul(divisor).add(r);
+
+        // Then
+        assertThat(result.value()).isEqualTo(sut.value());
+    }
+
     // ── toString ────────────────────────────────────────────────────────────
 
     @Test
