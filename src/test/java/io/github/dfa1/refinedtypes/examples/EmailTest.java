@@ -1,5 +1,6 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.examples;
 
+import io.github.dfa1.refinedtypes.RefinedString;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

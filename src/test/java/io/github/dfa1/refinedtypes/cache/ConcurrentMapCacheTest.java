@@ -1,7 +1,7 @@
 package io.github.dfa1.refinedtypes.cache;
 
-import io.github.dfa1.refinedtypes.Country;
-import io.github.dfa1.refinedtypes.Email;
+import io.github.dfa1.refinedtypes.examples.Country;
+import io.github.dfa1.refinedtypes.examples.Email;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,4 +1,6 @@
-package io.github.dfa1.refinedtypes;
+package io.github.dfa1.refinedtypes.examples;
+
+import io.github.dfa1.refinedtypes.RefinedInt;
 
 public value class PositiveInt implements RefinedInt {
 

@@ -2,7 +2,8 @@ package io.github.dfa1.refinedtypes.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import io.github.dfa1.refinedtypes.*;
+import io.github.dfa1.refinedtypes.RefinedString;
+import io.github.dfa1.refinedtypes.examples.*;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
