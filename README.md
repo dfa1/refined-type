@@ -187,7 +187,7 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 ## Design principles
 
 - **Constructor validates; the type proves it.** Throw `IllegalArgumentException` with a message naming the violated constraint. Never a silent truncation.
-- **No nulls.** Value classes cannot be null — the compiler enforces it.
+- **No nulls.** Constructors reject null inputs; a refined type always holds a valid, non-null value.
 - **Fail fast, succeed forever.** Validation runs once at the boundary. Hot paths carry guaranteed-valid values.
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
 - **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — same names as `BigInteger`/`BigDecimal`.
