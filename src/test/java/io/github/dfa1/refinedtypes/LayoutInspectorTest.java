@@ -1,10 +1,17 @@
 package io.github.dfa1.refinedtypes;
 
+import io.github.dfa1.refinedtypes.examples.*;
+import io.github.dfa1.refinedtypes.fp.Float16;
+import io.github.dfa1.refinedtypes.unsigned.UnsignedByte;
 import io.github.dfa1.refinedtypes.unsigned.UnsignedInt;
+import io.github.dfa1.refinedtypes.unsigned.UnsignedLong;
+import io.github.dfa1.refinedtypes.unsigned.UnsignedShort;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jol.info.ClassLayout;
-import org.openjdk.jol.info.GraphLayout;
 import org.openjdk.jol.vm.VM;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +28,29 @@ public class LayoutInspectorTest {
         System.out.println("=== array layout ===");
         System.out.println(ClassLayout.parseClass(UnsignedInt[].class).toPrintable());
         System.out.println(ClassLayout.parseClass(Integer[].class).toPrintable());
+    }
+
+    @Test
+    void printAllRefinedTypeSizes() {
+        Map<String, Class<?>[]> groups = new LinkedHashMap<>();
+        groups.put("RefinedInt  (raw: 4 bytes)", new Class<?>[]{ Age.class, Port.class, SwissValorNumber.class, UnsignedInt.class });
+        groups.put("RefinedShort (raw: 2 bytes)", new Class<?>[]{ AudioSample.class, UnsignedShort.class });
+        groups.put("RefinedLong  (raw: 8 bytes)", new Class<?>[]{ Size.class, UnsignedLong.class });
+        groups.put("RefinedDouble (raw: 8 bytes)", new Class<?>[]{ Distance.class, Latitude.class, Longitude.class, Price.class });
+        groups.put("RefinedFloat (raw: 4 bytes)", new Class<?>[]{ Percentage.class, Probability.class, Velocity.class, Volume.class });
+        groups.put("RefinedString (raw: ref)", new Class<?>[]{ CountryCode.class, CurrencyCode.class, CusipNumber.class, Email.class, HostName.class, Isin.class, Slug.class });
+        groups.put("Other", new Class<?>[]{ GeoPoint.class, Float16.class, UnsignedByte.class });
+
+        System.out.println();
+        System.out.printf("%-14s  %-22s  %s%n", "Group", "Type", "bytes");
+        System.out.println("-".repeat(60));
+        for (var entry : groups.entrySet()) {
+            for (Class<?> cls : entry.getValue()) {
+                long size = ClassLayout.parseClass(cls).instanceSize();
+                System.out.printf("%-14s  %-22s  %d%n", entry.getKey(), cls.getSimpleName(), size);
+            }
+            System.out.println();
+        }
     }
 
     @Test
