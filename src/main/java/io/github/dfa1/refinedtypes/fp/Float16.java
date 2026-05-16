@@ -41,8 +41,6 @@ public value class Float16 implements Comparable<Float16> {
 
     /** Largest finite value: 65504. */
     public static final Float16 MAX_VALUE         = new Float16(Float.floatToFloat16(65504f));
-    /** Smallest positive normal value: 2^-14 ≈ 6.104e-5. */
-    public static final Float16 MIN_NORMAL        = new Float16(Float.floatToFloat16(0x1.0p-14f));
     /** Smallest positive non-zero (subnormal): 2^-24 ≈ 5.96e-8. */
     public static final Float16 MIN_VALUE         = new Float16(Float.floatToFloat16(0x1.0p-24f));
 

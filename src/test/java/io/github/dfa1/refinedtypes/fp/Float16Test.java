@@ -103,6 +103,20 @@ class Float16Test {
     }
 
     @Test
+    void minValueIsSmallestPositiveSubnormal() {
+        // Given
+        var sut = Float16.MIN_VALUE;
+
+        // When
+        float result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo(0x1.0p-24f);
+        assertThat(result).isGreaterThan(0f);
+        assertThat(sut.isFinite()).isTrue();
+    }
+
+    @Test
     void isFiniteForNormalValue() {
         // Given
         var sut = Float16.of(42f);
