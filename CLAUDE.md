@@ -55,6 +55,11 @@ mvn verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
 - No nulls — value classes cannot be null
 - Benchmark classes in `src/main/java` (JMH convention), named `*Benchmark`
 
+## Style
+
+- **American English** in all code, comments, and docs (e.g. `canceled` not `cancelled`, `color` not `colour`, `behavior` not `behaviour`)
+- **Javadoc in Markdown style** — use the JEP 467 `///` Markdown doc-comment form instead of the legacy `/** ... */` HTML form. Inline HTML tags (`<p>`, `<ul>`, `<em>`, `<b>`) are replaced by their Markdown equivalents.
+
 ## Test conventions
 
 - Test method names: camelCase, no underscores
