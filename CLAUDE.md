@@ -85,5 +85,5 @@ void validEmailAccepted() {
 ## What to build next
 
 1. JMH benchmark: allocation rate + throughput vs bare `int`
-2. Expand: `NonNegativeFloat`, more domain examples
+2. Expand: more domain examples
 3. Compare identity-class vs value-class variants in same benchmark
