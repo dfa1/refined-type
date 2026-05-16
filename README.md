@@ -2,7 +2,7 @@
 
 Experiments with [Project Valhalla](https://openjdk.org/projects/valhalla/) **value classes** as a refined-type library for Java.
 
-The core question: *can a wrapper type that enforces a constraint at construction time approach the performance of a bare primitive?*  
+The core question: *can a wrapper type that enforces a constraint at construction time approach the performance of a bare primitive?*
 Value classes say yes — no heap allocation, no object header, flat storage in arrays.
 
 Inspired by: [Refined types in practice](https://kwark.github.io/refined-in-practice/#1) — Reference: [original gist](https://gist.github.com/dfa1/f6fdca0513730dc7dc7d6a5d89629709)
@@ -13,17 +13,17 @@ Inspired by: [Refined types in practice](https://kwark.github.io/refined-in-prac
 
 A `String` can hold anything. An `int` can be negative. When you pass `userId` where `orderId` is expected the compiler stays silent and the bug ships.
 
-Refined types solve this by encoding the constraint in the type itself:
+Refined types encode the constraint in the type itself:
 
 ```java
 // Before: primitive soup — caller must read the docs to know what's valid
-void ship(int userId, int orderId, String email) { ... }
+void route(double lat, double lon, String currency) { ... }
 
 // After: the type IS the documentation and the guard
-void ship(UnsignedInt userId, UnsignedInt orderId, Email email) { ... }
+void route(Latitude lat, Longitude lon, Country country) { ... }
 ```
 
-Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths.
+Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths. Swapping `lat` and `lon` no longer compiles.
 
 ---
 
@@ -49,10 +49,10 @@ UnsignedInt[100]:   416 bytes  (flat inline storage)
 
 ## Requirements
 
-| Tool | Version |
-|------|---------|
-| Java | 27 EA (Valhalla preview) — **required** |
-| Maven | 3.9+ |
+| Tool  | Version                                  |
+|-------|------------------------------------------|
+| Java  | 27 EA (Valhalla preview) — **required**  |
+| Maven | 3.9+                                     |
 
 ```bash
 sdk install java 27.ea-open
@@ -65,9 +65,11 @@ java -version   # must show openjdk 27-ea
 ## Build
 
 ```bash
-mvn compile          # compile
-mvn test             # 189 tests
+mvn compile        # compile
+mvn test           # ~460 tests
 ```
+
+JMH benchmarks live under `src/test/java/.../bench` — run them from the IDE or via `mvn test-compile exec:java`.
 
 ---
 
@@ -75,26 +77,35 @@ mvn test             # 189 tests
 
 ### Marker interfaces
 
-| Interface | Primitive | Key method |
-|-----------|-----------|------------|
-| `RefinedInt` | `int` | `int value()` |
-| `RefinedFloat` | `float` | `float value()` |
-| `RefinedString` | `String` | `String value()` |
+All F-bounded — `Probability.compareTo(Price)` does not type-check.
 
-All extend `Comparable` with a sensible default `compareTo`.
+| Interface         | Primitive | Default `compareTo`           |
+|-------------------|-----------|-------------------------------|
+| `RefinedInt<T>`   | `int`     | `Integer.compare`             |
+| `RefinedShort<T>` | `short`   | `Short.compare`               |
+| `RefinedLong<T>`  | `long`    | `Long.compare`                |
+| `RefinedFloat<T>` | `float`   | `Float.compare`               |
+| `RefinedDouble<T>`| `double`  | `Double.compare`              |
+| `RefinedString<T>`| `String`  | `String.compareTo`            |
+
+Each implementation pins the self-type:
+
+```java
+public value class Probability implements RefinedFloat<Probability> { ... }
+```
 
 ### Unsigned integers (`unsigned` package)
 
-Java's primitives are signed. These value classes give you proper unsigned semantics.
+Java's primitives are signed. These value classes give proper unsigned semantics.
 
-| Class | Range | Notes |
-|-------|-------|-------|
-| `UnsignedShort` | [0, 65 535] | stored as `short`; constructor takes `int` and validates |
-| `UnsignedInt` | [0, 4 294 967 295] | stored as `int`; constructor takes `long` and validates |
-| `UnsignedLong` | [0, 2⁶⁴ − 1] | stored as `long`; **no validation** — every `long` bit-pattern is valid |
+| Class           | Range            | Notes                                                     |
+|-----------------|------------------|-----------------------------------------------------------|
+| `UnsignedByte`  | [0, 255]         | stored as `byte`; constructor takes `int`                 |
+| `UnsignedShort` | [0, 65 535]      | stored as `short`; constructor takes `int`                |
+| `UnsignedInt`   | [0, 2³² − 1]     | stored as `int`; `value()` returns raw bits, `asLong()` returns magnitude |
+| `UnsignedLong`  | [0, 2⁶⁴ − 1]     | stored as `long`; every bit-pattern is valid              |
 
-All three implement `Comparable` with unsigned ordering and carry the full arithmetic suite
-named after `BigInteger`/`BigDecimal`: `add`, `subtract`, `multiply`, `divide`, `remainder`.
+Arithmetic suite named after `BigInteger` / `BigDecimal`: `add`, `subtract`, `multiply`, `divide`, `remainder`. Overflow wraps mod 2^N; division uses `Integer.divideUnsigned` / `Long.divideUnsigned`.
 
 ```java
 var a = new UnsignedInt(3_000_000_000L);
@@ -105,8 +116,7 @@ UnsignedLong max     = UnsignedLong.MAX;              // 2^64-1, stored as -1L
 UnsignedLong wrapped = max.add(new UnsignedLong(1L)); // wraps to ZERO — mod 2^64
 ```
 
-**Cross-type arithmetic** uses explicit widening — same contract as `Short.toUnsignedInt` in the JDK.
-Overloads for every combination would require O(types² × ops) methods; explicit widening keeps the API flat:
+**Cross-type arithmetic** uses explicit widening — same contract as `Short.toUnsignedInt` in the JDK:
 
 ```java
 UnsignedShort s = new UnsignedShort(1_000);
@@ -117,32 +127,56 @@ UnsignedInt result = s.toUnsignedInt().add(i);        // widen first, then add
 
 ### Half-precision float (`fp` package)
 
-`Float16` — IEEE 754 binary16: 1 sign · 5 exponent · 10 mantissa bits.
-Range ±65 504, ~3.31 decimal digits, stored in **2 bytes**.
+`Float16` — IEEE 754 binary16, stored in **2 bytes**. Range ±65 504, ~3.31 decimal digits.
 
 ```java
 Float16 a   = Float16.of(1.5f);
-Float16 b   = Float16.of(0.5f);
-Float16 sum = a.add(b);              // Float16(2.0)
-
-Float16.MAX_VALUE.value();           // 65504.0f
-Float16.NaN.isNaN();                 // true
-Float16.of(-7.5f).abs();             // Float16(7.5)
+Float16 sum = a.add(Float16.of(0.5f));   // Float16(2.0)
+Float16.MAX_VALUE.value();               // 65504.0f
+Float16.NaN.isNaN();                     // true
 ```
 
-Arithmetic promotes through `float32` internally — the value-class benefit is **storage density**,
-not per-operation compute speed on the JVM. Ideal for ML weight arrays, sensor streams, HDR textures.
+Arithmetic promotes through `float32` internally — the value-class benefit is **storage density**, not per-operation compute speed on the JVM. Ideal for ML weight arrays, sensor streams, HDR textures.
 
 ### Examples (`examples` package)
 
-Ready-to-use refined types demonstrating the pattern:
+| Class               | Constraint                                                |
+|---------------------|-----------------------------------------------------------|
+| `Age`               | integer in `[0, 150]`                                     |
+| `AudioSample`       | signed 16-bit PCM sample                                  |
+| `Country`           | ISO 3166-1 alpha-2 (two uppercase letters)                |
+| `CusipNumber`       | 9-char CUSIP (US/Canadian securities), → `Isin`           |
+| `Email`             | coarse syntactic check                                    |
+| `HostName`          | RFC 1123 hostname with SSRF guards                        |
+| `Isin`              | ISO 6166 securities identifier (12 chars)                 |
+| `Latitude`          | decimal degrees in `[-90, 90]`                            |
+| `Longitude`         | decimal degrees in `[-180, 180]`                          |
+| `Percentage`        | finite float in `[0, 100]`                                |
+| `Port`              | TCP/UDP port in `[0, 65 535]`                             |
+| `Price`             | strictly positive, finite float                           |
+| `Probability`       | finite float in `[0, 1]`                                  |
+| `Size`              | non-negative byte count (with `Unit` enum)                |
+| `Slug`              | URL-safe lowercase identifier                             |
+| `SwissValorNumber`  | SIX Valoren-Nummer, `[1, 999 999 999]`, → `Isin`          |
+| `Velocity`          | non-negative float (m/s)                                  |
+| `Volume`            | non-negative, finite float                                |
 
-| Class | Constraint |
-|-------|-----------|
-| `Email` | one `@`, non-empty local part, domain contains `.` |
-| `Country` | ISO 3166-1 alpha-2, uppercase |
-| `Isin` | 12-char `[A-Z]{2}[A-Z0-9]{9}[0-9]` |
-| `Velocity` | `value >= 0` (non-negative float) |
+#### A worked example — securities identifiers
+
+National identifiers compose into international ISINs with check digits computed by the type:
+
+```java
+// ABB Ltd — Swiss listing
+Isin abb = new SwissValorNumber(1_222_171).toIsin();   // CH0012221716
+
+// Apple Inc. — US listing
+Isin apple = new CusipNumber("037833100").toIsin();    // US0378331005
+
+// Or construct directly from country + NSIN; check digit is computed
+Isin tesla = new Isin(new Country("US"), "88160R101"); // US88160R1014
+```
+
+The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISINs do compare to each other, but a `SwissValorNumber` cannot be passed where a `CusipNumber` is expected.
 
 ---
 
@@ -153,3 +187,42 @@ Ready-to-use refined types demonstrating the pattern:
 - **Fail fast, succeed forever.** Validation runs once at the boundary. Hot paths carry guaranteed-valid values.
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
 - **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — familiar to any Java developer.
+- **F-bounded markers.** `RefinedFloat<T extends RefinedFloat<T>>` blocks `probability.compareTo(price)` at compile time.
+
+---
+
+## Honest assessment
+
+This pattern is a net positive in the right place, with real costs. Don't apply it project-wide.
+
+### Where it pays
+
+- **Constraint lives in the type signature.** `void route(Latitude, Longitude)` cannot be called with swapped args, cannot accept NaN, cannot accept 200°. The compiler enforces what comments used to beg for.
+- **Validation runs once, at the boundary.** Hot paths carry a proof, not raw bytes that "should be valid."
+- **Conversions belong to the type** (`SwissValorNumber.toIsin`, `AudioSample.toAmplitude`). Behavior moves toward data; the call site reads as domain prose.
+- **Value classes (when Valhalla lands)** push the perf overhead to zero — the wrapper and the bare primitive flatten the same.
+- **F-bound stops cross-type compares** like `probability.compareTo(price)` at compile time.
+
+### Costs to take seriously
+
+- **Boilerplate per type.** Constructor, `value()`, `toString`, test class, sometimes `equals`. Eighteen refined types ≈ eighteen near-identical skeletons. Languages with first-class refinement (Scala 3 opaque types, Rust newtype, Kotlin value class) say this in one line.
+- **Boundary friction.** Jackson, JPA, JDBC, Bean Validation, MapStruct all expect primitives and `String`. Each refined type needs an adapter — or you pay deserialization tax at every external edge.
+- **JDK 27 EA only.** No fallback. Production rollout requires Valhalla to actually GA, or accepting identity classes (which lose the perf story).
+- **Generic noise leaks.** `RefinedFloat<T extends RefinedFloat<T>>` is the right shape but ugly in error messages — new contributors stare at it.
+- **Sweet spot is narrow.** Big API surfaces, regulated domains (finance, geo, medical), public libraries — huge win. Internal scripts, throwaway endpoints, glue code — boilerplate eats the win.
+
+### Where it pays best
+
+Financial, regulatory, safety-critical code where wrong-type bugs are expensive and inputs cross many layers. The CUSIP/Valor/ISIN chain in this repo is the canonical example: `toIsin()` is impossible to misuse, and a junior dev cannot pass an Apple CUSIP where a German WKN is expected.
+
+### Prior art worth checking
+
+| Language | Mechanism                                              |
+|----------|--------------------------------------------------------|
+| Scala    | `refined`, `iron`, opaque types                        |
+| Kotlin   | value classes (`@JvmInline`)                           |
+| Rust     | newtype pattern (`pub struct Latitude(f64)`)           |
+| Haskell  | `newtype` + smart constructors                         |
+| F#       | units of measure (catches lat/long swap at compile time *without* the wrapper noise) |
+
+Java is the most verbose language for this pattern. The result is good. The cost is real.
