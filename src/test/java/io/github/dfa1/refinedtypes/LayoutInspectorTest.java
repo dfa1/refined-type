@@ -1,6 +1,5 @@
 package io.github.dfa1.refinedtypes;
 
-import io.github.dfa1.refinedtypes.examples.PositiveInt;
 import io.github.dfa1.refinedtypes.unsigned.UnsignedInt;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jol.info.ClassLayout;
@@ -16,11 +15,11 @@ public class LayoutInspectorTest {
         System.out.println(VM.current().details());
 
         System.out.println("=== object layout ===");
-        System.out.println(ClassLayout.parseClass(PositiveInt.class).toPrintable());
+        System.out.println(ClassLayout.parseClass(UnsignedInt.class).toPrintable());
         System.out.println(ClassLayout.parseClass(Integer.class).toPrintable());
 
         System.out.println("=== array layout ===");
-        System.out.println(ClassLayout.parseClass(PositiveInt[].class).toPrintable());
+        System.out.println(ClassLayout.parseClass(UnsignedInt[].class).toPrintable());
         System.out.println(ClassLayout.parseClass(Integer[].class).toPrintable());
     }
 

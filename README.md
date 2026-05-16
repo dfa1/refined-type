@@ -20,7 +20,7 @@ Refined types solve this by encoding the constraint in the type itself:
 void ship(int userId, int orderId, String email) { ... }
 
 // After: the type IS the documentation and the guard
-void ship(PositiveInt userId, PositiveInt orderId, Email email) { ... }
+void ship(UnsignedInt userId, UnsignedInt orderId, Email email) { ... }
 ```
 
 Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths.
@@ -34,7 +34,7 @@ Traditional wrapper types pay an object-per-value tax:
 | | Heap alloc | Object header | Array layout |
 |---|---|---|---|
 | `Integer[]` (100 elements) | 100 objects | 16 bytes each | pointer array → scattered objects |
-| `PositiveInt[]` (100 elements, value class) | **0** | **0** | **flat** — primitives inline |
+| `UnsignedInt[]` (100 elements, value class) | **0** | **0** | **flat** — primitives inline |
 
 Measured with JOL on this JDK:
 
@@ -139,7 +139,6 @@ Ready-to-use refined types demonstrating the pattern:
 
 | Class | Constraint |
 |-------|-----------|
-| `PositiveInt` | `value > 0` |
 | `Email` | one `@`, non-empty local part, domain contains `.` |
 | `Country` | ISO 3166-1 alpha-2, uppercase |
 | `Isin` | 12-char `[A-Z]{2}[A-Z0-9]{9}[0-9]` |

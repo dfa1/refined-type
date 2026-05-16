@@ -84,7 +84,6 @@ void validEmailAccepted() {
 
 ## What to build next
 
-1. `value class PositiveInt implements RefinedInt` — simplest case
-2. JMH benchmark: allocation rate + throughput vs bare `int`
-3. Expand: `Age`, `Percentage`, `NonNegativeFloat`
-4. Compare identity-class vs value-class variants in same benchmark
+1. JMH benchmark: allocation rate + throughput vs bare `int`
+2. Expand: `NonNegativeFloat`, more domain examples
+3. Compare identity-class vs value-class variants in same benchmark
