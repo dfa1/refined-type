@@ -228,4 +228,3 @@ Financial, regulatory, safety-critical code where wrong-type bugs are expensive 
 | Haskell  | `newtype` + smart constructors                         |
 | F#       | units of measure (catches lat/long swap at compile time *without* the wrapper noise) |
 
-Java is the most verbose language for this pattern. The result is good. The cost is real.
