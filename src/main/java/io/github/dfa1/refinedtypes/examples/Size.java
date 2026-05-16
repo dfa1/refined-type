@@ -2,16 +2,14 @@ package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedLong;
 
-/**
- * A size in bytes — non-negative {@code long}.
- *
- * <p>Models file sizes, buffer capacities, allocation budgets — anything
- * counted in bytes whose range exceeds the 2 GB ceiling of {@code int}.
- *
- * <p>Multiplier helpers use the binary base ({@code 1024}) — same convention
- * as the JDK ({@code Files.size}, {@code Runtime.totalMemory}). For decimal
- * bases use {@link #ofBytes(long)} directly.
- */
+/// A size in bytes — non-negative `long`.
+///
+/// Models file sizes, buffer capacities, allocation budgets — anything
+/// counted in bytes whose range exceeds the 2 GB ceiling of `int`.
+///
+/// Multiplier helpers use the binary base (`1024`) — same convention
+/// as the JDK (`Files.size`, `Runtime.totalMemory`). For decimal
+/// bases use {@link #ofBytes(long)} directly.
 public value class Size implements RefinedLong {
 
     public static final long KB = 1024L;
@@ -47,12 +45,12 @@ public value class Size implements RefinedLong {
     public long toGigabytes() { return bytes / GB; }
     public long toTerabytes() { return bytes / TB; }
 
-    /** @throws ArithmeticException on long overflow */
+    /// @throws ArithmeticException on long overflow
     public Size plus(Size other) {
         return new Size(Math.addExact(this.bytes, other.bytes));
     }
 
-    /** @throws IllegalArgumentException if {@code other > this} (size cannot go negative) */
+    /// @throws IllegalArgumentException if `other > this` (size cannot go negative)
     public Size minus(Size other) {
         return new Size(this.bytes - other.bytes);
     }
@@ -61,7 +59,7 @@ public value class Size implements RefinedLong {
         return bytes == 0L;
     }
 
-    /** Human-readable form: bytes for &lt;1 KiB, then KiB, MiB, GiB, TiB with one decimal. */
+    /// Human-readable form: bytes for <1 KiB, then KiB, MiB, GiB, TiB with one decimal.
     @Override
     public String toString() {
         if (bytes < KB) return "Size(" + bytes + " B)";

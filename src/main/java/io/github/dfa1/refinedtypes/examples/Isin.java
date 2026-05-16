@@ -26,7 +26,7 @@ public value class Isin implements RefinedString {
         return value;
     }
 
-    /** Two-letter ISO 3166-1 alpha-2 country prefix. */
+    /// Two-letter ISO 3166-1 alpha-2 country prefix.
     public Country country() {
         return new Country(value.substring(0, 2));
     }

@@ -5,10 +5,8 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Compares PositiveInt (value class) against bare int.
- * Goal: show that value-class overhead is negligible in arithmetic hot paths.
- */
+/// Compares PositiveInt (value class) against bare int.
+/// Goal: show that value-class overhead is negligible in arithmetic hot paths.
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Benchmark)

@@ -2,14 +2,12 @@ package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedFloat;
 
-/**
- * A percentage in the closed interval [0, 100].
- *
- * <p>Use when an API contract is stated in human-readable percent —
- * UI inputs, JSON payloads, configuration. For probability arithmetic
- * use {@link Probability} instead, which lives in [0, 1] and avoids
- * the implicit "/100" that callers otherwise sprinkle through code.
- */
+/// A percentage in the closed interval [0, 100].
+///
+/// Use when an API contract is stated in human-readable percent —
+/// UI inputs, JSON payloads, configuration. For probability arithmetic
+/// use {@link Probability} instead, which lives in [0, 1] and avoids
+/// the implicit "/100" that callers otherwise sprinkle through code.
 public value class Percentage implements RefinedFloat {
 
     public static final Percentage ZERO     = new Percentage(0f);
@@ -24,7 +22,7 @@ public value class Percentage implements RefinedFloat {
         this.value = value;
     }
 
-    /** Convert a probability in [0, 1] to a percentage in [0, 100]. */
+    /// Convert a probability in [0, 1] to a percentage in [0, 100].
     public static Percentage ofProbability(Probability p) {
         return new Percentage(p.value() * 100f);
     }

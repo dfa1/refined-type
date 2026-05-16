@@ -2,31 +2,27 @@ package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedString;
 
-/**
- * DNS hostname — RFC 1123 preferred name syntax, with SSRF guards.
- *
- * <p>Constraints enforced at construction:
- * <ul>
- *   <li>total length 1–253</li>
- *   <li>one or more labels separated by {@code '.'}</li>
- *   <li>each label 1–63 characters</li>
- *   <li>each label uses {@code [A-Za-z0-9-]}, no leading or trailing {@code '-'}</li>
- * </ul>
- *
- * <p><b>SSRF guards</b> (Server-Side Request Forgery):
- * <ul>
- *   <li>{@code localhost} and common loopback aliases are rejected by name.</li>
- *   <li>IPv4 literals whose first two octets map to a private, loopback, or
- *       link-local range are rejected: {@code 127.x.x.x}, {@code 10.x.x.x},
- *       {@code 172.16–31.x.x}, {@code 192.168.x.x}, {@code 169.254.x.x}
- *       (includes the AWS instance-metadata endpoint {@code 169.254.169.254}).</li>
- * </ul>
- *
- * <p>The value is normalised to lower-case — DNS lookups are case-insensitive.
- *
- * <p>This type does <em>not</em> perform DNS resolution and does not accept
- * IPv6 literals. For numeric addresses use a dedicated {@code IpAddress} type.
- */
+/// DNS hostname — RFC 1123 preferred name syntax, with SSRF guards.
+///
+/// Constraints enforced at construction:
+///
+/// - total length 1–253
+/// - one or more labels separated by `'.'`
+/// - each label 1–63 characters
+/// - each label uses `[A-Za-z0-9-]`, no leading or trailing `'-'`
+///
+/// **SSRF guards** (Server-Side Request Forgery):
+///
+/// - `localhost` and common loopback aliases are rejected by name.
+/// - IPv4 literals whose first two octets map to a private, loopback, or
+///   link-local range are rejected: `127.x.x.x`, `10.x.x.x`,
+///   `172.16–31.x.x`, `192.168.x.x`, `169.254.x.x`
+///   (includes the AWS instance-metadata endpoint `169.254.169.254`).
+///
+/// The value is normalized to lower-case — DNS lookups are case-insensitive.
+///
+/// This type does *not* perform DNS resolution and does not accept
+/// IPv6 literals. For numeric addresses use a dedicated `IpAddress` type.
 public value class HostName implements RefinedString {
 
     public static final int MAX_LENGTH       = 253;
@@ -84,11 +80,9 @@ public value class HostName implements RefinedString {
         return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-';
     }
 
-    /**
-     * Returns true if {@code host} is an IPv4 literal in a blocked range.
-     * Only considers strings composed of exactly 4 all-digit labels; hostnames
-     * with letters are skipped to avoid false positives (e.g. "10.example.com").
-     */
+    /// Returns true if `host` is an IPv4 literal in a blocked range.
+    /// Only considers strings composed of exactly 4 all-digit labels; hostnames
+    /// with letters are skipped to avoid false positives (e.g. "10.example.com").
     private static boolean isBlockedIpv4(String host) {
         String[] parts = host.split("\\.", -1);
         if (parts.length != 4) return false;

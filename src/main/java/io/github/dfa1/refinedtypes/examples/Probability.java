@@ -2,14 +2,12 @@ package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedFloat;
 
-/**
- * A probability in the closed interval [0, 1].
- *
- * <p>Refining the type rules out two common bug classes at the boundary:
- * accidental percentages ({@code 0..100}) being passed where probabilities
- * were expected, and out-of-range outputs from a buggy estimator silently
- * propagating into downstream multiplications.
- */
+/// A probability in the closed interval [0, 1].
+///
+/// Refining the type rules out two common bug classes at the boundary:
+/// accidental percentages (`0..100`) being passed where probabilities
+/// were expected, and out-of-range outputs from a buggy estimator silently
+/// propagating into downstream multiplications.
 public value class Probability implements RefinedFloat {
 
     public static final Probability ZERO = new Probability(0f);
@@ -29,17 +27,17 @@ public value class Probability implements RefinedFloat {
         return value;
     }
 
-    /** Complementary probability {@code 1 - p}. */
+    /// Complementary probability `1 - p`.
     public Probability complement() {
         return new Probability(1f - value);
     }
 
-    /** Independent-event conjunction: {@code this AND other}. */
+    /// Independent-event conjunction: `this AND other`.
     public Probability and(Probability other) {
         return new Probability(this.value * other.value);
     }
 
-    /** Independent-event disjunction: {@code this OR other}. */
+    /// Independent-event disjunction: `this OR other`.
     public Probability or(Probability other) {
         float p = this.value + other.value - this.value * other.value;
         if (p > 1f) {

@@ -1,9 +1,7 @@
 package io.github.dfa1.refinedtypes.unsigned;
 
-/**
- * Unsigned 16-bit integer: range [0, 65_535].
- * Stored as raw short bits; unsigned semantics via Short.toUnsignedInt / compareUnsigned.
- */
+/// Unsigned 16-bit integer: range [0, 65_535].
+/// Stored as raw short bits; unsigned semantics via Short.toUnsignedInt / compareUnsigned.
 public value class UnsignedShort implements Comparable<UnsignedShort> {
 
     public static final int MIN_VALUE = 0;
@@ -18,70 +16,66 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
         this.bits = (short) value;
     }
 
-    /** Unsigned value as int (always non-negative). */
+    /// Unsigned value as int (always non-negative).
     public int value() {
         return Short.toUnsignedInt(bits);
     }
 
-    /** Parse an unsigned decimal string in [0, 65535]. */
+    /// Parse an unsigned decimal string in [0, 65535].
     public static UnsignedShort fromString(String s) {
         return new UnsignedShort(Integer.parseInt(s));
     }
 
-    /** Raw bit pattern — use only when passing to Short.xxxUnsigned methods. */
+    /// Raw bit pattern — use only when passing to Short.xxxUnsigned methods.
     public short rawBits() {
         return bits;
     }
 
-    /**
-     * Widen to {@link UnsignedInt}.
-     *
-     * <p>Cross-type arithmetic (e.g. {@code UnsignedShort + UnsignedInt}) is intentionally
-     * not provided as overloads: supporting every combination across three types would require
-     * O(types²·ops) methods and force callers to reason about which overload wins.
-     * Instead, widen explicitly to the desired precision first — the same contract the JDK
-     * uses with {@link Short#toUnsignedInt} — then call the same-type arithmetic method.
-     *
-     * <pre>{@code
-     * UnsignedShort s = new UnsignedShort(1000);
-     * UnsignedInt   i = new UnsignedInt(3_000_000_000L);
-     * UnsignedInt result = s.toUnsignedInt().add(i);
-     * }</pre>
-     */
+    /// Widen to {@link UnsignedInt}.
+    ///
+    /// Cross-type arithmetic (e.g. `UnsignedShort + UnsignedInt`) is intentionally
+    /// not provided as overloads: supporting every combination across three types would require
+    /// O(types²·ops) methods and force callers to reason about which overload wins.
+    /// Instead, widen explicitly to the desired precision first — the same contract the JDK
+    /// uses with {@link Short#toUnsignedInt} — then call the same-type arithmetic method.
+    ///
+    /// ```java
+    /// UnsignedShort s = new UnsignedShort(1000);
+    /// UnsignedInt   i = new UnsignedInt(3_000_000_000L);
+    /// UnsignedInt result = s.toUnsignedInt().add(i);
+    /// ```
     public UnsignedInt toUnsignedInt() {
         return new UnsignedInt(Short.toUnsignedInt(bits));
     }
 
-    /**
-     * Widen to {@link UnsignedLong}.
-     *
-     * <p>See {@link #toUnsignedInt()} for the rationale behind explicit widening.
-     */
+    /// Widen to {@link UnsignedLong}.
+    ///
+    /// See {@link #toUnsignedInt()} for the rationale behind explicit widening.
     public UnsignedLong toUnsignedLong() {
         return new UnsignedLong(Short.toUnsignedLong(bits));
     }
 
-    /** Wraps mod 2^16. */
+    /// Wraps mod 2^16.
     public UnsignedShort add(UnsignedShort other) {
         return ofBits(Short.toUnsignedInt(this.bits) + Short.toUnsignedInt(other.bits));
     }
 
-    /** Wraps mod 2^16. */
+    /// Wraps mod 2^16.
     public UnsignedShort subtract(UnsignedShort other) {
         return ofBits(Short.toUnsignedInt(this.bits) - Short.toUnsignedInt(other.bits));
     }
 
-    /** Lower 16 bits of product; wraps mod 2^16. */
+    /// Lower 16 bits of product; wraps mod 2^16.
     public UnsignedShort multiply(UnsignedShort other) {
         return ofBits(Short.toUnsignedInt(this.bits) * Short.toUnsignedInt(other.bits));
     }
 
-    /** @throws ArithmeticException if other is zero */
+    /// @throws ArithmeticException if other is zero
     public UnsignedShort divide(UnsignedShort other) {
         return new UnsignedShort(Short.toUnsignedInt(this.bits) / Short.toUnsignedInt(other.bits));
     }
 
-    /** @throws ArithmeticException if other is zero */
+    /// @throws ArithmeticException if other is zero
     public UnsignedShort remainder(UnsignedShort other) {
         return new UnsignedShort(Short.toUnsignedInt(this.bits) % Short.toUnsignedInt(other.bits));
     }

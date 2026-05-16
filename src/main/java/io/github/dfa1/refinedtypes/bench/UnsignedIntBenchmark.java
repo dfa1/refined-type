@@ -5,10 +5,8 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Compares UnsignedInt (value class) arithmetic against bare int/long.
- * Unsigned div/rem delegate to Integer.divideUnsigned — cost vs signed div measured here.
- */
+/// Compares UnsignedInt (value class) arithmetic against bare int/long.
+/// Unsigned div/rem delegate to Integer.divideUnsigned — cost vs signed div measured here.
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Benchmark)

@@ -5,11 +5,9 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Compares array traversal between UnsignedInt[] (flat value-class storage)
- * and Integer[] (pointer array + heap objects).
- * The 6.8× size difference should translate to measurable cache-locality wins.
- */
+/// Compares array traversal between UnsignedInt[] (flat value-class storage)
+/// and Integer[] (pointer array + heap objects).
+/// The 6.8× size difference should translate to measurable cache-locality wins.
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
