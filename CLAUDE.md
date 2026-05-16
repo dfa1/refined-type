@@ -53,7 +53,7 @@ mvn verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
 - Value class implementations go in `refinedtypes` package alongside the interfaces
 - Constructor validates; throws `IllegalArgumentException` with message naming the violated constraint
 - No nulls — value classes cannot be null
-- Benchmark classes in `src/main/java` (JMH convention), named `*Benchmark`
+- Benchmark classes in `src/test/java` under the `bench/` package, named `*Benchmark` (JMH is `test`-scoped)
 
 ## Style
 
