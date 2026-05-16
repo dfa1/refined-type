@@ -101,8 +101,8 @@ System.out.println(count.asLong());                        // correct unsigned m
 
 | Class           | Range            | Notes                                                     |
 |-----------------|------------------|-----------------------------------------------------------|
-| `UnsignedByte`  | [0, 255]         | stored as `byte`; constructor takes `int`                 |
-| `UnsignedShort` | [0, 65 535]      | stored as `short`; constructor takes `int`                |
+| `UnsignedByte`  | [0, 2⁸ − 1]     | stored as `byte`; constructor takes `int`                 |
+| `UnsignedShort` | [0, 2¹⁶ − 1]    | stored as `short`; constructor takes `int`                |
 | `UnsignedInt`   | [0, 2³² − 1]     | stored as `int`; `value()` returns raw bits, `asLong()` returns magnitude |
 | `UnsignedLong`  | [0, 2⁶⁴ − 1]     | stored as `long`; every bit-pattern is valid              |
 
@@ -190,7 +190,7 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 - **No nulls.** Value classes cannot be null — the compiler enforces it.
 - **Fail fast, succeed forever.** Validation runs once at the boundary. Hot paths carry guaranteed-valid values.
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
-- **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — familiar to any Java developer.
+- **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — same names as `BigInteger`/`BigDecimal`.
 - **F-bounded markers.** `RefinedFloat<T extends RefinedFloat<T>>` blocks `probability.compareTo(price)` at compile time.
 
 ---
@@ -216,7 +216,7 @@ This pattern is a net positive in the right place, with real costs. Don't apply 
 
 ### Where it pays best
 
-Financial, regulatory, safety-critical code where wrong-type bugs are expensive and inputs cross many layers. The CUSIP/Valor/ISIN chain in this repo is the canonical example: `toIsin()` is impossible to misuse, and a junior dev cannot pass an Apple CUSIP where a German WKN is expected.
+Financial, regulatory, safety-critical code where wrong-type bugs are expensive and inputs cross many layers. The CUSIP/Valor/ISIN chain in this repo is the canonical example: `toIsin()` is impossible to misuse, and passing an Apple CUSIP where a German WKN is expected does not compile.
 
 ### Prior art worth checking
 
