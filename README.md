@@ -98,6 +98,25 @@ public value class Probability implements RefinedFloat<Probability> { ... }
 
 Java's primitives are signed. These value classes give proper unsigned semantics.
 
+#### Why unsigned integers matter
+
+**Domain correctness.** Quantities like a TCP port, a pixel component, a memory address offset, a file size, or a CRC checksum are inherently non-negative. Representing them as `int` or `long` lets `-1` or `-80` compile without complaint. A value class with a [0, 2³²−1] constructor rejects the invalid state at construction time.
+
+**C / C++ / Rust interop.** The Foreign Function & Memory (FFM) API (Java 22+, `java.lang.foreign`) lets Java call native code directly. C uses `uint8_t`, `uint16_t`, `uint32_t`, and `uint64_t` everywhere — network structs, OS syscalls, hardware registers. There is no automatic sign-extension barrier at the JNI / FFM boundary: a C `uint32_t` with value `4_000_000_000` arrives in Java as `-294_967_296` if you naively store it in `int`. Wrapping the raw bits in `UnsignedInt` makes the intent and the correct read-back (`asLong()`) explicit.
+
+```java
+// FFM snippet — reading a C uint32_t field from a MemorySegment
+int rawBits = segment.get(ValueLayout.JAVA_INT, offset);   // signed bits
+UnsignedInt count = UnsignedInt.ofBits(rawBits);           // wrap, no sign error
+System.out.println(count.asLong());                        // correct unsigned magnitude
+```
+
+**Network protocols and binary formats.** IPv4 addresses, UDP/TCP port numbers, DNS record TTLs, PNG chunk lengths, Ethernet frame types — all unsigned. Parsing binary protocols without an unsigned type forces the developer to remember `& 0xFFFFFFFFL` at every read site. An `UnsignedInt` centralises that contract.
+
+**The JDK gap.** The JDK provides `Integer.toUnsignedLong`, `Integer.compareUnsigned`, and `Integer.divideUnsigned` — unsigned *operations* on signed carriers — but no unsigned *types*. These helpers are easy to forget or misapply. The types in this package wrap the exact same bit-patterns and delegate to those helpers, so the correctness burden shifts from the call site to the constructor.
+
+> **Future:** Valhalla value classes + potential JDK unsigned primitives (discussed in the amber-dev mailing list) could make these wrappers zero-overhead. Until then, they carry a 16–24 byte object header on the heap — acceptable for correctness-critical code, suboptimal for hot loops (use arrays of primitives there).
+
 | Class           | Range            | Notes                                                     |
 |-----------------|------------------|-----------------------------------------------------------|
 | `UnsignedByte`  | [0, 255]         | stored as `byte`; constructor takes `int`                 |
