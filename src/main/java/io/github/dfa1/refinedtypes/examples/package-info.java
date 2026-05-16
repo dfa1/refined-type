@@ -19,6 +19,7 @@
 /// | {@link io.github.dfa1.refinedtypes.examples.Probability}        | finite float in `[0, 1]`                             |
 /// | {@link io.github.dfa1.refinedtypes.examples.Size}               | non-negative byte count (with `Unit` enum)           |
 /// | {@link io.github.dfa1.refinedtypes.examples.Slug}               | URL-safe lowercase identifier                        |
+/// | {@link io.github.dfa1.refinedtypes.examples.SwissValorNumber}   | SIX Valoren-Nummer, `[1, 999_999_999]`, → ISIN       |
 /// | {@link io.github.dfa1.refinedtypes.examples.Velocity}           | non-negative float (m/s)                             |
 /// | {@link io.github.dfa1.refinedtypes.examples.Volume}             | non-negative, finite float                           |
 ///
