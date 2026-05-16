@@ -33,6 +33,26 @@ public value class Longitude implements RefinedDouble<Longitude> {
         return value;
     }
 
+    /// Value converted to radians — convenient for trigonometric formulas.
+    public double toRadians() {
+        return Math.toRadians(value);
+    }
+
+    /// True iff strictly east of the prime meridian (`value > 0`).
+    public boolean isEasternHemisphere() {
+        return value > 0.0;
+    }
+
+    /// True iff strictly west of the prime meridian (`value < 0`).
+    public boolean isWesternHemisphere() {
+        return value < 0.0;
+    }
+
+    /// True iff exactly on the prime meridian.
+    public boolean isPrimeMeridian() {
+        return value == 0.0;
+    }
+
     @Override
     public String toString() {
         return "Longitude(" + value + ")";

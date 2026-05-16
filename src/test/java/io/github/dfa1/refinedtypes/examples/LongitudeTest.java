@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 
 class LongitudeTest {
 
@@ -126,6 +127,67 @@ class LongitudeTest {
 
         // Then
         assertThat(result).isEqualTo("Longitude(-0.1278)");
+    }
+
+    // ── hemisphere predicates ───────────────────────────────────────────────
+
+    @Test
+    void positiveLongitudeIsEastern() {
+        // Given
+        var sut = new Longitude(139.6917); // Tokyo
+
+        // When / Then
+        assertThat(sut.isEasternHemisphere()).isTrue();
+        assertThat(sut.isWesternHemisphere()).isFalse();
+        assertThat(sut.isPrimeMeridian()).isFalse();
+    }
+
+    @Test
+    void negativeLongitudeIsWestern() {
+        // Given
+        var sut = new Longitude(-74.0060); // NYC
+
+        // When / Then
+        assertThat(sut.isWesternHemisphere()).isTrue();
+        assertThat(sut.isEasternHemisphere()).isFalse();
+        assertThat(sut.isPrimeMeridian()).isFalse();
+    }
+
+    @Test
+    void zeroIsPrimeMeridian() {
+        // Given
+        var sut = Longitude.ZERO;
+
+        // When / Then
+        assertThat(sut.isPrimeMeridian()).isTrue();
+        assertThat(sut.isEasternHemisphere()).isFalse();
+        assertThat(sut.isWesternHemisphere()).isFalse();
+    }
+
+    // ── toRadians ───────────────────────────────────────────────────────────
+
+    @Test
+    void toRadiansZero() {
+        // Given
+        var sut = Longitude.ZERO;
+
+        // When
+        double result = sut.toRadians();
+
+        // Then
+        assertThat(result).isZero();
+    }
+
+    @Test
+    void toRadiansOneEightyIsPi() {
+        // Given
+        var sut = new Longitude(180.0);
+
+        // When
+        double result = sut.toRadians();
+
+        // Then
+        assertThat(result).isCloseTo(Math.PI, within(1e-12));
     }
 
     // ── RefinedDouble ───────────────────────────────────────────────────────

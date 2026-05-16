@@ -147,6 +147,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 | `Country`           | ISO 3166-1 alpha-2 (two uppercase letters)                |
 | `CusipNumber`       | 9-char CUSIP (US/Canadian securities), → `Isin`           |
 | `Email`             | coarse syntactic check                                    |
+| `GeoPoint`          | (Latitude, Longitude) pair with haversine `distanceTo`    |
 | `HostName`          | RFC 1123 hostname with SSRF guards                        |
 | `Isin`              | ISO 6166 securities identifier (12 chars)                 |
 | `Latitude`          | decimal degrees in `[-90, 90]`                            |

@@ -35,6 +35,26 @@ public value class Latitude implements RefinedDouble<Latitude> {
         return value;
     }
 
+    /// Value converted to radians — convenient for trigonometric formulas.
+    public double toRadians() {
+        return Math.toRadians(value);
+    }
+
+    /// True iff strictly north of the equator (`value > 0`).
+    public boolean isNorthernHemisphere() {
+        return value > 0.0;
+    }
+
+    /// True iff strictly south of the equator (`value < 0`).
+    public boolean isSouthernHemisphere() {
+        return value < 0.0;
+    }
+
+    /// True iff exactly on the equator.
+    public boolean isEquator() {
+        return value == 0.0;
+    }
+
     @Override
     public String toString() {
         return "Latitude(" + value + ")";

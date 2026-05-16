@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 
 class LatitudeTest {
 
@@ -126,6 +127,67 @@ class LatitudeTest {
 
         // Then
         assertThat(result).isEqualTo("Latitude(40.7128)");
+    }
+
+    // ── hemisphere predicates ───────────────────────────────────────────────
+
+    @Test
+    void positiveLatitudeIsNorthern() {
+        // Given
+        var sut = new Latitude(45.0);
+
+        // When / Then
+        assertThat(sut.isNorthernHemisphere()).isTrue();
+        assertThat(sut.isSouthernHemisphere()).isFalse();
+        assertThat(sut.isEquator()).isFalse();
+    }
+
+    @Test
+    void negativeLatitudeIsSouthern() {
+        // Given
+        var sut = new Latitude(-33.8688); // Sydney
+
+        // When / Then
+        assertThat(sut.isSouthernHemisphere()).isTrue();
+        assertThat(sut.isNorthernHemisphere()).isFalse();
+        assertThat(sut.isEquator()).isFalse();
+    }
+
+    @Test
+    void zeroIsEquator() {
+        // Given
+        var sut = Latitude.ZERO;
+
+        // When / Then
+        assertThat(sut.isEquator()).isTrue();
+        assertThat(sut.isNorthernHemisphere()).isFalse();
+        assertThat(sut.isSouthernHemisphere()).isFalse();
+    }
+
+    // ── toRadians ───────────────────────────────────────────────────────────
+
+    @Test
+    void toRadiansZero() {
+        // Given
+        var sut = Latitude.ZERO;
+
+        // When
+        double result = sut.toRadians();
+
+        // Then
+        assertThat(result).isZero();
+    }
+
+    @Test
+    void toRadiansNinetyIsHalfPi() {
+        // Given
+        var sut = Latitude.NORTH_POLE;
+
+        // When
+        double result = sut.toRadians();
+
+        // Then
+        assertThat(result).isCloseTo(Math.PI / 2.0, within(1e-12));
     }
 
     // ── RefinedDouble ───────────────────────────────────────────────────────

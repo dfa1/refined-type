@@ -10,6 +10,7 @@
 /// | {@link io.github.dfa1.refinedtypes.examples.Country}            | ISO 3166-1 alpha-2 code (two uppercase letters)      |
 /// | {@link io.github.dfa1.refinedtypes.examples.CusipNumber}        | 9-char CUSIP (US/Canadian securities), → ISIN        |
 /// | {@link io.github.dfa1.refinedtypes.examples.Email}              | coarse syntactic email check                         |
+/// | {@link io.github.dfa1.refinedtypes.examples.GeoPoint}           | (Latitude, Longitude) pair with haversine distance   |
 /// | {@link io.github.dfa1.refinedtypes.examples.HostName}           | RFC 1123 hostname with SSRF guards                   |
 /// | {@link io.github.dfa1.refinedtypes.examples.Isin}               | ISO 6166 securities identifier                       |
 /// | {@link io.github.dfa1.refinedtypes.examples.Latitude}           | decimal degrees in `[-90, 90]`                       |
