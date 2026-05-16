@@ -23,29 +23,27 @@ class PriceTest {
     }
 
     @Test
-    void tinyPositiveValueIsValid() {
+    void zeroIsValid() {
         // Given
-        var sut = new Price(Double.MIN_VALUE);
+        var sut = new Price(0.0);
 
         // When
         double result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(Double.MIN_VALUE);
+        assertThat(result).isZero();
     }
 
     @Test
-    void zeroRejected() {
-        // When / Then
-        assertThatThrownBy(() -> new Price(0.0))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+    void negativeIsValid() {
+        // Given
+        var sut = new Price(-37.63);
 
-    @Test
-    void negativeRejected() {
-        // When / Then
-        assertThatThrownBy(() -> new Price(-0.01))
-                .isInstanceOf(IllegalArgumentException.class);
+        // When
+        double result = sut.value();
+
+        // Then
+        assertThat(result).isEqualTo(-37.63);
     }
 
     @Test
