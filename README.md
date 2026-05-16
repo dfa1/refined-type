@@ -56,7 +56,7 @@ UnsignedInt[100]:   416 bytes  (flat inline storage)
 
 ```bash
 sdk install java 27.ea-open
-sdk use java 27.ea-open
+sdk use java 27.ea-open       # must be active before any mvn command
 java -version   # must show openjdk 27-ea
 ```
 
@@ -66,10 +66,10 @@ java -version   # must show openjdk 27-ea
 
 ```bash
 mvn compile        # compile
-mvn test           # ~460 tests
+mvn test           # ~500 tests
 ```
 
-JMH benchmarks live under `src/test/java/.../bench` — run them from the IDE or via `mvn test-compile exec:java`.
+JMH benchmarks live under `src/test/java/.../bench` — run them from the IDE.
 
 ---
 
@@ -77,7 +77,7 @@ JMH benchmarks live under `src/test/java/.../bench` — run them from the IDE or
 
 ### Marker interfaces
 
-All F-bounded — `Probability.compareTo(Price)` does not type-check.
+All [F-bounded](https://en.wikipedia.org/wiki/Bounded_quantification#F-bounded_quantification) — `Probability.compareTo(Price)` does not type-check.
 
 | Interface         | Primitive | Default `compareTo`           |
 |-------------------|-----------|-------------------------------|
