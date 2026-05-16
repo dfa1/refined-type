@@ -35,41 +35,9 @@ public value class SwissValorNumber implements RefinedInt<SwissValorNumber> {
     }
 
     /// Build the ISO 6166 ISIN: `"CH"` + 9-digit zero-padded valor +
-    /// Luhn-mod-10 check digit.
-    ///
-    /// Algorithm (per ISO 6166):
-    ///
-    /// 1. Concatenate the country prefix `CH` with the valor padded to
-    ///    nine digits → eleven-character base.
-    /// 2. Expand each letter to its two-digit value (`A`=10, `B`=11,
-    ///    ..., `Z`=35); digits pass through.
-    /// 3. From the right, multiply every other digit by 2. Sum the
-    ///    digits of every result (so `14 → 1 + 4 = 5`).
-    /// 4. Check digit = `(10 − sum mod 10) mod 10`.
+    /// Luhn-mod-10 check digit (see {@link Isin#fromBase(String)}).
     public Isin toIsin() {
-        String base = "CH" + String.format("%09d", value);
-        StringBuilder digits = new StringBuilder(base.length() * 2);
-        for (int i = 0; i < base.length(); i++) {
-            char c = base.charAt(i);
-            if (Character.isDigit(c)) {
-                digits.append(c);
-            } else {
-                digits.append(c - 'A' + 10);
-            }
-        }
-        int sum = 0;
-        boolean doubleIt = true; // rightmost digit doubles first
-        for (int i = digits.length() - 1; i >= 0; i--) {
-            int d = digits.charAt(i) - '0';
-            if (doubleIt) {
-                d *= 2;
-                if (d >= 10) d -= 9; // equivalent to summing the two digits
-            }
-            sum += d;
-            doubleIt = !doubleIt;
-        }
-        int check = (10 - sum % 10) % 10;
-        return new Isin(base + check);
+        return Isin.fromBase("CH" + String.format("%09d", value));
     }
 
     @Override

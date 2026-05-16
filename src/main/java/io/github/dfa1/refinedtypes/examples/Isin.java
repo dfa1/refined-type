@@ -39,6 +39,46 @@ public value class Isin implements RefinedString<Isin> {
         this.value = upper;
     }
 
+    /// Compute the ISO 6166 check digit for an 11-character base
+    /// (country prefix + 9-char NSIN) and return the resulting full ISIN.
+    ///
+    /// Algorithm (Luhn mod 10 over the letter-expanded digit string):
+    ///
+    /// 1. Expand each letter to its two-digit value (`A`=10, ..., `Z`=35).
+    /// 2. From the right, multiply every other digit by 2; sum the
+    ///    digits of every result (`14 → 1 + 4 = 5`).
+    /// 3. Check digit = `(10 − sum mod 10) mod 10`.
+    public static Isin fromBase(String base) {
+        if (base == null || base.length() != 11) {
+            throw new IllegalArgumentException("ISIN base must be exactly 11 characters: " + base);
+        }
+        String upper = base.toUpperCase();
+        StringBuilder digits = new StringBuilder(upper.length() * 2);
+        for (int i = 0; i < upper.length(); i++) {
+            char c = upper.charAt(i);
+            if (c >= '0' && c <= '9') {
+                digits.append(c);
+            } else if (c >= 'A' && c <= 'Z') {
+                digits.append(c - 'A' + 10);
+            } else {
+                throw new IllegalArgumentException("invalid ISIN base char '" + c + "': " + base);
+            }
+        }
+        int sum = 0;
+        boolean doubleIt = true; // rightmost digit doubles first
+        for (int i = digits.length() - 1; i >= 0; i--) {
+            int d = digits.charAt(i) - '0';
+            if (doubleIt) {
+                d *= 2;
+                if (d >= 10) d -= 9;
+            }
+            sum += d;
+            doubleIt = !doubleIt;
+        }
+        int check = (10 - sum % 10) % 10;
+        return new Isin(upper + check);
+    }
+
     @Override
     public String value() {
         return value;
