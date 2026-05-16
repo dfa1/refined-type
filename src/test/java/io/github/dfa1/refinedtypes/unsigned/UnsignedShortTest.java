@@ -427,7 +427,7 @@ class UnsignedShortTest {
         UnsignedInt result = sut.toUnsignedInt().add(other);
 
         // Then
-        assertThat(result.value()).isEqualTo(3_000_001_000L);
+        assertThat(result.asLong()).isEqualTo(3_000_001_000L);
     }
 
     // ── toString ────────────────────────────────────────────────────────────

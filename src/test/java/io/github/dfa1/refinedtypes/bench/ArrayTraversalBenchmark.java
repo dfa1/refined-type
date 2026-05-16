@@ -36,7 +36,7 @@ public class ArrayTraversalBenchmark {
     public long sumValueArray() {
         long sum = 0;
         for (UnsignedInt v : valueArray) {
-            sum += v.value();
+            sum += v.asLong();
         }
         return sum;
     }

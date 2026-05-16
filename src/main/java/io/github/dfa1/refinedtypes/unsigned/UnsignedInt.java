@@ -1,11 +1,14 @@
 package io.github.dfa1.refinedtypes.unsigned;
 
-import io.github.dfa1.refinedtypes.RefinedLong;
+import io.github.dfa1.refinedtypes.RefinedInt;
 
 /// Unsigned 32-bit integer: range [0, 4_294_967_295].
 /// Stored as raw int bits; unsigned semantics via Integer.toUnsignedLong / compareUnsigned.
-/// Implements {@link RefinedLong} because every unsigned 32-bit value fits in a positive long.
-public value class UnsignedInt implements RefinedLong {
+///
+/// Implements {@link RefinedInt}: `value()` returns the raw 32-bit pattern as a signed
+/// int (so values above 2^31 - 1 read as negative). For the unsigned magnitude as
+/// `long`, use {@link #asLong()}.
+public value class UnsignedInt implements RefinedInt {
 
     public static final long MIN_VALUE = 0L;
     public static final long MAX_VALUE = 0xFFFFFFFFL; // 4_294_967_295
@@ -19,19 +22,21 @@ public value class UnsignedInt implements RefinedLong {
         this.bits = (int) value;
     }
 
-    /// Unsigned value as long (always non-negative).
-    public long value() {
+    /// Raw 32-bit pattern, signed interpretation. Negative for values > 2^31 - 1.
+    /// Use {@link #asLong()} for the unsigned magnitude as long.
+    @Override
+    public int value() {
+        return bits;
+    }
+
+    /// Unsigned value as long (always non-negative, in [0, 4_294_967_295]).
+    public long asLong() {
         return Integer.toUnsignedLong(bits);
     }
 
     /// Parse an unsigned decimal string in [0, 4_294_967_295].
     public static UnsignedInt fromString(String s) {
         return new UnsignedInt(Long.parseLong(s));
-    }
-
-    /// Raw bit pattern — use only when passing to Integer.xxxUnsigned methods.
-    public int rawBits() {
-        return bits;
     }
 
     /// Widen to {@link UnsignedLong}.
@@ -72,6 +77,15 @@ public value class UnsignedInt implements RefinedLong {
     /// @throws ArithmeticException if other is zero
     public UnsignedInt remainder(UnsignedInt other) {
         return ofBits(Integer.remainderUnsigned(this.bits, other.bits));
+    }
+
+    /// Unsigned ordering — overrides {@link RefinedInt}'s signed default.
+    @Override
+    public int compareTo(RefinedInt that) {
+        if (that instanceof UnsignedInt other) {
+            return Integer.compareUnsigned(this.bits, other.bits);
+        }
+        return RefinedInt.super.compareTo(that);
     }
 
     @Override

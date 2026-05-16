@@ -17,7 +17,7 @@ class UnsignedIntTest {
         UnsignedInt result = UnsignedInt.fromString("0");
 
         // Then
-        assertThat(result.value()).isZero();
+        assertThat(result.asLong()).isZero();
     }
 
     @Test
@@ -26,7 +26,7 @@ class UnsignedIntTest {
         UnsignedInt result = UnsignedInt.fromString("4294967295");
 
         // Then
-        assertThat(result.value()).isEqualTo(4_294_967_295L);
+        assertThat(result.asLong()).isEqualTo(4_294_967_295L);
     }
 
     @Test
@@ -44,7 +44,7 @@ class UnsignedIntTest {
         var sut = new UnsignedInt(0L);
 
         // When
-        long result = sut.value();
+        long result = sut.asLong();
 
         // Then
         assertThat(result).isZero();
@@ -56,7 +56,7 @@ class UnsignedIntTest {
         var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
 
         // When
-        long result = sut.value();
+        long result = sut.asLong();
 
         // Then
         assertThat(result).isEqualTo(4_294_967_295L);
@@ -87,16 +87,16 @@ class UnsignedIntTest {
     @Test
     void valueAboveSignedMaxRecoveredCorrectly() {
         // 2^31 = 2_147_483_648 — raw bits are Integer.MIN_VALUE (negative signed),
-        // but Integer.toUnsignedLong must recover the correct unsigned value.
+        // but asLong() must recover the correct unsigned value.
         // Given
         var sut = new UnsignedInt(2_147_483_648L);
 
         // When
-        long result = sut.value();
+        long result = sut.asLong();
 
         // Then
         assertThat(result).isEqualTo(2_147_483_648L);
-        assertThat(sut.rawBits()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(sut.value()).isEqualTo(Integer.MIN_VALUE);
     }
 
     @Test
@@ -106,11 +106,11 @@ class UnsignedIntTest {
         var sut = new UnsignedInt(0xDEAD_BEEFL);
 
         // When
-        long result = sut.value();
+        long result = sut.asLong();
 
         // Then
         assertThat(result).isEqualTo(3_735_928_559L);
-        assertThat(Integer.toUnsignedString(sut.rawBits())).isEqualTo("3735928559");
+        assertThat(Integer.toUnsignedString(sut.value())).isEqualTo("3735928559");
     }
 
     // ── comparison ──────────────────────────────────────────────────────────
@@ -179,7 +179,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.add(new UnsignedInt(1_000_000_000L));
 
         // Then
-        assertThat(result.value()).isEqualTo(4_000_000_000L);
+        assertThat(result.asLong()).isEqualTo(4_000_000_000L);
     }
 
     @Test
@@ -192,7 +192,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.add(new UnsignedInt(1L));
 
         // Then
-        assertThat(result.value()).isZero();
+        assertThat(result.asLong()).isZero();
     }
 
     @Test
@@ -204,7 +204,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.add(new UnsignedInt(0L));
 
         // Then
-        assertThat(result.value()).isEqualTo(sut.value());
+        assertThat(result.asLong()).isEqualTo(sut.asLong());
     }
 
     @Test
@@ -216,7 +216,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.subtract(new UnsignedInt(3L));
 
         // Then
-        assertThat(result.value()).isEqualTo(2L);
+        assertThat(result.asLong()).isEqualTo(2L);
     }
 
     @Test
@@ -229,7 +229,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.subtract(new UnsignedInt(1L));
 
         // Then
-        assertThat(result.value()).isEqualTo(UnsignedInt.MAX_VALUE);
+        assertThat(result.asLong()).isEqualTo(UnsignedInt.MAX_VALUE);
     }
 
     @Test
@@ -242,7 +242,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.subtract(sut);
 
         // Then
-        assertThat(result.value()).isZero();
+        assertThat(result.asLong()).isZero();
     }
 
     @Test
@@ -254,7 +254,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.multiply(new UnsignedInt(1_000L));
 
         // Then
-        assertThat(result.value()).isEqualTo(1_000_000_000L);
+        assertThat(result.asLong()).isEqualTo(1_000_000_000L);
     }
 
     @Test
@@ -267,7 +267,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.multiply(new UnsignedInt(2L));
 
         // Then
-        assertThat(result.value()).isEqualTo(4_294_967_294L);
+        assertThat(result.asLong()).isEqualTo(4_294_967_294L);
     }
 
     @Test
@@ -279,7 +279,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.multiply(new UnsignedInt(0L));
 
         // Then
-        assertThat(result.value()).isZero();
+        assertThat(result.asLong()).isZero();
     }
 
     @Test
@@ -291,7 +291,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.multiply(new UnsignedInt(1L));
 
         // Then
-        assertThat(result.value()).isEqualTo(sut.value());
+        assertThat(result.asLong()).isEqualTo(sut.asLong());
     }
 
     @Test
@@ -304,7 +304,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.divide(new UnsignedInt(3L));
 
         // Then
-        assertThat(result.value()).isEqualTo(1_333_333_333L);
+        assertThat(result.asLong()).isEqualTo(1_333_333_333L);
     }
 
     @Test
@@ -318,7 +318,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.divide(new UnsignedInt(2L));
 
         // Then
-        assertThat(result.value()).isEqualTo(1_500_000_000L);
+        assertThat(result.asLong()).isEqualTo(1_500_000_000L);
     }
 
     @Test
@@ -341,7 +341,7 @@ class UnsignedIntTest {
         UnsignedInt result = sut.remainder(new UnsignedInt(3L));
 
         // Then
-        assertThat(result.value()).isEqualTo(1L);
+        assertThat(result.asLong()).isEqualTo(1L);
     }
 
     @Test
@@ -367,7 +367,7 @@ class UnsignedIntTest {
         UnsignedInt result = q.multiply(divisor).add(r);
 
         // Then
-        assertThat(result.value()).isEqualTo(sut.value());
+        assertThat(result.asLong()).isEqualTo(sut.asLong());
     }
 
     @Test
@@ -376,11 +376,11 @@ class UnsignedIntTest {
         var sut = new UnsignedInt(4_294_967_295L);
 
         // When
-        String result = Integer.toUnsignedString(sut.rawBits());
+        String result = Integer.toUnsignedString(sut.value());
 
         // Then
         assertThat(result).isEqualTo("4294967295");
-        assertThat(Integer.parseUnsignedInt(result)).isEqualTo(sut.rawBits());
+        assertThat(Integer.parseUnsignedInt(result)).isEqualTo(sut.value());
     }
 
     // ── widening ─────────────────────────────────────────────────────────────
