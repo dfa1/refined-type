@@ -34,11 +34,6 @@ public value class Percentage implements RefinedFloat {
         return value;
     }
 
-    /** Convert to a probability in [0, 1]. */
-    public Probability toProbability() {
-        return new Probability(value / 100f);
-    }
-
     @Override
     public String toString() {
         return "Percentage(" + value + "%)";

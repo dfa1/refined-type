@@ -104,18 +104,6 @@ class PercentageTest {
     // ── conversion ──────────────────────────────────────────────────────────
 
     @Test
-    void toProbabilityScalesByOneHundredth() {
-        // Given
-        var sut = new Percentage(75f);
-
-        // When
-        Probability result = sut.toProbability();
-
-        // Then
-        assertThat(result.value()).isEqualTo(0.75f);
-    }
-
-    @Test
     void ofProbabilityScalesByHundred() {
         // Given
         var input = new Probability(0.25f);
@@ -125,18 +113,6 @@ class PercentageTest {
 
         // Then
         assertThat(result.value()).isEqualTo(25f);
-    }
-
-    @Test
-    void roundTripConversionPreservesValue() {
-        // Given
-        var sut = new Percentage(50f);
-
-        // When
-        Percentage result = Percentage.ofProbability(sut.toProbability());
-
-        // Then
-        assertThat(result.value()).isEqualTo(50f);
     }
 
     // ── comparison ──────────────────────────────────────────────────────────
