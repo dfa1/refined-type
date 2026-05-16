@@ -1,6 +1,7 @@
 package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedLong;
+import io.github.dfa1.refinedtypes.examples.Size.Unit;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,12 +54,12 @@ class SizeTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    // ── factories ───────────────────────────────────────────────────────────
+    // ── factory ─────────────────────────────────────────────────────────────
 
     @Test
     void ofBytesEqualsConstructor() {
         // Given / When
-        Size result = Size.ofBytes(42L);
+        Size result = Size.of(42L, Unit.B);
 
         // Then
         assertThat(result.value()).isEqualTo(42L);
@@ -67,7 +68,7 @@ class SizeTest {
     @Test
     void ofKilobytesMultipliesByBinaryK() {
         // Given / When
-        Size result = Size.ofKilobytes(2L);
+        Size result = Size.of(2L, Unit.KB);
 
         // Then
         assertThat(result.value()).isEqualTo(2L * 1024);
@@ -76,7 +77,7 @@ class SizeTest {
     @Test
     void ofMegabytesMultipliesByBinaryM() {
         // Given / When
-        Size result = Size.ofMegabytes(3L);
+        Size result = Size.of(3L, Unit.MB);
 
         // Then
         assertThat(result.value()).isEqualTo(3L * 1024 * 1024);
@@ -85,7 +86,7 @@ class SizeTest {
     @Test
     void ofGigabytesMultipliesByBinaryG() {
         // Given / When
-        Size result = Size.ofGigabytes(4L);
+        Size result = Size.of(4L, Unit.GB);
 
         // Then
         assertThat(result.value()).isEqualTo(4L * 1024 * 1024 * 1024);
@@ -94,7 +95,7 @@ class SizeTest {
     @Test
     void ofTerabytesMultipliesByBinaryT() {
         // Given / When
-        Size result = Size.ofTerabytes(1L);
+        Size result = Size.of(1L, Unit.TB);
 
         // Then
         assertThat(result.value()).isEqualTo(1024L * 1024 * 1024 * 1024);
@@ -104,19 +105,19 @@ class SizeTest {
     void ofGigabytesOverflowDetected() {
         // Long.MAX_VALUE / GB ≈ 8 589 934 591 — anything above overflows
         // When / Then
-        assertThatThrownBy(() -> Size.ofGigabytes(Long.MAX_VALUE))
+        assertThatThrownBy(() -> Size.of(Long.MAX_VALUE, Unit.GB))
                 .isInstanceOf(ArithmeticException.class);
     }
 
-    // ── unit accessors ──────────────────────────────────────────────────────
+    // ── unit accessor ───────────────────────────────────────────────────────
 
     @Test
     void toKilobytesTruncates() {
         // Given
-        var sut = Size.ofBytes(2_500L); // 2 KiB + 452 B
+        var sut = Size.of(2_500L, Unit.B); // 2 KiB + 452 B
 
         // When
-        long result = sut.toKilobytes();
+        long result = sut.to(Unit.KB);
 
         // Then
         assertThat(result).isEqualTo(2L);
@@ -125,10 +126,10 @@ class SizeTest {
     @Test
     void toMegabytesExact() {
         // Given
-        var sut = Size.ofMegabytes(7L);
+        var sut = Size.of(7L, Unit.MB);
 
         // When
-        long result = sut.toMegabytes();
+        long result = sut.to(Unit.MB);
 
         // Then
         assertThat(result).isEqualTo(7L);
@@ -138,14 +139,26 @@ class SizeTest {
     void toGigabytesAboveIntCeiling() {
         // 5 GiB > Integer.MAX_VALUE — confirms long backing matters
         // Given
-        var sut = Size.ofGigabytes(5L);
+        var sut = Size.of(5L, Unit.GB);
 
         // When
-        long result = sut.toGigabytes();
+        long result = sut.to(Unit.GB);
 
         // Then
         assertThat(result).isEqualTo(5L);
-        assertThat(sut.toBytes()).isGreaterThan((long) Integer.MAX_VALUE);
+        assertThat(sut.to(Unit.B)).isGreaterThan((long) Integer.MAX_VALUE);
+    }
+
+    // ── unit enum ───────────────────────────────────────────────────────────
+
+    @Test
+    void unitBytesMatchBinaryMultipliers() {
+        // When / Then
+        assertThat(Unit.B.bytes).isEqualTo(1L);
+        assertThat(Unit.KB.bytes).isEqualTo(1024L);
+        assertThat(Unit.MB.bytes).isEqualTo(1024L * 1024L);
+        assertThat(Unit.GB.bytes).isEqualTo(1024L * 1024L * 1024L);
+        assertThat(Unit.TB.bytes).isEqualTo(1024L * 1024L * 1024L * 1024L);
     }
 
     // ── arithmetic ──────────────────────────────────────────────────────────
@@ -153,10 +166,10 @@ class SizeTest {
     @Test
     void plusAddsBytes() {
         // Given
-        var sut = Size.ofKilobytes(1);
+        var sut = Size.of(1, Unit.KB);
 
         // When
-        Size result = sut.plus(Size.ofKilobytes(3));
+        Size result = sut.plus(Size.of(3, Unit.KB));
 
         // Then
         assertThat(result.value()).isEqualTo(4L * 1024);
@@ -175,10 +188,10 @@ class SizeTest {
     @Test
     void minusSubtractsBytes() {
         // Given
-        var sut = Size.ofKilobytes(5);
+        var sut = Size.of(5, Unit.KB);
 
         // When
-        Size result = sut.minus(Size.ofKilobytes(2));
+        Size result = sut.minus(Size.of(2, Unit.KB));
 
         // Then
         assertThat(result.value()).isEqualTo(3L * 1024);
@@ -187,10 +200,10 @@ class SizeTest {
     @Test
     void minusGoingNegativeRejected() {
         // Given
-        var sut = Size.ofBytes(10);
+        var sut = Size.of(10, Unit.B);
 
         // When / Then
-        assertThatThrownBy(() -> sut.minus(Size.ofBytes(11)))
+        assertThatThrownBy(() -> sut.minus(Size.of(11, Unit.B)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -209,7 +222,7 @@ class SizeTest {
     @Test
     void isZeroFalseForPositive() {
         // Given
-        var sut = Size.ofBytes(1);
+        var sut = Size.of(1, Unit.B);
 
         // When
         boolean result = sut.isZero();
@@ -223,8 +236,8 @@ class SizeTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = Size.ofKilobytes(1);
-        var other = Size.ofMegabytes(1);
+        var sut = Size.of(1, Unit.KB);
+        var other = Size.of(1, Unit.MB);
 
         // When
         int result = sut.compareTo(other);
@@ -236,8 +249,8 @@ class SizeTest {
     @Test
     void compareToReturnsPositiveWhenLarger() {
         // Given
-        var sut = Size.ofGigabytes(1);
-        var other = Size.ofMegabytes(1);
+        var sut = Size.of(1, Unit.GB);
+        var other = Size.of(1, Unit.MB);
 
         // When
         int result = sut.compareTo(other);
@@ -249,8 +262,8 @@ class SizeTest {
     @Test
     void compareToReturnsZeroForEqual() {
         // Given
-        var sut = Size.ofKilobytes(2);
-        var other = Size.ofBytes(2 * 1024);
+        var sut = Size.of(2, Unit.KB);
+        var other = Size.of(2 * 1024, Unit.B);
 
         // When
         int result = sut.compareTo(other);
@@ -264,7 +277,7 @@ class SizeTest {
     @Test
     void toStringBytesBelowKi() {
         // Given
-        var sut = Size.ofBytes(512);
+        var sut = Size.of(512, Unit.B);
 
         // When
         String result = sut.toString();
@@ -276,7 +289,7 @@ class SizeTest {
     @Test
     void toStringKibibytes() {
         // Given
-        var sut = Size.ofBytes(1536); // 1.5 KiB
+        var sut = Size.of(1536, Unit.B); // 1.5 KiB
 
         // When
         String result = sut.toString();
@@ -288,7 +301,7 @@ class SizeTest {
     @Test
     void toStringMebibytes() {
         // Given
-        var sut = Size.ofMegabytes(3);
+        var sut = Size.of(3, Unit.MB);
 
         // When
         String result = sut.toString();
@@ -300,7 +313,7 @@ class SizeTest {
     @Test
     void toStringGibibytes() {
         // Given
-        var sut = Size.ofGigabytes(4);
+        var sut = Size.of(4, Unit.GB);
 
         // When
         String result = sut.toString();
@@ -312,7 +325,7 @@ class SizeTest {
     @Test
     void toStringTebibytes() {
         // Given
-        var sut = Size.ofTerabytes(2);
+        var sut = Size.of(2, Unit.TB);
 
         // When
         String result = sut.toString();
@@ -326,7 +339,7 @@ class SizeTest {
     @Test
     void implementsRefinedLong() {
         // Given
-        RefinedLong sut = Size.ofMegabytes(8);
+        RefinedLong<Size> sut = Size.of(8, Unit.MB);
 
         // When
         long result = sut.value();
