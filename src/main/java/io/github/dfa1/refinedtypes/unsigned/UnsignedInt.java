@@ -8,7 +8,7 @@ import io.github.dfa1.refinedtypes.RefinedInt;
 /// Implements {@link RefinedInt}: `value()` returns the raw 32-bit pattern as a signed
 /// int (so values above 2^31 - 1 read as negative). For the unsigned magnitude as
 /// `long`, use {@link #asLong()}.
-public value class UnsignedInt implements RefinedInt {
+public value class UnsignedInt implements RefinedInt<UnsignedInt> {
 
     public static final long MIN_VALUE = 0L;
     public static final long MAX_VALUE = 0xFFFFFFFFL; // 4_294_967_295
@@ -81,11 +81,8 @@ public value class UnsignedInt implements RefinedInt {
 
     /// Unsigned ordering — overrides {@link RefinedInt}'s signed default.
     @Override
-    public int compareTo(RefinedInt that) {
-        if (that instanceof UnsignedInt other) {
-            return Integer.compareUnsigned(this.bits, other.bits);
-        }
-        return RefinedInt.super.compareTo(that);
+    public int compareTo(UnsignedInt that) {
+        return Integer.compareUnsigned(this.bits, that.bits);
     }
 
     @Override

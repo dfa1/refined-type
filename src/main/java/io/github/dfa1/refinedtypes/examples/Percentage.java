@@ -8,7 +8,7 @@ import io.github.dfa1.refinedtypes.RefinedFloat;
 /// UI inputs, JSON payloads, configuration. For probability arithmetic
 /// use {@link Probability} instead, which lives in [0, 1] and avoids
 /// the implicit "/100" that callers otherwise sprinkle through code.
-public value class Percentage implements RefinedFloat {
+public value class Percentage implements RefinedFloat<Percentage> {
 
     public static final Percentage ZERO     = new Percentage(0f);
     public static final Percentage HUNDRED  = new Percentage(100f);

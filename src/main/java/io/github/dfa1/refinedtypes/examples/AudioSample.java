@@ -12,7 +12,7 @@ import io.github.dfa1.refinedtypes.RefinedShort;
 /// performs no range check beyond what the primitive itself enforces.
 /// The type's value is documentary: a `short` could be a sample, an offset,
 /// a length — `AudioSample` says exactly which.
-public value class AudioSample implements RefinedShort {
+public value class AudioSample implements RefinedShort<AudioSample> {
 
     /// Digital silence.
     public static final AudioSample SILENCE = new AudioSample((short) 0);

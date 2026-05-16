@@ -11,7 +11,7 @@ import io.github.dfa1.refinedtypes.RefinedDouble;
 /// `double` gives ~16 significant decimal digits — millimeter resolution
 /// anywhere on Earth. `float` would give only ~7 digits, sufficient for
 /// consumer GPS (~5 m) but not for survey-grade or autonomous-vehicle work.
-public value class Latitude implements RefinedDouble {
+public value class Latitude implements RefinedDouble<Latitude> {
 
     public static final double MIN_VALUE = -90.0;
     public static final double MAX_VALUE =  90.0;

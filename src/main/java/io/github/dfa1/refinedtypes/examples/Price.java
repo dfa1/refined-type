@@ -15,7 +15,7 @@ import io.github.dfa1.refinedtypes.RefinedFloat;
 /// other {@link RefinedFloat} examples. Production code handling
 /// money should prefer fixed-point or `BigDecimal` to avoid
 /// binary-floating-point rounding.
-public value class Price implements RefinedFloat {
+public value class Price implements RefinedFloat<Price> {
 
     private final float value;
 

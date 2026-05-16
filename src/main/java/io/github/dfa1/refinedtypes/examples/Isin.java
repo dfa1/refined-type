@@ -3,7 +3,7 @@ package io.github.dfa1.refinedtypes.examples;
 import io.github.dfa1.refinedtypes.RefinedString;
 import java.util.regex.Pattern;
 
-public value class Isin implements RefinedString {
+public value class Isin implements RefinedString<Isin> {
 
     private static final int LENGTH = 12;
     private static final Pattern PATTERN = Pattern.compile("^[A-Z]{2}[A-Z0-9]{9}[0-9]$");

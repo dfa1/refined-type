@@ -7,7 +7,7 @@ import io.github.dfa1.refinedtypes.RefinedInt;
 /// Upper bound chosen above the verified human longevity record
 /// (Jeanne Calment, 122) with headroom, so the type rejects sentinel
 /// values like `999` or accidental negatives from buggy parsers.
-public value class Age implements RefinedInt {
+public value class Age implements RefinedInt<Age> {
 
     public static final int MAX = 150;
 

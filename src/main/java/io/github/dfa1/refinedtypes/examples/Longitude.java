@@ -11,7 +11,7 @@ import io.github.dfa1.refinedtypes.RefinedDouble;
 /// Stored as `double` for the same reason as {@link Latitude}: GIS
 /// convention and the ~16 digits of precision required for sub-meter
 /// resolution near the equator.
-public value class Longitude implements RefinedDouble {
+public value class Longitude implements RefinedDouble<Longitude> {
 
     public static final double MIN_VALUE = -180.0;
     public static final double MAX_VALUE =  180.0;

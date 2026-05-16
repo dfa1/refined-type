@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /// [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (URI
 /// unreserved characters) and [RFC 1123](https://www.rfc-editor.org/rfc/rfc1123)
 /// (DNS labels — see {@link HostName}).
-public value class Slug implements RefinedString {
+public value class Slug implements RefinedString<Slug> {
 
     public static final int MAX_LENGTH = 64;
 

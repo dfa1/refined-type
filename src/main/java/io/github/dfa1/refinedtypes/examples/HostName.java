@@ -23,7 +23,7 @@ import io.github.dfa1.refinedtypes.RefinedString;
 ///
 /// This type does *not* perform DNS resolution and does not accept
 /// IPv6 literals. For numeric addresses use a dedicated `IpAddress` type.
-public value class HostName implements RefinedString {
+public value class HostName implements RefinedString<HostName> {
 
     public static final int MAX_LENGTH       = 253;
     public static final int MAX_LABEL_LENGTH = 63;

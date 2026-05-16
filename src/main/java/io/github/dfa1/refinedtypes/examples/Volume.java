@@ -11,7 +11,7 @@ import io.github.dfa1.refinedtypes.RefinedFloat;
 ///
 /// Modeled as `float` to support fractional sizes (FX, crypto,
 /// partial shares). Integer-only venues should compose a different type.
-public value class Volume implements RefinedFloat {
+public value class Volume implements RefinedFloat<Volume> {
 
     public static final Volume ZERO = new Volume(0f);
 

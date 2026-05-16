@@ -8,7 +8,7 @@ import io.github.dfa1.refinedtypes.RefinedFloat;
 /// accidental percentages (`0..100`) being passed where probabilities
 /// were expected, and out-of-range outputs from a buggy estimator silently
 /// propagating into downstream multiplications.
-public value class Probability implements RefinedFloat {
+public value class Probability implements RefinedFloat<Probability> {
 
     public static final Probability ZERO = new Probability(0f);
     public static final Probability ONE  = new Probability(1f);

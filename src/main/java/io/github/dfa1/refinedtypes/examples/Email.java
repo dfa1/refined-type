@@ -2,7 +2,7 @@ package io.github.dfa1.refinedtypes.examples;
 
 import io.github.dfa1.refinedtypes.RefinedString;
 
-public value class Email implements RefinedString {
+public value class Email implements RefinedString<Email> {
 
     private final String value;
 

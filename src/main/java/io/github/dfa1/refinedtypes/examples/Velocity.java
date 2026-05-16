@@ -3,7 +3,7 @@ package io.github.dfa1.refinedtypes.examples;
 import io.github.dfa1.refinedtypes.RefinedFloat;
 
 /// Speed in meters per second. Must be non-negative; physics forbids negative speed.
-public value class Velocity implements RefinedFloat {
+public value class Velocity implements RefinedFloat<Velocity> {
 
     private final float value;
 

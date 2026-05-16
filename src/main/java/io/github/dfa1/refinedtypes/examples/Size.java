@@ -10,7 +10,7 @@ import io.github.dfa1.refinedtypes.RefinedLong;
 /// Multiplier helpers use the binary base (`1024`) — same convention
 /// as the JDK (`Files.size`, `Runtime.totalMemory`). For decimal
 /// bases use {@link #ofBytes(long)} directly.
-public value class Size implements RefinedLong {
+public value class Size implements RefinedLong<Size> {
 
     public static final long KB = 1024L;
     public static final long MB = 1024L * KB;

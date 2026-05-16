@@ -10,7 +10,7 @@ import io.github.dfa1.refinedtypes.RefinedInt;
 /// Refined-typing the port closes a common SSRF / mis-routing class
 /// of bug where a plain `int` carries an out-of-range value all
 /// the way down to the syscall, which then fails with an opaque error.
-public value class Port implements RefinedInt {
+public value class Port implements RefinedInt<Port> {
 
     public static final int MIN_VALUE = 0;
     public static final int MAX_VALUE = 65_535;
