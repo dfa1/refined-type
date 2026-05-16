@@ -14,17 +14,22 @@ import java.util.regex.Pattern;
 ///   Number — letters or digits, assigned by the local numbering agency.
 /// - `D` is a single check digit.
 ///
-/// Input is uppercased on construction. The pattern is validated but the
-/// Luhn-style check digit is **not** verified — this type guarantees
-/// shape, not arithmetic integrity. Callers that need that guarantee
-/// should run the standard ISIN check-digit algorithm in addition.
+/// Two constructors are provided:
+///
+/// - {@link #Isin(String)} parses an already-complete 12-character ISIN
+///   and verifies the shape (not the check digit).
+/// - {@link #Isin(Country, String)} accepts a {@link Country} and the
+///   9-character NSIN, and **computes** the check digit, so the
+///   resulting ISIN is guaranteed valid by construction.
 ///
 /// Examples of valid ISINs: `US0378331005` (Apple Inc.),
 /// `DE000BASF111` (BASF SE).
 public value class Isin implements RefinedString<Isin> {
 
     private static final int LENGTH = 12;
+    private static final int NSIN_LENGTH = 9;
     private static final Pattern PATTERN = Pattern.compile("^[A-Z]{2}[A-Z0-9]{9}[0-9]$");
+    private static final Pattern NSIN_PATTERN = Pattern.compile("^[A-Z0-9]{9}$");
 
     private final String value;
 
@@ -39,29 +44,37 @@ public value class Isin implements RefinedString<Isin> {
         this.value = upper;
     }
 
-    /// Compute the ISO 6166 check digit for an 11-character base
-    /// (country prefix + 9-char NSIN) and return the resulting full ISIN.
+    /// Build a valid ISIN from a country prefix and a 9-character NSIN,
+    /// computing the ISO 6166 check digit (Luhn mod 10 over the
+    /// letter-expanded digit string).
     ///
-    /// Algorithm (Luhn mod 10 over the letter-expanded digit string):
+    /// Algorithm:
     ///
-    /// 1. Expand each letter to its two-digit value (`A`=10, ..., `Z`=35).
-    /// 2. From the right, multiply every other digit by 2; sum the
+    /// 1. Concatenate `country.value()` and the upper-cased NSIN → 11-char base.
+    /// 2. Expand each letter to its two-digit value (`A`=10, ..., `Z`=35).
+    /// 3. From the right, multiply every other digit by 2; sum the
     ///    digits of every result (`14 → 1 + 4 = 5`).
-    /// 3. Check digit = `(10 − sum mod 10) mod 10`.
-    public static Isin fromBase(String base) {
-        if (base == null || base.length() != 11) {
-            throw new IllegalArgumentException("ISIN base must be exactly 11 characters: " + base);
+    /// 4. Check digit = `(10 − sum mod 10) mod 10`.
+    public Isin(Country country, String nsin) {
+        if (nsin == null || nsin.length() != NSIN_LENGTH) {
+            throw new IllegalArgumentException("NSIN must be exactly 9 characters: " + nsin);
         }
-        String upper = base.toUpperCase();
-        StringBuilder digits = new StringBuilder(upper.length() * 2);
-        for (int i = 0; i < upper.length(); i++) {
-            char c = upper.charAt(i);
+        String upperNsin = nsin.toUpperCase();
+        if (!NSIN_PATTERN.matcher(upperNsin).matches()) {
+            throw new IllegalArgumentException("NSIN must match ^[A-Z0-9]{9}$: " + nsin);
+        }
+        String base = country.value() + upperNsin;
+        this.value = base + computeCheckDigit(base);
+    }
+
+    private static int computeCheckDigit(String base) {
+        StringBuilder digits = new StringBuilder(base.length() * 2);
+        for (int i = 0; i < base.length(); i++) {
+            char c = base.charAt(i);
             if (c >= '0' && c <= '9') {
                 digits.append(c);
-            } else if (c >= 'A' && c <= 'Z') {
-                digits.append(c - 'A' + 10);
             } else {
-                throw new IllegalArgumentException("invalid ISIN base char '" + c + "': " + base);
+                digits.append(c - 'A' + 10);
             }
         }
         int sum = 0;
@@ -75,8 +88,7 @@ public value class Isin implements RefinedString<Isin> {
             sum += d;
             doubleIt = !doubleIt;
         }
-        int check = (10 - sum % 10) % 10;
-        return new Isin(upper + check);
+        return (10 - sum % 10) % 10;
     }
 
     @Override

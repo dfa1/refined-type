@@ -34,10 +34,12 @@ public value class SwissValorNumber implements RefinedInt<SwissValorNumber> {
         return value;
     }
 
-    /// Build the ISO 6166 ISIN: `"CH"` + 9-digit zero-padded valor +
-    /// Luhn-mod-10 check digit (see {@link Isin#fromBase(String)}).
+    private static final Country CH = new Country("CH");
+
+    /// Build the ISO 6166 ISIN: country `CH` + 9-digit zero-padded valor +
+    /// Luhn-mod-10 check digit (see {@link Isin#Isin(Country, String)}).
     public Isin toIsin() {
-        return Isin.fromBase("CH" + String.format("%09d", value));
+        return new Isin(CH, String.format("%09d", value));
     }
 
     @Override

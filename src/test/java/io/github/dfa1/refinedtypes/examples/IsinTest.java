@@ -93,6 +93,62 @@ class IsinTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    // ── (Country, NSIN) constructor ─────────────────────────────────────────
+
+    @Test
+    void countryNsinConstructorComputesCheckDigit() {
+        // Given — Apple Inc., CUSIP 037833100, US prefix
+        var country = new Country("US");
+
+        // When
+        Isin result = new Isin(country, "037833100");
+
+        // Then
+        assertThat(result.value()).isEqualTo("US0378331005");
+    }
+
+    @Test
+    void countryNsinConstructorAcceptsLowercaseNsin() {
+        // Given — Alphabet Class A, embedded 'k'
+        var country = new Country("US");
+
+        // When
+        Isin result = new Isin(country, "02079k305");
+
+        // Then
+        assertThat(result.value()).isEqualTo("US02079K3059");
+    }
+
+    @Test
+    void countryNsinConstructorRejectsShortNsin() {
+        // Given
+        var country = new Country("US");
+
+        // When / Then
+        assertThatThrownBy(() -> new Isin(country, "12345678"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void countryNsinConstructorRejectsInvalidChar() {
+        // Given
+        var country = new Country("US");
+
+        // When / Then
+        assertThatThrownBy(() -> new Isin(country, "12345-789"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void countryNsinConstructorRejectsNull() {
+        // Given
+        var country = new Country("US");
+
+        // When / Then
+        assertThatThrownBy(() -> new Isin(country, null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     // ── country() ───────────────────────────────────────────────────────────
 
     @Test
