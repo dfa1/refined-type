@@ -1,6 +1,6 @@
 package io.github.dfa1.refinedtypes.examples;
 
-import io.github.dfa1.refinedtypes.RefinedFloat;
+import io.github.dfa1.refinedtypes.RefinedDouble;
 
 /// Market price of a financial instrument. Must be strictly positive
 /// and finite.
@@ -11,29 +11,23 @@ import io.github.dfa1.refinedtypes.RefinedFloat;
 /// spreads, basis), use a different type — {@link Price} is for
 /// outright quotes.
 ///
-/// Note: `float` is used here for benchmarking parity with
-/// other {@link RefinedFloat} examples. Production code handling
-/// money should prefer fixed-point or `BigDecimal` to avoid
-/// binary-floating-point rounding.
-public value class Price implements RefinedFloat<Price> {
+/// Note: `double` gives ~15 significant decimal digits — sufficient
+/// for most pricing engines. Production code handling money should
+/// still consider fixed-point or `BigDecimal` for exact decimal arithmetic.
+public value class Price implements RefinedDouble<Price> {
 
-    private final float value;
+    private final double value;
 
-    public Price(float value) {
-        if (Float.isNaN(value) || Float.isInfinite(value) || value <= 0f) {
+    public Price(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value) || value <= 0.0) {
             throw new IllegalArgumentException("price must be finite and strictly positive: " + value);
         }
         this.value = value;
     }
 
     @Override
-    public float value() {
+    public double value() {
         return value;
-    }
-
-    /// Multiply price by a quantity to get notional.
-    public float notional(Volume v) {
-        return value * v.value();
     }
 
     @Override

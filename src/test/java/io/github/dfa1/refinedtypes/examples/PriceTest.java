@@ -1,6 +1,6 @@
 package io.github.dfa1.refinedtypes.examples;
 
-import io.github.dfa1.refinedtypes.RefinedFloat;
+import io.github.dfa1.refinedtypes.RefinedDouble;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,88 +13,60 @@ class PriceTest {
     @Test
     void positiveValueIsValid() {
         // Given
-        var sut = new Price(123.45f);
+        var sut = new Price(123.45);
 
         // When
-        float result = sut.value();
+        double result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(123.45f);
+        assertThat(result).isEqualTo(123.45);
     }
 
     @Test
     void tinyPositiveValueIsValid() {
         // Given
-        var sut = new Price(Float.MIN_VALUE);
+        var sut = new Price(Double.MIN_VALUE);
 
         // When
-        float result = sut.value();
+        double result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(Float.MIN_VALUE);
+        assertThat(result).isEqualTo(Double.MIN_VALUE);
     }
 
     @Test
     void zeroRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(0f))
+        assertThatThrownBy(() -> new Price(0.0))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(-0.01f))
+        assertThatThrownBy(() -> new Price(-0.01))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Float.NaN))
+        assertThatThrownBy(() -> new Price(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Float.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> new Price(Double.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Float.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> new Price(Double.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    // ── notional ────────────────────────────────────────────────────────────
-
-    @Test
-    void notionalMultipliesPriceByVolume() {
-        // Given
-        var sut = new Price(10f);
-        var volume = new Volume(3f);
-
-        // When
-        float result = sut.notional(volume);
-
-        // Then
-        assertThat(result).isEqualTo(30f);
-    }
-
-    @Test
-    void notionalWithZeroVolumeIsZero() {
-        // Given
-        var sut = new Price(99f);
-        var volume = new Volume(0f);
-
-        // When
-        float result = sut.notional(volume);
-
-        // Then
-        assertThat(result).isZero();
     }
 
     // ── comparison ──────────────────────────────────────────────────────────
@@ -102,8 +74,8 @@ class PriceTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Price(1f);
-        var other = new Price(2f);
+        var sut = new Price(1.0);
+        var other = new Price(2.0);
 
         // When
         int result = sut.compareTo(other);
@@ -115,8 +87,8 @@ class PriceTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Price(42f);
-        var other = new Price(42f);
+        var sut = new Price(42.0);
+        var other = new Price(42.0);
 
         // When
         int result = sut.compareTo(other);
@@ -130,7 +102,7 @@ class PriceTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new Price(7.5f);
+        var sut = new Price(7.5);
 
         // When
         String result = sut.toString();
@@ -139,17 +111,17 @@ class PriceTest {
         assertThat(result).isEqualTo("Price(7.5)");
     }
 
-    // ── RefinedFloat ────────────────────────────────────────────────────────
+    // ── RefinedDouble ────────────────────────────────────────────────────────
 
     @Test
-    void implementsRefinedFloat() {
+    void implementsRefinedDouble() {
         // Given
-        RefinedFloat sut = new Price(11f);
+        RefinedDouble sut = new Price(11.0);
 
         // When
-        float result = sut.value();
+        double result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(11f);
+        assertThat(result).isEqualTo(11.0);
     }
 }
