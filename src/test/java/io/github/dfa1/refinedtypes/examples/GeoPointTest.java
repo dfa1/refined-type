@@ -35,20 +35,20 @@ class GeoPointTest {
         var sut = LONDON;
 
         // When
-        double result = sut.distanceTo(sut);
+        Distance result = sut.distanceTo(sut);
 
         // Then
-        assertThat(result).isZero();
+        assertThat(result.to(Distance.Unit.M)).isZero();
     }
 
     @Test
     void distanceIsSymmetric() {
         // Given / When
-        double a = LONDON.distanceTo(PARIS);
-        double b = PARIS.distanceTo(LONDON);
+        Distance a = LONDON.distanceTo(PARIS);
+        Distance b = PARIS.distanceTo(LONDON);
 
         // Then
-        assertThat(a).isEqualTo(b);
+        assertThat(a.to(Distance.Unit.M)).isEqualTo(b.to(Distance.Unit.M));
     }
 
     // ── distanceTo — known city pairs ───────────────────────────────────────
@@ -57,40 +57,40 @@ class GeoPointTest {
     void londonToParisAroundThreeForty() {
         // Reference (online haversine calculators): ~343 556 m
         // Given / When
-        double result = LONDON.distanceTo(PARIS);
+        Distance result = LONDON.distanceTo(PARIS);
 
         // Then — 1 % tolerance covers haversine vs WGS-84 spread
-        assertThat(result).isCloseTo(343_556, within(3_500.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(343_556, within(3_500.0));
     }
 
     @Test
     void nycToLosAngelesAroundThreeNineFour() {
         // Reference: ~3 935 700 m
         // Given / When
-        double result = NYC.distanceTo(LA);
+        Distance result = NYC.distanceTo(LA);
 
         // Then
-        assertThat(result).isCloseTo(3_935_700, within(40_000.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(3_935_700, within(40_000.0));
     }
 
     @Test
     void londonToNycAroundFiveFiveSeven() {
         // Reference: ~5 570 000 m
         // Given / When
-        double result = LONDON.distanceTo(NYC);
+        Distance result = LONDON.distanceTo(NYC);
 
         // Then
-        assertThat(result).isCloseTo(5_570_000, within(56_000.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(5_570_000, within(56_000.0));
     }
 
     @Test
     void tokyoToSydneyAroundSevenEightTwoSix() {
         // Reference: ~7 826 000 m
         // Given / When
-        double result = TOKYO.distanceTo(SYDNEY);
+        Distance result = TOKYO.distanceTo(SYDNEY);
 
         // Then
-        assertThat(result).isCloseTo(7_826_000, within(80_000.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(7_826_000, within(80_000.0));
     }
 
     // ── distanceTo — antipodal sanity check ─────────────────────────────────
@@ -102,10 +102,10 @@ class GeoPointTest {
         var antipode = new GeoPoint(Latitude.ZERO, new Longitude(180.0));
 
         // When
-        double result = origin.distanceTo(antipode);
+        Distance result = origin.distanceTo(antipode);
 
         // Then — π · R
-        assertThat(result).isCloseTo(Math.PI * GeoPoint.EARTH_RADIUS_METERS, within(1.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(Math.PI * GeoPoint.EARTH_RADIUS_METERS, within(1.0));
     }
 
     // ── toString ────────────────────────────────────────────────────────────

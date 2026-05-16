@@ -6,11 +6,11 @@ package io.github.dfa1.refinedtypes.examples;
 /// axes (great-circle distance, bearing, midpoint). Operations that
 /// depend on only one axis stay on the axis types themselves.
 ///
-/// {@link #distanceTo(GeoPoint)} returns the great-circle distance in
-/// metres using the haversine formula on a spherical Earth (IUGG mean
-/// radius `6_371_000` m). Accuracy versus the WGS-84 ellipsoid is
-/// within roughly 0.5% for inter-continental distances; for sub-metre
-/// geodesy use Vincenty or Karney instead.
+/// {@link #distanceTo(GeoPoint)} returns the great-circle {@link Distance}
+/// using the haversine formula on a spherical Earth (IUGG mean radius
+/// `6_371_000` m). Accuracy versus the WGS-84 ellipsoid is within
+/// roughly 0.5% for inter-continental distances; for sub-metre geodesy
+/// use Vincenty or Karney instead.
 public value class GeoPoint {
 
     /// IUGG mean Earth radius in metres.
@@ -32,8 +32,8 @@ public value class GeoPoint {
         return longitude;
     }
 
-    /// Great-circle distance in metres (haversine, spherical Earth).
-    public double distanceTo(GeoPoint other) {
+    /// Great-circle distance (haversine, spherical Earth).
+    public Distance distanceTo(GeoPoint other) {
         double phi1 = latitude.toRadians();
         double phi2 = other.latitude.toRadians();
         double dPhi = phi2 - phi1;
@@ -45,7 +45,7 @@ public value class GeoPoint {
         double a = sinDPhi2 * sinDPhi2
                  + Math.cos(phi1) * Math.cos(phi2) * sinDLambda2 * sinDLambda2;
         double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-        return EARTH_RADIUS_METERS * c;
+        return new Distance(EARTH_RADIUS_METERS * c);
     }
 
     @Override
