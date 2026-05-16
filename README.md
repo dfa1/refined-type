@@ -207,7 +207,6 @@ This pattern is a net positive in the right place, with real costs. Don't apply 
 
 - **Boilerplate per type.** Constructor, `value()`, `toString`, test class, sometimes `equals`. Eighteen refined types ≈ eighteen near-identical skeletons. Languages with first-class refinement (Scala 3 opaque types, Rust newtype, Kotlin value class) say this in one line.
 - **Boundary friction.** Jackson, JPA, JDBC, Bean Validation, MapStruct all expect primitives and `String`. Each refined type needs an adapter — or you pay deserialization tax at every external edge.
-- **JDK 27 EA only.** No fallback. Production rollout requires Valhalla to actually GA, or accepting identity classes (which lose the perf story).
 - **Generic noise leaks.** `RefinedFloat<T extends RefinedFloat<T>>` is the right shape but ugly in error messages — new contributors stare at it.
 - **Sweet spot is narrow.** Big API surfaces, regulated domains (finance, geo, medical), public libraries — huge win. Internal scripts, throwaway endpoints, glue code — boilerplate eats the win.
 
