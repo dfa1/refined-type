@@ -62,7 +62,7 @@ class IsinTest {
     }
 
     @Test
-    void invalidCountryPrefixRejected() {
+    void invalidCountryCodePrefixRejected() {
         // digits in country prefix violate ^[A-Z]{2}
         // Given
         String input = "1S0378331005";
@@ -93,12 +93,12 @@ class IsinTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    // ── (Country, NSIN) constructor ─────────────────────────────────────────
+    // ── (CountryCode, NSIN) constructor ─────────────────────────────────────────
 
     @Test
     void countryNsinConstructorComputesCheckDigit() {
         // Given — Apple Inc., CUSIP 037833100, US prefix
-        var country = new Country("US");
+        var country = new CountryCode("US");
 
         // When
         Isin result = new Isin(country, "037833100");
@@ -110,7 +110,7 @@ class IsinTest {
     @Test
     void countryNsinConstructorAcceptsLowercaseNsin() {
         // Given — Alphabet Class A, embedded 'k'
-        var country = new Country("US");
+        var country = new CountryCode("US");
 
         // When
         Isin result = new Isin(country, "02079k305");
@@ -122,7 +122,7 @@ class IsinTest {
     @Test
     void countryNsinConstructorRejectsShortNsin() {
         // Given
-        var country = new Country("US");
+        var country = new CountryCode("US");
 
         // When / Then
         assertThatThrownBy(() -> new Isin(country, "12345678"))
@@ -132,7 +132,7 @@ class IsinTest {
     @Test
     void countryNsinConstructorRejectsInvalidChar() {
         // Given
-        var country = new Country("US");
+        var country = new CountryCode("US");
 
         // When / Then
         assertThatThrownBy(() -> new Isin(country, "12345-789"))
@@ -142,7 +142,7 @@ class IsinTest {
     @Test
     void countryNsinConstructorRejectsNull() {
         // Given
-        var country = new Country("US");
+        var country = new CountryCode("US");
 
         // When / Then
         assertThatThrownBy(() -> new Isin(country, null))
@@ -157,7 +157,7 @@ class IsinTest {
         var sut = new Isin("US0378331005");
 
         // When
-        Country result = sut.country();
+        CountryCode result = sut.country();
 
         // Then
         assertThat(result.value()).isEqualTo("US");
@@ -169,7 +169,7 @@ class IsinTest {
         var sut = new Isin("DE0005140008"); // Deutsche Bank
 
         // When
-        Country result = sut.country();
+        CountryCode result = sut.country();
 
         // Then
         assertThat(result.value()).isEqualTo("DE");

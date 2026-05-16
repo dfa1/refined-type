@@ -10,7 +10,7 @@ package io.github.dfa1.refinedtypes;
 ///
 /// ```java
 /// public value class Email   implements RefinedString<Email>   { ... }
-/// public value class Country implements RefinedString<Country> { ... }
+/// public value class CountryCode implements RefinedString<CountryCode> { ... }
 /// ```
 ///
 /// Without the F-bound, `email.compareTo(country)` would compile despite

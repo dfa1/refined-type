@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 ///
 /// - {@link #Isin(String)} parses an already-complete 12-character ISIN
 ///   and verifies the shape (not the check digit).
-/// - {@link #Isin(Country, String)} accepts a {@link Country} and the
+/// - {@link #Isin(CountryCode, String)} accepts a {@link CountryCode} and the
 ///   9-character NSIN, and **computes** the check digit, so the
 ///   resulting ISIN is guaranteed valid by construction.
 ///
@@ -55,7 +55,7 @@ public value class Isin implements RefinedString<Isin> {
     /// 3. From the right, multiply every other digit by 2; sum the
     ///    digits of every result (`14 → 1 + 4 = 5`).
     /// 4. Check digit = `(10 − sum mod 10) mod 10`.
-    public Isin(Country country, String nsin) {
+    public Isin(CountryCode country, String nsin) {
         if (nsin == null || nsin.length() != NSIN_LENGTH) {
             throw new IllegalArgumentException("NSIN must be exactly 9 characters: " + nsin);
         }
@@ -97,8 +97,8 @@ public value class Isin implements RefinedString<Isin> {
     }
 
     /// Two-letter ISO 3166-1 alpha-2 country prefix.
-    public Country country() {
-        return new Country(value.substring(0, 2));
+    public CountryCode country() {
+        return new CountryCode(value.substring(0, 2));
     }
 
     @Override

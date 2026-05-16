@@ -47,10 +47,10 @@ public value class CusipNumber implements RefinedString<CusipNumber> {
         return value;
     }
 
-    private static final Country US = new Country("US");
+    private static final CountryCode US = new CountryCode("US");
 
     /// Build the ISO 6166 ISIN: country `US` + CUSIP + Luhn-mod-10 check
-    /// digit (see {@link Isin#Isin(Country, String)}).
+    /// digit (see {@link Isin#Isin(CountryCode, String)}).
     public Isin toIsin() {
         return new Isin(US, value);
     }

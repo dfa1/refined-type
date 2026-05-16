@@ -7,7 +7,8 @@
 /// |-----------------------------------------------------------------|------------------------------------------------------|
 /// | {@link io.github.dfa1.refinedtypes.examples.Age}                | integer in `[0, 150]`                                |
 /// | {@link io.github.dfa1.refinedtypes.examples.AudioSample}        | signed 16-bit PCM sample                             |
-/// | {@link io.github.dfa1.refinedtypes.examples.Country}            | ISO 3166-1 alpha-2 code (two uppercase letters)      |
+/// | {@link io.github.dfa1.refinedtypes.examples.CountryCode}        | ISO 3166-1 alpha-2 code (two uppercase letters)      |
+/// | {@link io.github.dfa1.refinedtypes.examples.CurrencyCode}       | ISO 4217 currency code (three uppercase letters)     |
 /// | {@link io.github.dfa1.refinedtypes.examples.CusipNumber}        | 9-char CUSIP (US/Canadian securities), → ISIN        |
 /// | {@link io.github.dfa1.refinedtypes.examples.Distance}           | non-negative metres (with `Unit` enum: M/KM/MILE/NM) |
 /// | {@link io.github.dfa1.refinedtypes.examples.Email}              | coarse syntactic email check                         |

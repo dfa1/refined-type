@@ -131,12 +131,12 @@ class SwissValorNumberTest {
     }
 
     @Test
-    void toIsinExposesCountryPrefix() {
+    void toIsinExposesCountryCodePrefix() {
         // Given
         var sut = new SwissValorNumber(1_222_171);
 
         // When
-        Country result = sut.toIsin().country();
+        CountryCode result = sut.toIsin().country();
 
         // Then
         assertThat(result.value()).isEqualTo("CH");

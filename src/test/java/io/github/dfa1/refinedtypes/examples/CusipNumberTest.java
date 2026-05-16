@@ -137,12 +137,12 @@ class CusipNumberTest {
     }
 
     @Test
-    void toIsinExposesCountryPrefix() {
+    void toIsinExposesCountryCodePrefix() {
         // Given
         var sut = new CusipNumber("037833100");
 
         // When
-        Country result = sut.toIsin().country();
+        CountryCode result = sut.toIsin().country();
 
         // Then
         assertThat(result.value()).isEqualTo("US");

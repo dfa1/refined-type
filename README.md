@@ -17,10 +17,10 @@ Refined types encode the constraint in the type itself:
 
 ```java
 // Before: primitive soup — caller must read the docs to know what's valid
-void route(double lat, double lon, String currency) { ... }
+void route(double lat, double lon) { ... }
 
 // After: the type IS the documentation and the guard
-void route(Latitude lat, Longitude lon, Country country) { ... }
+void route(Latitude lat, Longitude lon) { ... }
 ```
 
 Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths. Swapping `lat` and `lon` no longer compiles.
@@ -144,7 +144,8 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 |---------------------|-----------------------------------------------------------|
 | `Age`               | integer in `[0, 150]`                                     |
 | `AudioSample`       | signed 16-bit PCM sample                                  |
-| `Country`           | ISO 3166-1 alpha-2 (two uppercase letters)                |
+| `CountryCode`       | ISO 3166-1 alpha-2 (two uppercase letters)                |
+| `CurrencyCode`      | ISO 4217 currency code (three uppercase letters)          |
 | `CusipNumber`       | 9-char CUSIP (US/Canadian securities), → `Isin`           |
 | `Distance`          | non-negative metres (with `Unit` enum: M/KM/MILE/NM)      |
 | `Email`             | coarse syntactic check                                    |
@@ -175,7 +176,7 @@ Isin abb = new SwissValorNumber(1_222_171).toIsin();   // CH0012221716
 Isin apple = new CusipNumber("037833100").toIsin();    // US0378331005
 
 // Or construct directly from country + NSIN; check digit is computed
-Isin tesla = new Isin(new Country("US"), "88160R101"); // US88160R1014
+Isin tesla = new Isin(new CountryCode("US"), "88160R101"); // US88160R1014
 ```
 
 The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISINs do compare to each other, but a `SwissValorNumber` cannot be passed where a `CusipNumber` is expected.

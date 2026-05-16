@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CountryTest {
+class CountryCodeTest {
 
     @Test
     void valueReturnsUppercaseCode() {
         // Given
-        var sut = new Country("DE");
+        var sut = new CountryCode("DE");
 
         // When
         String result = sut.value();
@@ -23,7 +23,7 @@ class CountryTest {
     @Test
     void lowercaseNormalizedToUppercase() {
         // Given
-        var sut = new Country("it");
+        var sut = new CountryCode("it");
 
         // When
         String result = sut.value();
@@ -35,7 +35,7 @@ class CountryTest {
     @Test
     void mixedCaseNormalized() {
         // Given
-        var sut = new Country("gB");
+        var sut = new CountryCode("gB");
 
         // When
         String result = sut.value();
@@ -47,7 +47,7 @@ class CountryTest {
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Country(null))
+        assertThatThrownBy(() -> new CountryCode(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,7 +57,7 @@ class CountryTest {
         String input = "D";
 
         // When / Then
-        assertThatThrownBy(() -> new Country(input))
+        assertThatThrownBy(() -> new CountryCode(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,24 +67,24 @@ class CountryTest {
         String input = "DEU";
 
         // When / Then
-        assertThatThrownBy(() -> new Country(input))
+        assertThatThrownBy(() -> new CountryCode(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nonLettersRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Country("1T"))
+        assertThatThrownBy(() -> new CountryCode("1T"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new Country("D2"))
+        assertThatThrownBy(() -> new CountryCode("D2"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new Country("DE");
-        var other = new Country("US");
+        var sut = new CountryCode("DE");
+        var other = new CountryCode("US");
 
         // When
         int result = sut.compareTo(other);
@@ -96,8 +96,8 @@ class CountryTest {
     @Test
     void compareToReturnsPositiveWhenLexicographicallyGreater() {
         // Given
-        var sut = new Country("US");
-        var other = new Country("DE");
+        var sut = new CountryCode("US");
+        var other = new CountryCode("DE");
 
         // When
         int result = sut.compareTo(other);
@@ -109,8 +109,8 @@ class CountryTest {
     @Test
     void compareToReturnsZeroRegardlessOfInputCase() {
         // Given
-        var sut = new Country("DE");
-        var other = new Country("de");
+        var sut = new CountryCode("DE");
+        var other = new CountryCode("de");
 
         // When
         int result = sut.compareTo(other);
@@ -122,19 +122,19 @@ class CountryTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Country("FR");
+        var sut = new CountryCode("FR");
 
         // When
         String result = sut.toString();
 
         // Then
-        assertThat(result).isEqualTo("Country(FR)");
+        assertThat(result).isEqualTo("CountryCode(FR)");
     }
 
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new Country("JP");
+        RefinedString sut = new CountryCode("JP");
 
         // When
         String result = sut.value();
