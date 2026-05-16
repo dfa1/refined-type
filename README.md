@@ -7,6 +7,8 @@ Value classes say yes — no heap allocation, no object header, flat storage in 
 
 Inspired by: [Refined types in practice](https://kwark.github.io/refined-in-practice/#1) — Reference: [original gist](https://gist.github.com/dfa1/f6fdca0513730dc7dc7d6a5d89629709)
 
+Background: [Rethink domain primitives with Valhalla](https://dfa1.github.io/articles/rethink-domain-primitives-with-valhalla)
+
 ---
 
 ## Why refined types?
@@ -24,26 +26,6 @@ void route(Latitude lat, Longitude lon) { ... }
 ```
 
 Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths. Swapping `lat` and `lon` no longer compiles.
-
----
-
-## Why value classes?
-
-Traditional wrapper types pay an object-per-value tax:
-
-| | Heap alloc | Object header | Array layout |
-|---|---|---|---|
-| `Integer[]` (100 elements) | 100 objects | 16 bytes each | pointer array → scattered objects |
-| `UnsignedInt[]` (100 elements, value class) | **0** | **0** | **flat** — primitives inline |
-
-Measured with JOL on this JDK:
-
-```
-UnsignedInt[100]:   416 bytes  (flat inline storage)
-   Integer[100]:  2816 bytes  (array shell + 100 heap objects)
-```
-
-**6.8× smaller.** Better cache locality. Zero GC pressure.
 
 ---
 
@@ -213,7 +195,7 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 
 ---
 
-## Honest assessment
+## Trade-offs
 
 This pattern is a net positive in the right place, with real costs. Don't apply it project-wide.
 

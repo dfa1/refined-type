@@ -1,6 +1,6 @@
 package io.github.dfa1.refinedtypes.examples;
 
-import io.github.dfa1.refinedtypes.RefinedInt;
+import io.github.dfa1.refinedtypes.RefinedShort;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,17 +102,17 @@ class AgeTest {
         assertThat(result).isEqualTo("Age(33)");
     }
 
-    // ── RefinedInt ──────────────────────────────────────────────────────────
+    // ── RefinedShort ─────────────────────────────────────────────────────────
 
     @Test
-    void implementsRefinedInt() {
+    void implementsRefinedShort() {
         // Given
-        RefinedInt sut = new Age(18);
+        RefinedShort<?> sut = new Age(18);
 
         // When
-        int result = sut.value();
+        short result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(18);
+        assertThat(result).isEqualTo((short) 18);
     }
 }

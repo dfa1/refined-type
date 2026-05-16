@@ -9,16 +9,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class AgeConverterTest {
 
     @Test
-    void convertToDatabaseColumnReturnsInt() {
+    void convertToDatabaseColumnReturnsShort() {
         // Given
         var sut = new AgeConverter();
         var age = new Age(30);
 
         // When
-        Integer result = sut.convertToDatabaseColumn(age);
+        Short result = sut.convertToDatabaseColumn(age);
 
         // Then
-        assertThat(result).isEqualTo(30);
+        assertThat(result).isEqualTo((short) 30);
     }
 
     @Test
@@ -27,7 +27,7 @@ class AgeConverterTest {
         var sut = new AgeConverter();
 
         // When
-        Integer result = sut.convertToDatabaseColumn(null);
+        Short result = sut.convertToDatabaseColumn(null);
 
         // Then
         assertThat(result).isNull();
@@ -39,10 +39,10 @@ class AgeConverterTest {
         var sut = new AgeConverter();
 
         // When
-        Age result = sut.convertToEntityAttribute(42);
+        Age result = sut.convertToEntityAttribute((short) 42);
 
         // Then
-        assertThat(result.value()).isEqualTo(42);
+        assertThat(result.value()).isEqualTo((short) 42);
     }
 
     @Test
@@ -63,7 +63,7 @@ class AgeConverterTest {
         var sut = new AgeConverter();
 
         // When / Then
-        assertThatThrownBy(() -> sut.convertToEntityAttribute(-1))
+        assertThatThrownBy(() -> sut.convertToEntityAttribute((short) -1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
