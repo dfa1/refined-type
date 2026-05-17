@@ -57,6 +57,7 @@ jobs:
         run: ./mvnw test-compile -q
 
       - name: Print JOL memory layouts
+        if: runner.os != 'macOS'
         run: ./mvnw test -Dtest="*LayoutTest" -Dsurefire.failIfNoSpecifiedTests=false -q
 
       - name: Run JMH benchmarks
