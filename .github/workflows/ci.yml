@@ -18,14 +18,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/valhalla-jdk
-          key: valhalla-jdk-27-ea-linux-x64
+          key: valhalla-jdk-jep401ea3+1-1-linux-x64
 
-      - name: Download Valhalla JDK 27 EA
+      - name: Download Valhalla JDK 27 EA (jep401ea3+1-1)
         if: steps.cache-jdk.outputs.cache-hit != 'true'
         run: |
-          url="https://builds.shipilev.net/openjdk-jdk-valhalla/openjdk-jdk-valhalla-latest-linux-x86_64-server-release.tar.xz"
+          url="https://download.java.net/java/early_access/valhalla/27/1/openjdk-27-jep401ea3+1-1_linux-x64_bin.tar.gz"
           mkdir -p ~/valhalla-jdk
-          curl -L --retry 3 "$url" | tar -xJ --strip-components=1 -C ~/valhalla-jdk
+          curl -L --retry 3 "$url" | tar -xz --strip-components=1 -C ~/valhalla-jdk
 
       - name: Set JAVA_HOME
         run: |
