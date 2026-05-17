@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(jar tf *)"
+      "Bash(jar tf *)",
+      "Bash(./mvnw test *)",
+      "Bash(mvn test *)",
+      "Bash(./mvnw compile *)",
+      "Bash(mvn compile *)",
+      "Bash(./mvnw verify *)",
+      "Bash(./mvnw test-compile *)",
+      "Bash(./mvnw dependency:build-classpath *)",
+      "Bash(/usr/libexec/java_home *)",
+      "Bash(mvn -version)",
+      "Bash(JAVA_HOME=* ./mvnw *)",
+      "Bash(java --enable-preview *)"
     ]
   }
 }

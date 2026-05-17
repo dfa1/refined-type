@@ -6,14 +6,16 @@ import org.openjdk.jmh.annotations.*;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/// Measures linear scan for the maximum valor over 10 000 unique random
+/// Measures linear scan for the maximum valor over 100 000 unique random
 /// {@link SwissValorNumber} values in range [1, 999_999_999].
 ///
 /// Two variants:
-/// - `valueClass`    — `SwissValorNumber[]` (value class, flat array layout)
-/// - `identityClass` — `SwissValorNumberIdentity[]` (identity class, reference array)
+/// - `valueClass`    — `SwissValorNumber[]` (value class, flat array layout, ~400 KB)
+/// - `identityClass` — `SwissValorNumberIdentity[]` (identity class, reference array, ~2 MB)
 ///
-/// The algorithm is identical in both; the only difference is object layout.
+/// At 100 000 elements the value-class array exceeds L2 (~256 KB) but fits
+/// in L3; the identity-class array scatters 100 000 objects across the heap,
+/// stressing the prefetcher and amplifying the layout difference.
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
 public class SwissValorNumberBenchmark {
 
-    private static final int SIZE = 10_000;
+    private static final int SIZE = 100_000;
 
     private SwissValorNumber[] valueArray;
     private SwissValorNumberIdentity[] identityArray;
