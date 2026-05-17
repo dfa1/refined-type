@@ -42,11 +42,15 @@ src/main/java/io/github/dfa1/refinedtypes/
 
 ## Build commands
 
+Use the Maven wrapper — it pins the exact Maven version and does not require a system install:
+
 ```bash
-mvn compile          # compile
-mvn test             # unit tests
-mvn verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
+./mvnw compile          # compile
+./mvnw test             # unit tests
+./mvnw verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
 ```
+
+On Windows use `mvnw.cmd` instead of `./mvnw`.
 
 ## Coding conventions
 
