@@ -191,7 +191,7 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 - **Fail fast, succeed forever.** Validation runs once at the boundary. Hot paths carry guaranteed-valid values.
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
 - **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — same names as `BigInteger`/`BigDecimal`.
-- **F-bounded markers.** `RefinedFloat<T extends RefinedFloat<T>>` blocks `probability.compareTo(price)` at compile time.
+- **F-bounded markers.** `RefinedFloat<T extends RefinedFloat<T>>` blocks `probability.compareTo(price)` at compile time — same pattern as `java.lang.Enum<E extends Enum<E>>`.
 
 ---
 
