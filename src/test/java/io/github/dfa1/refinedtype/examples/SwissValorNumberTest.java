@@ -13,25 +13,25 @@ class SwissValorNumberTest {
     @Test
     void smallestValorAccepted() {
         // Given
-        var sut = new SwissValorNumber(SwissValorNumber.MIN_VALUE);
+        var sut = SwissValorNumber.MIN;
 
         // When
         int result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(SwissValorNumber.MIN.value());
     }
 
     @Test
     void largestValorAccepted() {
         // Given
-        var sut = new SwissValorNumber(SwissValorNumber.MAX_VALUE);
+        var sut = SwissValorNumber.MAX;
 
         // When
         int result = sut.value();
 
         // Then
-        assertThat(result).isEqualTo(999_999_999);
+        assertThat(result).isEqualTo(SwissValorNumber.MAX.value());
     }
 
     @Test

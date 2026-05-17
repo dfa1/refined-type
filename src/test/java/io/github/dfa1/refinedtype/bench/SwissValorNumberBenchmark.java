@@ -30,7 +30,7 @@ public class SwissValorNumberBenchmark {
     @Setup
     public void setup() {
         Random rng = new Random(42);
-        int[] unique = rng.ints(1, SwissValorNumber.MAX_VALUE + 1)
+        int[] unique = rng.ints(1, SwissValorNumber.MAX.value() + 1)
                 .distinct()
                 .limit(SIZE)
                 .toArray();

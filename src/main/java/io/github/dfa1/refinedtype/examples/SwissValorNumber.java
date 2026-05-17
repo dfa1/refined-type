@@ -17,13 +17,16 @@ import io.github.dfa1.refinedtype.RefinedInt;
 /// Example: ABB Ltd has valor `1_222_171`; its ISIN is `CH0012221716`.
 public value class SwissValorNumber implements RefinedInt<SwissValorNumber> {
 
-    public static final int MIN_VALUE = 1;
-    public static final int MAX_VALUE = 999_999_999;
+    private static final int MIN_RAW = 1;
+    private static final int MAX_RAW = 999_999_999;
+
+    public static final SwissValorNumber MIN = new SwissValorNumber(MIN_RAW);
+    public static final SwissValorNumber MAX = new SwissValorNumber(MAX_RAW);
 
     private final int value;
 
     public SwissValorNumber(int value) {
-        if (value < MIN_VALUE || value > MAX_VALUE) {
+        if (value < MIN_RAW || value > MAX_RAW) {
             throw new IllegalArgumentException("Swiss valor must be in [1, 999_999_999]: " + value);
         }
         this.value = value;
