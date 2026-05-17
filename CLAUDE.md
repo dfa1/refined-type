@@ -34,7 +34,7 @@ And at runtime: `java --enable-preview`.
 ## Source layout
 
 ```
-src/main/java/io/github/dfa1/refinedtypes/
+src/main/java/io/github/dfa1/refinedtype/
   RefinedInt.java      # marker interface
   RefinedFloat.java    # marker interface
   # TODO: value class implementations + JMH benchmarks
@@ -54,7 +54,7 @@ On Windows use `mvnw.cmd` instead of `./mvnw`.
 
 ## Coding conventions
 
-- Value class implementations go in `refinedtypes` package alongside the interfaces
+- Value class implementations go in `refinedtype` package alongside the interfaces
 - Constructor validates; throws `IllegalArgumentException` with message naming the violated constraint
 - No nulls — value classes cannot be null
 - Benchmark classes in `src/test/java` under the `bench/` package, named `*Benchmark` (JMH is `test`-scoped)
