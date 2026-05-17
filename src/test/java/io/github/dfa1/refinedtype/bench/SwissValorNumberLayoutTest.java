@@ -8,15 +8,20 @@ class SwissValorNumberLayoutTest {
 
     @Test
     void printLayouts() {
-        System.out.println("=== value class SwissValorNumber ===");
+        // NOTE: instanceSize() from JOL shows the *boxed/heap* form of a value class —
+        // what the JVM allocates when the value escapes to Object. It includes the full
+        // object header (12 bytes) plus alignment padding and is NOT what gets stored in
+        // a typed SwissValorNumber[] array. In a flat typed array only the payload (4 bytes
+        // for an int) is stored per element — see printArrayFootprintFor10K() for proof.
+        System.out.println("=== value class SwissValorNumber (boxed/heap form) ===");
         System.out.println(ClassLayout.parseClass(SwissValorNumber.class).toPrintable());
 
         System.out.println("=== identity class SwissValorNumberIdentity ===");
         System.out.println(ClassLayout.parseClass(SwissValorNumberIdentity.class).toPrintable());
 
-        System.out.printf("SwissValorNumber         instance size: %d bytes%n",
+        System.out.printf("SwissValorNumber         boxed heap size : %d bytes (header + int + padding)%n",
                 ClassLayout.parseClass(SwissValorNumber.class).instanceSize());
-        System.out.printf("SwissValorNumberIdentity instance size: %d bytes%n",
+        System.out.printf("SwissValorNumberIdentity heap size       : %d bytes%n",
                 ClassLayout.parseClass(SwissValorNumberIdentity.class).instanceSize());
     }
 
@@ -34,11 +39,13 @@ class SwissValorNumberLayoutTest {
         long identityShell = ClassLayout.parseInstance(identityArr).instanceSize();
         long identityObj   = ClassLayout.parseClass(SwissValorNumberIdentity.class).instanceSize();
         long identityTotal = identityShell + (long) n * identityObj;
+        // Actual bytes per element in the flat value array (subtract 16-byte array header)
+        long bytesPerValueElement = (valueShell - 16) / n;
 
-        System.out.printf("SwissValorNumber[%d]         array shell: %,d bytes (elements stored inline)%n",
-                n, valueShell);
-        System.out.printf("SwissValorNumberIdentity[%d] array shell: %,d bytes + %,d objects × %d bytes = %,d bytes total%n",
-                n, identityShell, n, identityObj, identityTotal);
+        System.out.printf("SwissValorNumber[%d]         total: %,d bytes  (%d bytes/element flat — payload only)%n",
+                n, valueShell, bytesPerValueElement);
+        System.out.printf("SwissValorNumberIdentity[%d] total: %,d bytes  (%d-byte refs + %,d objects × %d bytes)%n",
+                n, identityTotal, 4, n, identityObj);
         System.out.printf("Memory ratio (identity/value): %.2fx%n",
                 (double) identityTotal / valueShell);
     }
