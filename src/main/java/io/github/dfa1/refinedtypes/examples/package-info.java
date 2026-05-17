@@ -12,7 +12,7 @@
 /// | {@link io.github.dfa1.refinedtypes.examples.CusipNumber}        | 9-char CUSIP (US/Canadian securities), → ISIN        |
 /// | {@link io.github.dfa1.refinedtypes.examples.Distance}           | non-negative metres (with `Unit` enum: M/KM/MILE/NM) |
 /// | {@link io.github.dfa1.refinedtypes.examples.Email}              | coarse syntactic email check                         |
-/// | {@link io.github.dfa1.refinedtypes.examples.GeoPoint}           | (Latitude, Longitude) pair with haversine `Distance` |
+/// | {@link io.github.dfa1.refinedtypes.examples.Coordinate}         | (Latitude, Longitude) pair with haversine `Distance` |
 /// | {@link io.github.dfa1.refinedtypes.examples.HostName}           | RFC 1123 hostname with SSRF guards                   |
 /// | {@link io.github.dfa1.refinedtypes.examples.Isin}               | ISO 6166 securities identifier                       |
 /// | {@link io.github.dfa1.refinedtypes.examples.Latitude}           | decimal degrees in `[-90, 90]`                       |

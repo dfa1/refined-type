@@ -1,17 +1,17 @@
 package io.github.dfa1.refinedtypes.examples;
 
-/// Geographic point — a {@link Latitude}/{@link Longitude} pair.
+/// Geographic coordinate — a {@link Latitude}/{@link Longitude} pair.
 ///
 /// The pair is the natural carrier for geo operations that need both
 /// axes (great-circle distance, bearing, midpoint). Operations that
 /// depend on only one axis stay on the axis types themselves.
 ///
-/// {@link #distanceTo(GeoPoint)} returns the great-circle {@link Distance}
+/// {@link #distanceTo(Coordinate)} returns the great-circle {@link Distance}
 /// using the haversine formula on a spherical Earth (IUGG mean radius
 /// `6_371_000` m). Accuracy versus the WGS-84 ellipsoid is within
 /// roughly 0.5% for inter-continental distances; for sub-metre geodesy
 /// use Vincenty or Karney instead.
-public value class GeoPoint {
+public value class Coordinate {
 
     /// IUGG mean Earth radius in metres.
     public static final double EARTH_RADIUS_METERS = 6_371_000.0;
@@ -19,7 +19,7 @@ public value class GeoPoint {
     private final Latitude latitude;
     private final Longitude longitude;
 
-    public GeoPoint(Latitude latitude, Longitude longitude) {
+    public Coordinate(Latitude latitude, Longitude longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -33,7 +33,7 @@ public value class GeoPoint {
     }
 
     /// Great-circle distance (haversine, spherical Earth).
-    public Distance distanceTo(GeoPoint other) {
+    public Distance distanceTo(Coordinate other) {
         double phi1 = latitude.toRadians();
         double phi2 = other.latitude.toRadians();
         double dPhi = phi2 - phi1;
@@ -50,6 +50,6 @@ public value class GeoPoint {
 
     @Override
     public String toString() {
-        return "GeoPoint(" + latitude.value() + ", " + longitude.value() + ")";
+        return "Coordinate(" + latitude.value() + ", " + longitude.value() + ")";
     }
 }

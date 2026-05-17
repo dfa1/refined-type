@@ -39,7 +39,7 @@ public class LayoutInspectorTest {
         groups.put("RefinedDouble (raw: 8 bytes)", new Class<?>[]{ Distance.class, Latitude.class, Longitude.class, Price.class });
         groups.put("RefinedFloat (raw: 4 bytes)", new Class<?>[]{ Percentage.class, Probability.class, Velocity.class, Volume.class });
         groups.put("RefinedString (raw: ref)", new Class<?>[]{ CountryCode.class, CurrencyCode.class, CusipNumber.class, Email.class, HostName.class, Isin.class, Slug.class });
-        groups.put("Other", new Class<?>[]{ GeoPoint.class, Float16.class, UnsignedByte.class });
+        groups.put("Other", new Class<?>[]{ Coordinate.class, Float16.class, UnsignedByte.class });
 
         System.out.println();
         System.out.printf("%-14s  %-22s  %s%n", "Group", "Type", "bytes");

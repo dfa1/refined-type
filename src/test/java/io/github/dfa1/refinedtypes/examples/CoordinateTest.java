@@ -5,22 +5,22 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-class GeoPointTest {
+class CoordinateTest {
 
     // Real city coordinates used as reference points
-    private static final GeoPoint LONDON = new GeoPoint(new Latitude(51.5074),  new Longitude(  -0.1278));
-    private static final GeoPoint PARIS  = new GeoPoint(new Latitude(48.8566),  new Longitude(   2.3522));
-    private static final GeoPoint NYC    = new GeoPoint(new Latitude(40.7128),  new Longitude( -74.0060));
-    private static final GeoPoint LA     = new GeoPoint(new Latitude(34.0522),  new Longitude(-118.2437));
-    private static final GeoPoint TOKYO  = new GeoPoint(new Latitude(35.6762),  new Longitude( 139.6503));
-    private static final GeoPoint SYDNEY = new GeoPoint(new Latitude(-33.8688), new Longitude( 151.2093));
+    private static final Coordinate LONDON = new Coordinate(new Latitude(51.5074),  new Longitude(  -0.1278));
+    private static final Coordinate PARIS  = new Coordinate(new Latitude(48.8566),  new Longitude(   2.3522));
+    private static final Coordinate NYC    = new Coordinate(new Latitude(40.7128),  new Longitude( -74.0060));
+    private static final Coordinate LA     = new Coordinate(new Latitude(34.0522),  new Longitude(-118.2437));
+    private static final Coordinate TOKYO  = new Coordinate(new Latitude(35.6762),  new Longitude( 139.6503));
+    private static final Coordinate SYDNEY = new Coordinate(new Latitude(-33.8688), new Longitude( 151.2093));
 
     // ── construction ────────────────────────────────────────────────────────
 
     @Test
     void exposesLatitudeAndLongitude() {
         // Given
-        var sut = new GeoPoint(new Latitude(51.5074), new Longitude(-0.1278));
+        var sut = new Coordinate(new Latitude(51.5074), new Longitude(-0.1278));
 
         // When / Then
         assertThat(sut.latitude().value()).isEqualTo(51.5074);
@@ -98,14 +98,14 @@ class GeoPointTest {
     @Test
     void antipodalDistanceIsHalfCircumference() {
         // Given — south-pole equivalent of (0, 0) is (0, 180)
-        var origin = new GeoPoint(Latitude.ZERO, Longitude.ZERO);
-        var antipode = new GeoPoint(Latitude.ZERO, new Longitude(180.0));
+        var origin = new Coordinate(Latitude.ZERO, Longitude.ZERO);
+        var antipode = new Coordinate(Latitude.ZERO, new Longitude(180.0));
 
         // When
         Distance result = origin.distanceTo(antipode);
 
         // Then — π · R
-        assertThat(result.to(Distance.Unit.M)).isCloseTo(Math.PI * GeoPoint.EARTH_RADIUS_METERS, within(1.0));
+        assertThat(result.to(Distance.Unit.M)).isCloseTo(Math.PI * Coordinate.EARTH_RADIUS_METERS, within(1.0));
     }
 
     // ── toString ────────────────────────────────────────────────────────────
@@ -113,12 +113,12 @@ class GeoPointTest {
     @Test
     void toStringIncludesBothAxes() {
         // Given
-        var sut = new GeoPoint(new Latitude(40.7128), new Longitude(-74.0060));
+        var sut = new Coordinate(new Latitude(40.7128), new Longitude(-74.0060));
 
         // When
         String result = sut.toString();
 
         // Then
-        assertThat(result).isEqualTo("GeoPoint(40.7128, -74.006)");
+        assertThat(result).isEqualTo("Coordinate(40.7128, -74.006)");
     }
 }
