@@ -10,23 +10,21 @@ class CoordinateLayoutTest {
 
     @Test
     void printLayouts() {
-        System.out.println("=== value class Coordinate ===");
+        // NOTE: instanceSize() from JOL shows the *boxed/heap* form of a value class —
+        // what the JVM allocates when the value escapes to Object. It includes the full
+        // object header (12 bytes) plus alignment padding and is NOT what gets stored in
+        // a typed Coordinate[] array. In a flat typed array only the payload (2 × 8 bytes
+        // for the two nested double value classes) is stored per element — header-free.
+        System.out.println("=== value class Coordinate (boxed/heap form) ===");
         System.out.println(ClassLayout.parseClass(Coordinate.class).toPrintable());
 
         System.out.println("=== identity class CoordinateIdentity ===");
         System.out.println(ClassLayout.parseClass(CoordinateIdentity.class).toPrintable());
 
-        System.out.printf("Coordinate        instance size: %d bytes%n",
+        System.out.printf("Coordinate         boxed heap size : %d bytes (header + nested value fields + padding)%n",
                 ClassLayout.parseClass(Coordinate.class).instanceSize());
-        System.out.printf("CoordinateIdentity instance size: %d bytes%n",
+        System.out.printf("CoordinateIdentity heap size       : %d bytes%n",
                 ClassLayout.parseClass(CoordinateIdentity.class).instanceSize());
-
-        System.out.println();
-        System.out.println("=== Coordinate[] (value class array — flat layout) ===");
-        System.out.println(ClassLayout.parseClass(Coordinate[].class).toPrintable());
-
-        System.out.println("=== CoordinateIdentity[] (identity array — reference layout) ===");
-        System.out.println(ClassLayout.parseClass(CoordinateIdentity[].class).toPrintable());
     }
 
     @Test
@@ -41,16 +39,20 @@ class CoordinateLayoutTest {
             identityArr[i] = new CoordinateIdentity(lat, lon);
         }
 
-        long valueArrayShell    = ClassLayout.parseInstance(valueArr).instanceSize();
-        long identityArrayShell = ClassLayout.parseInstance(identityArr).instanceSize();
-        long identityObjSize    = ClassLayout.parseClass(CoordinateIdentity.class).instanceSize();
-        long identityTotal      = identityArrayShell + (long) n * identityObjSize;
+        long valueTotal    = ClassLayout.parseInstance(valueArr).instanceSize();
+        long identityShell = ClassLayout.parseInstance(identityArr).instanceSize();
+        long identityObj   = ClassLayout.parseClass(CoordinateIdentity.class).instanceSize();
+        long identityTotal = identityShell + (long) n * identityObj;
+        long bytesPerValueElement = (valueTotal - 16) / n;
+        // bytesPerValueElement should be 16 (2 × double payload) for a truly flat array.
+        // If JOL reports 4 bytes/element it is misreading the array as a reference array
+        // (compressed 4-byte OOPs) — a known limitation of JOL 0.17 with Valhalla EA.
 
-        System.out.printf("Coordinate[%d]         array shell: %,d bytes (elements stored inline)%n",
-                n, valueArrayShell);
-        System.out.printf("CoordinateIdentity[%d] array shell: %,d bytes + %,d objects × %d bytes = %,d bytes total%n",
-                n, identityArrayShell, n, identityObjSize, identityTotal);
+        System.out.printf("Coordinate[%d]         total: %,d bytes  (%d bytes/element as reported by JOL)%n",
+                n, valueTotal, bytesPerValueElement);
+        System.out.printf("CoordinateIdentity[%d] total: %,d bytes  (%d-byte refs + %,d objects × %d bytes)%n",
+                n, identityTotal, 4, n, identityObj);
         System.out.printf("Memory ratio (identity/value): %.2fx%n",
-                (double) identityTotal / valueArrayShell);
+                (double) identityTotal / valueTotal);
     }
 }
