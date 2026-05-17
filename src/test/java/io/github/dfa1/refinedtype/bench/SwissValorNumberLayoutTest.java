@@ -4,6 +4,8 @@ import io.github.dfa1.refinedtype.examples.SwissValorNumber;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jol.info.ClassLayout;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class SwissValorNumberLayoutTest {
 
     @Test
@@ -48,5 +50,15 @@ class SwissValorNumberLayoutTest {
                 n, identityTotal, 4, n, identityObj);
         System.out.printf("Memory ratio (identity/value): %.2fx%n",
                 (double) identityTotal / valueShell);
+
+        // Given
+        // When (computed above)
+        // Then
+        assertThat(bytesPerValueElement)
+                .as("value class array must store only the int payload (4 bytes/element)")
+                .isEqualTo(4);
+        assertThat(identityTotal)
+                .as("identity class total footprint must be at least 4× the value class array")
+                .isGreaterThanOrEqualTo(4 * valueShell);
     }
 }
