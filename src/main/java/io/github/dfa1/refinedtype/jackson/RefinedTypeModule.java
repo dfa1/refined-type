@@ -2,6 +2,7 @@ package io.github.dfa1.refinedtype.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.github.dfa1.refinedtype.RefinedInt;
+import io.github.dfa1.refinedtype.RefinedShort;
 import io.github.dfa1.refinedtype.RefinedString;
 import io.github.dfa1.refinedtype.examples.Age;
 import io.github.dfa1.refinedtype.examples.CountryCode;
@@ -30,6 +31,7 @@ public class RefinedTypeModule extends SimpleModule {
 
         addSerializer(RefinedString.class, new RefinedStringSerializer());
         addSerializer(RefinedInt.class, new RefinedIntSerializer());
+        addSerializer(RefinedShort.class, new RefinedShortSerializer());
 
         addDeserializer(Email.class, new EmailDeserializer());
         addDeserializer(CountryCode.class, new CountryCodeDeserializer());

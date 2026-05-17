@@ -112,7 +112,7 @@ class RefinedTypeModuleRoundtripTest {
         Age result = MAPPER.readValue("42", Age.class);
 
         // Then
-        assertThat(result.value()).isEqualTo(42);
+        assertThat(result.value()).isEqualTo((short) 42);
     }
 
     @Test
@@ -143,7 +143,7 @@ class RefinedTypeModuleRoundtripTest {
         assertThat(result.email().value()).isEqualTo("alice@example.com");
         assertThat(result.country().value()).isEqualTo("CH");
         assertThat(result.currency().value()).isEqualTo("CHF");
-        assertThat(result.age().value()).isEqualTo(35);
+        assertThat(result.age().value()).isEqualTo((short) 35);
         assertThat(result.port().value()).isEqualTo(9090);
     }
 
