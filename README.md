@@ -13,7 +13,7 @@ Background: [Rethink domain primitives with Valhalla](https://dfa1.github.io/art
 
 ## Why refined types?
 
-A `String` can hold anything. An `int` can be negative. When you pass `userId` where `orderId` is expected the compiler stays silent and the bug ships.
+A `double` can hold any number. When you pass `lon` where `lat` is expected the compiler stays silent and the bug ships to production.
 
 Refined types encode the constraint in the type itself:
 
@@ -25,7 +25,31 @@ void route(double lat, double lon) { ... }
 void route(Latitude lat, Longitude lon) { ... }
 ```
 
-Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths. Swapping `lat` and `lon` no longer compiles.
+Validation runs **once**, at construction. Every subsequent use is guaranteed-valid, with no runtime checks in hot paths. Swapping `lat` and `lon` no longer compiles. Passing `200.0` no longer compiles either.
+
+The same pattern scales to `String` when the constraint is structural. An ISIN (ISO 6166 securities identifier) is a 12-character code: two-letter country prefix, nine-character NSIN, and a Luhn check digit. A raw `String` enforces none of that:
+
+```java
+// Before: any string is accepted — validation is the caller's problem
+void settle(String isin, String currency) { ... }
+
+settle("US037833100X", "USD");   // bad check digit — compiles, fails at runtime or never
+settle("USD", "US0378331005");   // args swapped — compiles, silent wrong-currency settlement
+```
+
+```java
+// After: constraints live in the types
+void settle(Isin isin, CurrencyCode currency) { ... }
+
+// Build from components — check digit computed, cannot be wrong
+Isin apple = new Isin(new CountryCode("US"), "037833100"); // → US0378331005
+
+// Domain logic belongs to the type, not scattered across callers
+CountryCode country = apple.country();   // → CountryCode("US")
+
+// Swapping args does not compile; CurrencyCode and Isin are distinct types
+settle(apple, new CurrencyCode("USD"));
+```
 
 ---
 
