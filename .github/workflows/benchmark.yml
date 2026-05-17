@@ -1,0 +1,69 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            jdk-suffix: linux-x64
+          - os: macos-latest
+            jdk-suffix: macos-aarch64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Valhalla JDK
+        id: cache-jdk
+        uses: actions/cache@v4
+        with:
+          path: ~/valhalla-jdk
+          key: valhalla-jdk-jep401ea3+1-1-${{ matrix.jdk-suffix }}
+
+      - name: Download Valhalla JDK 27 EA (jep401ea3+1-1)
+        if: steps.cache-jdk.outputs.cache-hit != 'true'
+        run: |
+          base="https://download.java.net/java/early_access/valhalla/27/1"
+          file="openjdk-27-jep401ea3+1-1_${{ matrix.jdk-suffix }}_bin.tar.gz"
+          mkdir -p ~/valhalla-jdk
+          curl -L --retry 3 "$base/$file" | tar -xz --strip-components=1 -C ~/valhalla-jdk
+
+      - name: Set JAVA_HOME
+        run: |
+          java_bin=$(find ~/valhalla-jdk -maxdepth 6 -name "java" -type f | head -1)
+          java_home=$(dirname "$(dirname "$java_bin")")
+          echo "JAVA_HOME=$java_home" >> "$GITHUB_ENV"
+          echo "$java_home/bin" >> "$GITHUB_PATH"
+
+      - name: Verify JDK
+        run: java -version
+
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ matrix.os }}-${{ hashFiles('pom.xml') }}
+          restore-keys: maven-${{ matrix.os }}-
+
+      - name: Compile
+        run: ./mvnw test-compile -q
+
+      - name: Print JOL memory layouts
+        run: ./mvnw test -Dtest="*LayoutTest" -Dsurefire.failIfNoSpecifiedTests=false -q
+
+      - name: Run JMH benchmarks
+        run: ./mvnw verify -Pbenchmark -DskipTests
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.jdk-suffix }}
+          path: target/benchmark-results.json
