@@ -8,16 +8,19 @@ Benchmarking Valhalla value classes as refined-type implementation. Goal: prove 
 
 - Java 27 EA (Valhalla preview) — **required**, no fallback to older JDK
 - Maven 3.9+
-- JMH for microbenchmarks (to be wired in)
+- JMH for microbenchmarks
 
 ## JDK setup
 
-```bash
-sdk install java 27.ea-open
-sdk use java 27.ea-open
+SDKMAN is **not installed**. Valhalla EA JDK lives at:
+
+```
+/Users/dfa/Library/Java/JavaVirtualMachines/valhalla-ea-27-jep401ea3+1-1/Contents/Home
 ```
 
-Verify: `java -version` must show `openjdk 27-ea`.
+Always prepend `JAVA_HOME=<path above>` to Maven invocations — Homebrew `mvn` defaults to JDK 25 and rejects `--release 27`.
+
+Verify: `java -version` must show `openjdk 27-jep401ea3`.
 
 ## Key flags
 
@@ -35,9 +38,15 @@ And at runtime: `java --enable-preview`.
 
 ```
 src/main/java/io/github/dfa1/refinedtype/
-  RefinedInt.java      # marker interface
-  RefinedFloat.java    # marker interface
-  # TODO: value class implementations + JMH benchmarks
+  RefinedInt.java          # marker interface
+  RefinedFloat.java        # marker interface
+  examples/                # value class implementations
+  unsigned/                # unsigned integer types
+
+src/test/java/io/github/dfa1/refinedtype/
+  bench/                   # JMH benchmarks + identity-class mirrors + JOL layout tests
+  examples/                # unit tests per example class
+  unsigned/                # unit tests for unsigned types
 ```
 
 ## Build commands
@@ -45,12 +54,33 @@ src/main/java/io/github/dfa1/refinedtype/
 Use the Maven wrapper — it pins the exact Maven version and does not require a system install:
 
 ```bash
-./mvnw compile          # compile
-./mvnw test             # unit tests
-./mvnw verify -Pbenchmark   # JMH benchmarks (profile not yet wired)
+JAVA_HOME=<valhalla-path> ./mvnw compile    # compile
+JAVA_HOME=<valhalla-path> ./mvnw test       # unit tests
 ```
 
 On Windows use `mvnw.cmd` instead of `./mvnw`.
+
+## Running benchmarks
+
+Use `bench.sh` — sets `JAVA_HOME`, compiles, and runs JMH. No manual classpath needed.
+
+```bash
+./bench.sh                              # all benchmarks
+./bench.sh SwissValorNumber             # filter by name (regex)
+./bench.sh --layout SwissValorNumber    # JOL memory layout, then JMH
+./bench.sh --layout-only               # layout inspection only
+./bench.sh --gc SwissValorNumber        # add GC alloc-rate profiler (-prof gc)
+```
+
+`--layout` prints JOL footprint tables before JMH results so both are visible together.
+
+Each `@Benchmark` method uses its own `@Fork` — value/identity/bare-int variants run in separate JVMs to prevent JIT cross-contamination. `bench.sh` does not need to enforce order; JMH handles fork isolation.
+
+To filter from Maven directly (bypasses `bench.sh`):
+
+```bash
+JAVA_HOME=<valhalla-path> ./mvnw verify -Pbenchmark -Dbenchmark.filter=SwissValorNumber
+```
 
 ## Coding conventions
 
@@ -88,6 +118,5 @@ void validEmailAccepted() {
 
 ## What to build next
 
-1. JMH benchmark: allocation rate + throughput vs bare `int`
-2. Expand: more domain examples
-3. Compare identity-class vs value-class variants in same benchmark
+1. Expand: more domain examples
+2. Add `--gc` profiler results to benchmark docs once stable numbers are collected

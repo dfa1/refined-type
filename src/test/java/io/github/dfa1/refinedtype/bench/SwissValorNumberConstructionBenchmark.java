@@ -6,24 +6,22 @@ import org.openjdk.jmh.annotations.*;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/// Measures the cost of constructing an array of 1 000 {@link SwissValorNumber}
-/// values from pre-generated raw `int` seeds.
+/// Measures the cost of constructing arrays of 1 000 elements from pre-generated raw ints.
 ///
-/// Unlike the scan benchmark (which pre-allocates arrays in `@Setup`), each
-/// iteration here allocates a fresh array — making allocation the dominant work.
-/// Run with `-prof gc` to see the allocation-rate difference:
+/// Each iteration allocates a fresh array, making allocation the dominant cost.
+/// Run with `-prof gc` to observe allocation-rate differences:
 ///
-/// - `valueClass`: one heap allocation (the array itself, 4 bytes × 1 000)
-/// - `identityClass`: 1 001 heap allocations (array + 1 000 individual objects × 16 bytes)
+/// - `bareInt`:      one allocation (int[1000], ~4 KB)
+/// - `valueClass`:   one allocation (SwissValorNumber[1000], ~4 KB — value class flattened)
+/// - `identityClass`: 1 001 allocations (array + 1 000 heap objects × 16 bytes)
 ///
-/// The 5× allocation ratio mirrors the JOL footprint numbers and translates
-/// directly into reduced GC CPU overhead for the value-class variant.
+/// `bareInt` is the zero-overhead baseline; `valueClass` should match it in
+/// allocation behaviour, confirming that value-class wrapping costs nothing at rest.
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 5, time = 1)
-@Fork(value = 1, jvmArgsPrepend = "--enable-preview")
 public class SwissValorNumberConstructionBenchmark {
 
     private static final int SIZE = 1_000;
@@ -39,6 +37,15 @@ public class SwissValorNumberConstructionBenchmark {
     }
 
     @Benchmark
+    @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
+    public int[] bareInt() {
+        var arr = new int[SIZE];
+        System.arraycopy(seed, 0, arr, 0, SIZE);
+        return arr;
+    }
+
+    @Benchmark
+    @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
     public SwissValorNumber[] valueClass() {
         var arr = new SwissValorNumber[SIZE];
         for (int i = 0; i < SIZE; i++) {
@@ -48,6 +55,7 @@ public class SwissValorNumberConstructionBenchmark {
     }
 
     @Benchmark
+    @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
     public SwissValorNumberIdentity[] identityClass() {
         var arr = new SwissValorNumberIdentity[SIZE];
         for (int i = 0; i < SIZE; i++) {

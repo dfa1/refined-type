@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 5, time = 1)
-@Fork(value = 1, jvmArgsPrepend = "--enable-preview")
 public class CoordinateBenchmark {
 
     private static final int SIZE = 100_000;
@@ -50,6 +49,7 @@ public class CoordinateBenchmark {
     }
 
     @Benchmark
+    @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
     public double valueClass() {
         double sum = 0.0;
         for (Coordinate c : valueCoordinates) {
@@ -59,6 +59,7 @@ public class CoordinateBenchmark {
     }
 
     @Benchmark
+    @Fork(value = 1, jvmArgsPrepend = "--enable-preview")
     public double identityClass() {
         double sum = 0.0;
         for (CoordinateIdentity c : identityCoordinates) {

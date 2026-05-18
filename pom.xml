@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>27</maven.compiler.source>
         <maven.compiler.target>27</maven.compiler.target>
+        <benchmark.filter>.*</benchmark.filter>
     </properties>
 
     <dependencies>
@@ -125,6 +126,7 @@
                                         <argument>-classpath</argument>
                                         <classpath/>
                                         <argument>org.openjdk.jmh.Main</argument>
+                                        <argument>${benchmark.filter}</argument>
                                         <argument>-rf</argument>
                                         <argument>json</argument>
                                         <argument>-rff</argument>
