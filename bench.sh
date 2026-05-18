@@ -24,6 +24,7 @@ set -euo pipefail
 
 VALHALLA_HOME=/Users/dfa/Library/Java/JavaVirtualMachines/valhalla-ea-27-jep401ea3+1-1/Contents/Home
 export JAVA_HOME="$VALHALLA_HOME"
+JAVA="$VALHALLA_HOME/bin/java"
 
 LAYOUT=false
 BENCH=true
@@ -51,13 +52,25 @@ if $LAYOUT; then
 fi
 
 if $BENCH; then
-    echo "==> JMH (filter: $FILTER)"
-    EXTRA_ARGS=""
+    # Build test classpath once via Maven, then invoke JMH directly so we have
+    # full control over JMH flags (avoids Maven exec-plugin's empty-arg problem).
+    CP_FILE=$(mktemp /tmp/bench-cp.XXXXXX)
+    ./mvnw -q dependency:build-classpath -DincludeScope=test \
+        -Dmdep.outputFile="$CP_FILE"
+    CP="target/test-classes:target/classes:$(cat "$CP_FILE")"
+    rm -f "$CP_FILE"
+
+    PROF_ARGS=()
     if $GC_PROF; then
-        EXTRA_ARGS="-Dbenchmark.extraArgs=-prof gc"
-        echo "    GC profiler enabled"
+        PROF_ARGS=(-prof gc)
+        echo "==> JMH (filter: $FILTER, +gc profiler)"
+    else
+        echo "==> JMH (filter: $FILTER)"
     fi
-    ./mvnw verify -Pbenchmark \
-        -Dbenchmark.filter="$FILTER" \
-        ${EXTRA_ARGS}
+
+    "$JAVA" --enable-preview -Djol.magicFieldOffset=true \
+        -cp "$CP" \
+        org.openjdk.jmh.Main "$FILTER" \
+        "${PROF_ARGS[@]}" \
+        -rf json -rff target/benchmark-results.json
 fi
