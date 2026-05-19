@@ -83,9 +83,7 @@ JMH benchmarks live under `src/test/java/.../bench` — run them from the IDE.
 
 ### Marker interfaces
 
-All [F-bounded](https://en.wikipedia.org/wiki/Bounded_quantification#F-bounded_quantification) — `Probability.compareTo(Price)` does not type-check.
-
-| Interface         | Primitive | Default `compareTo`           |
+| Interface         | Type      | Default `compareTo`           |
 |-------------------|-----------|-------------------------------|
 | `RefinedInt<T>`   | `int`     | `Integer.compare`             |
 | `RefinedShort<T>` | `short`   | `Short.compare`               |
@@ -99,6 +97,9 @@ Each implementation pins the self-type:
 ```java
 public value class Probability implements RefinedFloat<Probability> { ... }
 ```
+
+Why? To make something like `Probability.compareTo(Price)` a compile-time error. This is called
+[F-bounded](https://en.wikipedia.org/wiki/Bounded_quantification#F-bounded_quantification).
 
 ### Unsigned integers (`unsigned` package)
 
