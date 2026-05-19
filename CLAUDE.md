@@ -88,6 +88,7 @@ JAVA_HOME=<valhalla-path> ./mvnw verify -Pbenchmark -Dbenchmark.filter=SwissValo
 - Constructor validates; throws `IllegalArgumentException` with message naming the violated constraint
 - No nulls — value classes cannot be null
 - Benchmark classes in `src/test/java` under the `bench/` package, named `*Benchmark` (JMH is `test`-scoped)
+- **Length before regex** — always check `String` length (or reject obviously-wrong sizes) before calling `Pattern.matcher(...).matches()`. A malicious input can cause catastrophic backtracking (ReDoS) on unbounded input even with simple-looking patterns; a cheap length guard caps the regex input size and makes evaluation linear in the bound.
 
 ## Style
 

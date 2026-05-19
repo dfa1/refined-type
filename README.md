@@ -407,6 +407,7 @@ vs. the identity class's scattered 32-byte heap objects (JOL: 100 000 × 32 B = 
 - **Explicit over implicit.** Cross-type widening is manual (`toUnsignedInt()`). Jackson integration is opt-in. Caching is opt-in.
 - **BigInteger naming for arithmetic.** `add`, `subtract`, `multiply`, `divide`, `remainder` — same names as `BigInteger`/`BigDecimal`.
 - **F-bounded markers.** `RefinedFloat<T extends RefinedFloat<T>>` blocks `probability.compareTo(price)` at compile time — same pattern as `java.lang.Enum<E extends Enum<E>>`.
+- **Length before regex.** String constructors check length (or reject obviously-wrong sizes) *before* calling the regex. An unbounded input can trigger catastrophic backtracking (ReDoS) even on simple patterns; a cheap length guard caps the input and makes regex evaluation linear in the bound.
 
 ---
 

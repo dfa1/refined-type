@@ -34,6 +34,9 @@ public value class MacAddress implements RefinedString<MacAddress> {
         if (value == null) {
             throw new IllegalArgumentException("MAC address must not be null");
         }
+        if (value.length() != 17 && value.length() != 12) {
+            throw new IllegalArgumentException("invalid MAC address: " + value);
+        }
         if (!PATTERN.matcher(value).matches()) {
             throw new IllegalArgumentException("invalid MAC address: " + value);
         }
