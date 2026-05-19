@@ -108,6 +108,48 @@ class CoordinateTest {
         assertThat(result.to(Distance.Unit.M)).isCloseTo(Math.PI * Coordinate.EARTH_RADIUS_METERS, within(1.0));
     }
 
+    // ── equality ─────────────────────────────────────────────────────────────
+
+    @Test
+    void equalsSameFields() {
+        // Given — nested value classes: Coordinate wraps Latitude and Longitude
+        var sut   = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+        var other = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+
+        // Then — multi-field value objects with identical fields are the same object (JEP 401)
+        assertThat(sut).isEqualTo(other);
+    }
+
+    @Test
+    void equalsDifferentLongitude() {
+        // Given
+        var sut   = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+        var other = Coordinate.of(Latitude.of(48.8566), Longitude.of(0.0));
+
+        // Then
+        assertThat(sut).isNotEqualTo(other);
+    }
+
+    @Test
+    void equalsDifferentLatitude() {
+        // Given
+        var sut   = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+        var other = Coordinate.of(Latitude.of(0.0),     Longitude.of(2.3522));
+
+        // Then
+        assertThat(sut).isNotEqualTo(other);
+    }
+
+    @Test
+    void hashCodeConsistentForEqualValues() {
+        // Given
+        var sut   = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+        var other = Coordinate.of(Latitude.of(48.8566), Longitude.of(2.3522));
+
+        // Then
+        assertThat(sut.hashCode()).isEqualTo(other.hashCode());
+    }
+
     // ── toString ────────────────────────────────────────────────────────────
 
     @Test

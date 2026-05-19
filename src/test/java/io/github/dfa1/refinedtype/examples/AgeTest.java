@@ -102,6 +102,38 @@ class AgeTest {
         assertThat(result).isEqualTo("Age(33)");
     }
 
+    // ── equality ─────────────────────────────────────────────────────────────
+
+    @Test
+    void equalsSameValue() {
+        // Given
+        var sut = Age.of(30);
+        var other = Age.of(30);
+
+        // Then — value objects with identical fields are the same object (JEP 401)
+        assertThat(sut).isEqualTo(other);
+    }
+
+    @Test
+    void equalsDifferentValue() {
+        // Given
+        var sut = Age.of(30);
+        var other = Age.of(31);
+
+        // Then
+        assertThat(sut).isNotEqualTo(other);
+    }
+
+    @Test
+    void hashCodeConsistentForEqualValues() {
+        // Given
+        var sut = Age.of(30);
+        var other = Age.of(30);
+
+        // Then
+        assertThat(sut.hashCode()).isEqualTo(other.hashCode());
+    }
+
     // ── RefinedShort ─────────────────────────────────────────────────────────
 
     @Test

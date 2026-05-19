@@ -127,6 +127,38 @@ class EmailTest {
         assertThat(result).isEqualTo("Email(user@example.com)");
     }
 
+    // ── equality ─────────────────────────────────────────────────────────────
+
+    @Test
+    void equalsSameValue() {
+        // Given
+        var sut = Email.of("user@example.com");
+        var other = Email.of("user@example.com");
+
+        // Then — String-backed value objects with identical fields are the same object (JEP 401)
+        assertThat(sut).isEqualTo(other);
+    }
+
+    @Test
+    void equalsDifferentValue() {
+        // Given
+        var sut = Email.of("a@example.com");
+        var other = Email.of("b@example.com");
+
+        // Then
+        assertThat(sut).isNotEqualTo(other);
+    }
+
+    @Test
+    void hashCodeConsistentForEqualValues() {
+        // Given
+        var sut = Email.of("user@example.com");
+        var other = Email.of("user@example.com");
+
+        // Then
+        assertThat(sut.hashCode()).isEqualTo(other.hashCode());
+    }
+
     @Test
     void implementsRefinedString() {
         // Given
