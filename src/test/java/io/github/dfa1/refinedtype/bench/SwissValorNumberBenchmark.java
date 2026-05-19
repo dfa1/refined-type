@@ -42,7 +42,7 @@ public class SwissValorNumberBenchmark {
         valueArray = new SwissValorNumber[SIZE];
         identityArray = new SwissValorNumberIdentity[SIZE];
         for (int i = 0; i < SIZE; i++) {
-            valueArray[i]    = new SwissValorNumber(unique[i]);
+            valueArray[i]    = SwissValorNumber.of(unique[i]);
             identityArray[i] = new SwissValorNumberIdentity(unique[i]);
         }
     }

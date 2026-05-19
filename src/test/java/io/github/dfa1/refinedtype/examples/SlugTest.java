@@ -13,7 +13,7 @@ class SlugTest {
     @Test
     void simpleAlphanumericAccepted() {
         // Given
-        var sut = new Slug("hello");
+        var sut = Slug.of("hello");
 
         // When
         String result = sut.value();
@@ -25,7 +25,7 @@ class SlugTest {
     @Test
     void hyphenatedAccepted() {
         // Given
-        var sut = new Slug("hello-world");
+        var sut = Slug.of("hello-world");
 
         // When
         String result = sut.value();
@@ -37,7 +37,7 @@ class SlugTest {
     @Test
     void digitsAccepted() {
         // Given
-        var sut = new Slug("post-2025-04");
+        var sut = Slug.of("post-2025-04");
 
         // When
         String result = sut.value();
@@ -49,7 +49,7 @@ class SlugTest {
     @Test
     void singleCharacterAccepted() {
         // Given
-        var sut = new Slug("a");
+        var sut = Slug.of("a");
 
         // When
         String result = sut.value();
@@ -61,7 +61,7 @@ class SlugTest {
     @Test
     void singleDigitAccepted() {
         // Given
-        var sut = new Slug("7");
+        var sut = Slug.of("7");
 
         // When
         String result = sut.value();
@@ -76,7 +76,7 @@ class SlugTest {
         String input = "a".repeat(64);
 
         // When
-        var sut = new Slug(input);
+        var sut = Slug.of(input);
 
         // Then
         assertThat(sut.value()).isEqualTo(input);
@@ -87,14 +87,14 @@ class SlugTest {
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug(null))
+        assertThatThrownBy(() -> Slug.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void emptyRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug(""))
+        assertThatThrownBy(() -> Slug.of(""))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,7 +104,7 @@ class SlugTest {
         String input = "a".repeat(65);
 
         // When / Then
-        assertThatThrownBy(() -> new Slug(input))
+        assertThatThrownBy(() -> Slug.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -114,49 +114,49 @@ class SlugTest {
     void uppercaseRejected() {
         // Slug is by convention lowercase — caller must slugify upstream
         // When / Then
-        assertThatThrownBy(() -> new Slug("Hello"))
+        assertThatThrownBy(() -> Slug.of("Hello"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void leadingHyphenRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("-bad"))
+        assertThatThrownBy(() -> Slug.of("-bad"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void trailingHyphenRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("bad-"))
+        assertThatThrownBy(() -> Slug.of("bad-"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void doubleHyphenRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("a--b"))
+        assertThatThrownBy(() -> Slug.of("a--b"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void spaceRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("hello world"))
+        assertThatThrownBy(() -> Slug.of("hello world"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void underscoreRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("hello_world"))
+        assertThatThrownBy(() -> Slug.of("hello_world"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void dotRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("v1.2"))
+        assertThatThrownBy(() -> Slug.of("v1.2"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -166,14 +166,14 @@ class SlugTest {
     void pathTraversalRejected() {
         // ".." cannot survive — slugs cannot escape a routing prefix
         // When / Then
-        assertThatThrownBy(() -> new Slug(".."))
+        assertThatThrownBy(() -> Slug.of(".."))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void slashRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("etc/passwd"))
+        assertThatThrownBy(() -> Slug.of("etc/passwd"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -181,7 +181,7 @@ class SlugTest {
     void percentEncodedSlashRejected() {
         // %2F could otherwise smuggle a slash past naive validation
         // When / Then
-        assertThatThrownBy(() -> new Slug("etc%2fpasswd"))
+        assertThatThrownBy(() -> Slug.of("etc%2fpasswd"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -189,14 +189,14 @@ class SlugTest {
     void crlfRejected() {
         // CR/LF would split HTTP headers if echoed in Set-Cookie / Location
         // When / Then
-        assertThatThrownBy(() -> new Slug("evil\r\nSet-Cookie: x=y"))
+        assertThatThrownBy(() -> Slug.of("evil\r\nSet-Cookie: x=y"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nulByteRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Slug("evil\u0000"))
+        assertThatThrownBy(() -> Slug.of("evil\u0000"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -205,8 +205,8 @@ class SlugTest {
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new Slug("alpha");
-        var other = new Slug("beta");
+        var sut = Slug.of("alpha");
+        var other = Slug.of("beta");
 
         // When
         int result = sut.compareTo(other);
@@ -218,8 +218,8 @@ class SlugTest {
     @Test
     void compareToReturnsZeroForEqual() {
         // Given
-        var sut = new Slug("same");
-        var other = new Slug("same");
+        var sut = Slug.of("same");
+        var other = Slug.of("same");
 
         // When
         int result = sut.compareTo(other);
@@ -233,7 +233,7 @@ class SlugTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Slug("my-post");
+        var sut = Slug.of("my-post");
 
         // When
         String result = sut.toString();
@@ -247,7 +247,7 @@ class SlugTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new Slug("hello-world");
+        RefinedString sut = Slug.of("hello-world");
 
         // When
         String result = sut.value();

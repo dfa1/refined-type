@@ -12,7 +12,7 @@ class AgeConverterTest {
     void convertToDatabaseColumnReturnsShort() {
         // Given
         var sut = new AgeConverter();
-        var age = new Age(30);
+        var age = Age.of(30);
 
         // When
         Short result = sut.convertToDatabaseColumn(age);
@@ -71,7 +71,7 @@ class AgeConverterTest {
     void roundtripPreservesValue() {
         // Given
         var sut = new AgeConverter();
-        var age = new Age(25);
+        var age = Age.of(25);
 
         // When
         Age result = sut.convertToEntityAttribute(sut.convertToDatabaseColumn(age));

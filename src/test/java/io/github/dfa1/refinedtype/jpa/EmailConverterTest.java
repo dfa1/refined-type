@@ -12,7 +12,7 @@ class EmailConverterTest {
     void convertToDatabaseColumnReturnsEmailString() {
         // Given
         var sut = new EmailConverter();
-        var email = new Email("user@example.com");
+        var email = Email.of("user@example.com");
 
         // When
         String result = sut.convertToDatabaseColumn(email);
@@ -71,7 +71,7 @@ class EmailConverterTest {
     void roundtripPreservesValue() {
         // Given
         var sut = new EmailConverter();
-        var email = new Email("roundtrip@example.com");
+        var email = Email.of("roundtrip@example.com");
 
         // When
         Email result = sut.convertToEntityAttribute(sut.convertToDatabaseColumn(email));

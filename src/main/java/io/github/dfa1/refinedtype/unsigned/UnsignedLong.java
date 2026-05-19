@@ -13,8 +13,12 @@ public value class UnsignedLong implements Comparable<UnsignedLong> {
 
     private final long bits;
 
-    public UnsignedLong(long bits) {
+    private UnsignedLong(long bits) {
         this.bits = bits;
+    }
+
+    public static UnsignedLong of(long bits) {
+        return new UnsignedLong(bits);
     }
 
     /// Parse an unsigned decimal string, accepting values up to 18_446_744_073_709_551_615.

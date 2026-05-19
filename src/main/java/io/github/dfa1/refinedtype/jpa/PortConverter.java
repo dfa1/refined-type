@@ -12,6 +12,6 @@ public class PortConverter extends AbstractRefinedIntConverter<Port> {
 
     @Override
     protected Port fromInt(int value) {
-        return new Port(value);
+        return Port.of(value);
     }
 }

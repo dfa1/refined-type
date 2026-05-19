@@ -9,11 +9,15 @@ public value class UnsignedByte implements Comparable<UnsignedByte> {
 
     private final byte bits;
 
-    public UnsignedByte(int value) {
+    private UnsignedByte(int value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("out of unsigned byte range [0, 255]: " + value);
         }
         this.bits = (byte) value;
+    }
+
+    public static UnsignedByte of(int value) {
+        return new UnsignedByte(value);
     }
 
     /// Parse an unsigned decimal string in [0, 255].
@@ -67,17 +71,17 @@ public value class UnsignedByte implements Comparable<UnsignedByte> {
     /// UnsignedShort result = b.toUnsignedShort().add(s);
     /// ```
     public UnsignedShort toUnsignedShort() {
-        return new UnsignedShort(Byte.toUnsignedInt(bits));
+        return UnsignedShort.of(Byte.toUnsignedInt(bits));
     }
 
     /// Widen to {@link UnsignedInt}. See {@link #toUnsignedShort()} for rationale.
     public UnsignedInt toUnsignedInt() {
-        return new UnsignedInt(Byte.toUnsignedInt(bits));
+        return UnsignedInt.of(Byte.toUnsignedInt(bits));
     }
 
     /// Widen to {@link UnsignedLong}. See {@link #toUnsignedShort()} for rationale.
     public UnsignedLong toUnsignedLong() {
-        return new UnsignedLong(Byte.toUnsignedLong(bits));
+        return UnsignedLong.of(Byte.toUnsignedLong(bits));
     }
 
     @Override

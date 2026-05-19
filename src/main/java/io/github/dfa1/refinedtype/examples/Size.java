@@ -32,11 +32,15 @@ public value class Size implements RefinedLong<Size> {
 
     private final long bytes;
 
-    public Size(long bytes) {
+    private Size(long bytes) {
         if (bytes < 0L) {
             throw new IllegalArgumentException("size must be non-negative: " + bytes);
         }
         this.bytes = bytes;
+    }
+
+    public static Size of(long bytes) {
+        return new Size(bytes);
     }
 
     /// Construct from a count of the given unit.

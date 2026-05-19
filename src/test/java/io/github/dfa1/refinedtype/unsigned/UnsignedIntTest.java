@@ -41,7 +41,7 @@ class UnsignedIntTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new UnsignedInt(0L);
+        var sut = UnsignedInt.of(0L);
 
         // When
         long result = sut.asLong();
@@ -53,7 +53,7 @@ class UnsignedIntTest {
     @Test
     void maxValueIsValid() {
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
 
         // When
         long result = sut.asLong();
@@ -68,7 +68,7 @@ class UnsignedIntTest {
         long input = -1L;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedInt(input))
+        assertThatThrownBy(() -> UnsignedInt.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -78,7 +78,7 @@ class UnsignedIntTest {
         long input = 4_294_967_296L;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedInt(input))
+        assertThatThrownBy(() -> UnsignedInt.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,7 +89,7 @@ class UnsignedIntTest {
         // 2^31 = 2_147_483_648 — raw bits are Integer.MIN_VALUE (negative signed),
         // but asLong() must recover the correct unsigned value.
         // Given
-        var sut = new UnsignedInt(2_147_483_648L);
+        var sut = UnsignedInt.of(2_147_483_648L);
 
         // When
         long result = sut.asLong();
@@ -103,7 +103,7 @@ class UnsignedIntTest {
     void valuePreservesAll32Bits() {
         // 0xDEADBEEF = 3_735_928_559
         // Given
-        var sut = new UnsignedInt(0xDEAD_BEEFL);
+        var sut = UnsignedInt.of(0xDEAD_BEEFL);
 
         // When
         long result = sut.asLong();
@@ -119,8 +119,8 @@ class UnsignedIntTest {
     void compareToReturnsPositiveWhenUnsignedGreater() {
         // 2_147_483_648 > 1 in unsigned space even though raw bits are negative
         // Given
-        var sut = new UnsignedInt(2_147_483_648L);
-        var other = new UnsignedInt(1L);
+        var sut = UnsignedInt.of(2_147_483_648L);
+        var other = UnsignedInt.of(1L);
 
         // When
         int result = sut.compareTo(other);
@@ -132,8 +132,8 @@ class UnsignedIntTest {
     @Test
     void compareToReturnsNegativeWhenUnsignedSmaller() {
         // Given
-        var sut = new UnsignedInt(1L);
-        var other = new UnsignedInt(2_147_483_648L);
+        var sut = UnsignedInt.of(1L);
+        var other = UnsignedInt.of(2_147_483_648L);
 
         // When
         int result = sut.compareTo(other);
@@ -145,8 +145,8 @@ class UnsignedIntTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new UnsignedInt(2_147_483_648L);
-        var other = new UnsignedInt(2_147_483_648L);
+        var sut = UnsignedInt.of(2_147_483_648L);
+        var other = UnsignedInt.of(2_147_483_648L);
 
         // When
         int result = sut.compareTo(other);
@@ -158,8 +158,8 @@ class UnsignedIntTest {
     @Test
     void maxIsGreaterThanSignedMax() {
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
-        var signedMax = new UnsignedInt(Integer.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
+        var signedMax = UnsignedInt.of(Integer.MAX_VALUE);
 
         // When
         int result = sut.compareTo(signedMax);
@@ -173,10 +173,10 @@ class UnsignedIntTest {
     @Test
     void addSimple() {
         // Given
-        var sut = new UnsignedInt(3_000_000_000L);
+        var sut = UnsignedInt.of(3_000_000_000L);
 
         // When
-        UnsignedInt result = sut.add(new UnsignedInt(1_000_000_000L));
+        UnsignedInt result = sut.add(UnsignedInt.of(1_000_000_000L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(4_000_000_000L);
@@ -186,10 +186,10 @@ class UnsignedIntTest {
     void addWrapsAroundMax() {
         // MAX + 1 must wrap to 0
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
 
         // When
-        UnsignedInt result = sut.add(new UnsignedInt(1L));
+        UnsignedInt result = sut.add(UnsignedInt.of(1L));
 
         // Then
         assertThat(result.asLong()).isZero();
@@ -198,10 +198,10 @@ class UnsignedIntTest {
     @Test
     void addIdentity() {
         // Given
-        var sut = new UnsignedInt(0xDEAD_BEEFL);
+        var sut = UnsignedInt.of(0xDEAD_BEEFL);
 
         // When
-        UnsignedInt result = sut.add(new UnsignedInt(0L));
+        UnsignedInt result = sut.add(UnsignedInt.of(0L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(sut.asLong());
@@ -210,10 +210,10 @@ class UnsignedIntTest {
     @Test
     void subtractSimple() {
         // Given
-        var sut = new UnsignedInt(5L);
+        var sut = UnsignedInt.of(5L);
 
         // When
-        UnsignedInt result = sut.subtract(new UnsignedInt(3L));
+        UnsignedInt result = sut.subtract(UnsignedInt.of(3L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(2L);
@@ -223,10 +223,10 @@ class UnsignedIntTest {
     void subtractWrapsAroundZero() {
         // 0 - 1 must wrap to MAX
         // Given
-        var sut = new UnsignedInt(0L);
+        var sut = UnsignedInt.of(0L);
 
         // When
-        UnsignedInt result = sut.subtract(new UnsignedInt(1L));
+        UnsignedInt result = sut.subtract(UnsignedInt.of(1L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(UnsignedInt.MAX_VALUE);
@@ -236,7 +236,7 @@ class UnsignedIntTest {
     void subtractSelf() {
         // a - a = 0 for any a
         // Given
-        var sut = new UnsignedInt(3_000_000_000L);
+        var sut = UnsignedInt.of(3_000_000_000L);
 
         // When
         UnsignedInt result = sut.subtract(sut);
@@ -248,10 +248,10 @@ class UnsignedIntTest {
     @Test
     void multiplySimple() {
         // Given
-        var sut = new UnsignedInt(1_000_000L);
+        var sut = UnsignedInt.of(1_000_000L);
 
         // When
-        UnsignedInt result = sut.multiply(new UnsignedInt(1_000L));
+        UnsignedInt result = sut.multiply(UnsignedInt.of(1_000L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(1_000_000_000L);
@@ -261,10 +261,10 @@ class UnsignedIntTest {
     void multiplyWrapsAroundMax() {
         // MAX * 2 = (2^32 - 1) * 2 = 2^33 - 2 → lower 32 bits = MAX - 1 = 4_294_967_294
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
 
         // When
-        UnsignedInt result = sut.multiply(new UnsignedInt(2L));
+        UnsignedInt result = sut.multiply(UnsignedInt.of(2L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(4_294_967_294L);
@@ -273,10 +273,10 @@ class UnsignedIntTest {
     @Test
     void multiplyByZero() {
         // Given
-        var sut = new UnsignedInt(0xDEAD_BEEFL);
+        var sut = UnsignedInt.of(0xDEAD_BEEFL);
 
         // When
-        UnsignedInt result = sut.multiply(new UnsignedInt(0L));
+        UnsignedInt result = sut.multiply(UnsignedInt.of(0L));
 
         // Then
         assertThat(result.asLong()).isZero();
@@ -285,10 +285,10 @@ class UnsignedIntTest {
     @Test
     void multiplyByOne() {
         // Given
-        var sut = new UnsignedInt(0xDEAD_BEEFL);
+        var sut = UnsignedInt.of(0xDEAD_BEEFL);
 
         // When
-        UnsignedInt result = sut.multiply(new UnsignedInt(1L));
+        UnsignedInt result = sut.multiply(UnsignedInt.of(1L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(sut.asLong());
@@ -298,10 +298,10 @@ class UnsignedIntTest {
     void divideSimple() {
         // 4_000_000_000 / 3 = 1_333_333_333
         // Given
-        var sut = new UnsignedInt(4_000_000_000L);
+        var sut = UnsignedInt.of(4_000_000_000L);
 
         // When
-        UnsignedInt result = sut.divide(new UnsignedInt(3L));
+        UnsignedInt result = sut.divide(UnsignedInt.of(3L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(1_333_333_333L);
@@ -312,10 +312,10 @@ class UnsignedIntTest {
         // dividend > Integer.MAX_VALUE — signed divide would give wrong answer
         // 3_000_000_000 / 2 = 1_500_000_000
         // Given
-        var sut = new UnsignedInt(3_000_000_000L);
+        var sut = UnsignedInt.of(3_000_000_000L);
 
         // When
-        UnsignedInt result = sut.divide(new UnsignedInt(2L));
+        UnsignedInt result = sut.divide(UnsignedInt.of(2L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(1_500_000_000L);
@@ -324,10 +324,10 @@ class UnsignedIntTest {
     @Test
     void divideByZeroThrows() {
         // Given
-        var sut = new UnsignedInt(1L);
+        var sut = UnsignedInt.of(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.divide(new UnsignedInt(0L)))
+        assertThatThrownBy(() -> sut.divide(UnsignedInt.of(0L)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
@@ -335,10 +335,10 @@ class UnsignedIntTest {
     void remainderSimple() {
         // 4_000_000_000 % 3 = 1
         // Given
-        var sut = new UnsignedInt(4_000_000_000L);
+        var sut = UnsignedInt.of(4_000_000_000L);
 
         // When
-        UnsignedInt result = sut.remainder(new UnsignedInt(3L));
+        UnsignedInt result = sut.remainder(UnsignedInt.of(3L));
 
         // Then
         assertThat(result.asLong()).isEqualTo(1L);
@@ -347,10 +347,10 @@ class UnsignedIntTest {
     @Test
     void remainderByZeroThrows() {
         // Given
-        var sut = new UnsignedInt(1L);
+        var sut = UnsignedInt.of(1L);
 
         // When / Then
-        assertThatThrownBy(() -> sut.remainder(new UnsignedInt(0L)))
+        assertThatThrownBy(() -> sut.remainder(UnsignedInt.of(0L)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
@@ -358,8 +358,8 @@ class UnsignedIntTest {
     void divideRemainderRelationship() {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
-        var sut = new UnsignedInt(4_000_000_000L);
-        var divisor = new UnsignedInt(7L);
+        var sut = UnsignedInt.of(4_000_000_000L);
+        var divisor = UnsignedInt.of(7L);
 
         // When
         UnsignedInt q = sut.divide(divisor);
@@ -373,7 +373,7 @@ class UnsignedIntTest {
     @Test
     void parseUnsignedStringRoundTrips() {
         // Given
-        var sut = new UnsignedInt(4_294_967_295L);
+        var sut = UnsignedInt.of(4_294_967_295L);
 
         // When
         String result = Integer.toUnsignedString(sut.value());
@@ -388,7 +388,7 @@ class UnsignedIntTest {
     @Test
     void toUnsignedLongPreservesValue() {
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
 
         // When
         UnsignedLong result = sut.toUnsignedLong();
@@ -401,7 +401,7 @@ class UnsignedIntTest {
     void wideningEnablesCrossTypeArithmetic() {
         // UnsignedInt + UnsignedLong — widen first, then add
         // Given
-        var sut = new UnsignedInt(4_000_000_000L);
+        var sut = UnsignedInt.of(4_000_000_000L);
         var other = UnsignedLong.fromString("9999999999999999999");
 
         // When
@@ -416,7 +416,7 @@ class UnsignedIntTest {
     @Test
     void toStringShowsUnsignedRepresentation() {
         // Given
-        var sut = new UnsignedInt(UnsignedInt.MAX_VALUE);
+        var sut = UnsignedInt.of(UnsignedInt.MAX_VALUE);
 
         // When
         String result = sut.toString();

@@ -17,11 +17,15 @@ public value class Port implements RefinedInt<Port> {
 
     private final int value;
 
-    public Port(int value) {
+    private Port(int value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("port out of range [0, 65535]: " + value);
         }
         this.value = value;
+    }
+
+    public static Port of(int value) {
+        return new Port(value);
     }
 
     public static Port fromString(String s) {

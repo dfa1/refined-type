@@ -13,6 +13,6 @@ public class CountryCodeConverter extends AbstractRefinedStringConverter<Country
 
     @Override
     protected CountryCode fromString(String value) {
-        return new CountryCode(value);
+        return CountryCode.of(value);
     }
 }

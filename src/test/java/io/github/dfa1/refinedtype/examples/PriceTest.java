@@ -13,7 +13,7 @@ class PriceTest {
     @Test
     void positiveValueIsValid() {
         // Given
-        var sut = new Price(123.45);
+        var sut = Price.of(123.45);
 
         // When
         double result = sut.value();
@@ -25,7 +25,7 @@ class PriceTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Price(0.0);
+        var sut = Price.of(0.0);
 
         // When
         double result = sut.value();
@@ -37,7 +37,7 @@ class PriceTest {
     @Test
     void negativeIsValid() {
         // Given
-        var sut = new Price(-37.63);
+        var sut = Price.of(-37.63);
 
         // When
         double result = sut.value();
@@ -49,21 +49,21 @@ class PriceTest {
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Double.NaN))
+        assertThatThrownBy(() -> Price.of(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Double.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Price.of(Double.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Price(Double.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Price.of(Double.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,8 +72,8 @@ class PriceTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Price(1.0);
-        var other = new Price(2.0);
+        var sut = Price.of(1.0);
+        var other = Price.of(2.0);
 
         // When
         int result = sut.compareTo(other);
@@ -85,8 +85,8 @@ class PriceTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Price(42.0);
-        var other = new Price(42.0);
+        var sut = Price.of(42.0);
+        var other = Price.of(42.0);
 
         // When
         int result = sut.compareTo(other);
@@ -100,7 +100,7 @@ class PriceTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new Price(7.5);
+        var sut = Price.of(7.5);
 
         // When
         String result = sut.toString();
@@ -114,7 +114,7 @@ class PriceTest {
     @Test
     void implementsRefinedDouble() {
         // Given
-        RefinedDouble sut = new Price(11.0);
+        RefinedDouble sut = Price.of(11.0);
 
         // When
         double result = sut.value();

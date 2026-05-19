@@ -28,7 +28,7 @@ public class CoordinateBenchmark {
     private static final int SIZE = 100_000;
 
     private static final Coordinate ROME_VALUE =
-            new Coordinate(new Latitude(41.9028), new Longitude(12.4964));
+            Coordinate.of(Latitude.of(41.9028), Longitude.of(12.4964));
     private static final CoordinateIdentity ROME_IDENTITY =
             new CoordinateIdentity(41.9028, 12.4964);
 
@@ -43,7 +43,7 @@ public class CoordinateBenchmark {
         for (int i = 0; i < SIZE; i++) {
             double lat = -90.0  + rng.nextDouble() * 180.0;
             double lon = -180.0 + rng.nextDouble() * 360.0;
-            valueCoordinates[i]    = new Coordinate(new Latitude(lat), new Longitude(lon));
+            valueCoordinates[i]    = Coordinate.of(Latitude.of(lat), Longitude.of(lon));
             identityCoordinates[i] = new CoordinateIdentity(lat, lon);
         }
     }

@@ -39,7 +39,7 @@ class UnsignedShortTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new UnsignedShort(0);
+        var sut = UnsignedShort.of(0);
 
         // When
         int result = sut.value();
@@ -51,7 +51,7 @@ class UnsignedShortTest {
     @Test
     void maxValueIsValid() {
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
         int result = sut.value();
@@ -66,7 +66,7 @@ class UnsignedShortTest {
         int input = -1;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedShort(input))
+        assertThatThrownBy(() -> UnsignedShort.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,7 +76,7 @@ class UnsignedShortTest {
         int input = 65_536;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedShort(input))
+        assertThatThrownBy(() -> UnsignedShort.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ class UnsignedShortTest {
         // 2^15 = 32_768 — raw bits are Short.MIN_VALUE (negative signed),
         // but Short.toUnsignedInt must recover the correct unsigned value.
         // Given
-        var sut = new UnsignedShort(32_768);
+        var sut = UnsignedShort.of(32_768);
 
         // When
         int result = sut.value();
@@ -101,7 +101,7 @@ class UnsignedShortTest {
     void valuePreservesAll16Bits() {
         // 0xBEEF = 48_879
         // Given
-        var sut = new UnsignedShort(0xBEEF);
+        var sut = UnsignedShort.of(0xBEEF);
 
         // When
         int result = sut.value();
@@ -117,8 +117,8 @@ class UnsignedShortTest {
     void compareToReturnsPositiveWhenUnsignedGreater() {
         // 32_768 > 1 in unsigned space even though raw bits are negative
         // Given
-        var sut = new UnsignedShort(32_768);
-        var other = new UnsignedShort(1);
+        var sut = UnsignedShort.of(32_768);
+        var other = UnsignedShort.of(1);
 
         // When
         int result = sut.compareTo(other);
@@ -130,8 +130,8 @@ class UnsignedShortTest {
     @Test
     void compareToReturnsNegativeWhenUnsignedSmaller() {
         // Given
-        var sut = new UnsignedShort(1);
-        var other = new UnsignedShort(32_768);
+        var sut = UnsignedShort.of(1);
+        var other = UnsignedShort.of(32_768);
 
         // When
         int result = sut.compareTo(other);
@@ -143,8 +143,8 @@ class UnsignedShortTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new UnsignedShort(32_768);
-        var other = new UnsignedShort(32_768);
+        var sut = UnsignedShort.of(32_768);
+        var other = UnsignedShort.of(32_768);
 
         // When
         int result = sut.compareTo(other);
@@ -156,8 +156,8 @@ class UnsignedShortTest {
     @Test
     void maxIsGreaterThanSignedMax() {
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
-        var signedMax = new UnsignedShort(Short.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
+        var signedMax = UnsignedShort.of(Short.MAX_VALUE);
 
         // When
         int result = sut.compareTo(signedMax);
@@ -171,7 +171,7 @@ class UnsignedShortTest {
     @Test
     void toUnsignedIntRoundTrips() {
         // Given
-        var sut = new UnsignedShort(65_535);
+        var sut = UnsignedShort.of(65_535);
 
         // When
         int result = Short.toUnsignedInt(sut.rawBits());
@@ -183,7 +183,7 @@ class UnsignedShortTest {
     @Test
     void toUnsignedLongRoundTrips() {
         // Given
-        var sut = new UnsignedShort(65_535);
+        var sut = UnsignedShort.of(65_535);
 
         // When
         long result = Short.toUnsignedLong(sut.rawBits());
@@ -197,10 +197,10 @@ class UnsignedShortTest {
     @Test
     void addSimple() {
         // Given
-        var sut = new UnsignedShort(60_000);
+        var sut = UnsignedShort.of(60_000);
 
         // When
-        UnsignedShort result = sut.add(new UnsignedShort(5_000));
+        UnsignedShort result = sut.add(UnsignedShort.of(5_000));
 
         // Then
         assertThat(result.value()).isEqualTo(65_000);
@@ -210,10 +210,10 @@ class UnsignedShortTest {
     void addWrapsAroundMax() {
         // MAX + 1 must wrap to 0
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
-        UnsignedShort result = sut.add(new UnsignedShort(1));
+        UnsignedShort result = sut.add(UnsignedShort.of(1));
 
         // Then
         assertThat(result.value()).isZero();
@@ -222,10 +222,10 @@ class UnsignedShortTest {
     @Test
     void addIdentity() {
         // Given
-        var sut = new UnsignedShort(0xBEEF);
+        var sut = UnsignedShort.of(0xBEEF);
 
         // When
-        UnsignedShort result = sut.add(new UnsignedShort(0));
+        UnsignedShort result = sut.add(UnsignedShort.of(0));
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());
@@ -234,10 +234,10 @@ class UnsignedShortTest {
     @Test
     void subtractSimple() {
         // Given
-        var sut = new UnsignedShort(10);
+        var sut = UnsignedShort.of(10);
 
         // When
-        UnsignedShort result = sut.subtract(new UnsignedShort(3));
+        UnsignedShort result = sut.subtract(UnsignedShort.of(3));
 
         // Then
         assertThat(result.value()).isEqualTo(7);
@@ -247,10 +247,10 @@ class UnsignedShortTest {
     void subtractWrapsAroundZero() {
         // 0 - 1 must wrap to MAX
         // Given
-        var sut = new UnsignedShort(0);
+        var sut = UnsignedShort.of(0);
 
         // When
-        UnsignedShort result = sut.subtract(new UnsignedShort(1));
+        UnsignedShort result = sut.subtract(UnsignedShort.of(1));
 
         // Then
         assertThat(result.value()).isEqualTo(UnsignedShort.MAX_VALUE);
@@ -259,7 +259,7 @@ class UnsignedShortTest {
     @Test
     void subtractSelf() {
         // Given
-        var sut = new UnsignedShort(50_000);
+        var sut = UnsignedShort.of(50_000);
 
         // When
         UnsignedShort result = sut.subtract(sut);
@@ -271,10 +271,10 @@ class UnsignedShortTest {
     @Test
     void multiplySimple() {
         // Given
-        var sut = new UnsignedShort(300);
+        var sut = UnsignedShort.of(300);
 
         // When
-        UnsignedShort result = sut.multiply(new UnsignedShort(200));
+        UnsignedShort result = sut.multiply(UnsignedShort.of(200));
 
         // Then
         assertThat(result.value()).isEqualTo(60_000);
@@ -284,10 +284,10 @@ class UnsignedShortTest {
     void multiplyWrapsAroundMax() {
         // MAX * MAX mod 2^16 = (2^16-1)^2 mod 2^16 = 1
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
-        UnsignedShort result = sut.multiply(new UnsignedShort(UnsignedShort.MAX_VALUE));
+        UnsignedShort result = sut.multiply(UnsignedShort.of(UnsignedShort.MAX_VALUE));
 
         // Then
         assertThat(result.value()).isEqualTo(1);
@@ -296,10 +296,10 @@ class UnsignedShortTest {
     @Test
     void multiplyByZero() {
         // Given
-        var sut = new UnsignedShort(0xBEEF);
+        var sut = UnsignedShort.of(0xBEEF);
 
         // When
-        UnsignedShort result = sut.multiply(new UnsignedShort(0));
+        UnsignedShort result = sut.multiply(UnsignedShort.of(0));
 
         // Then
         assertThat(result.value()).isZero();
@@ -308,10 +308,10 @@ class UnsignedShortTest {
     @Test
     void multiplyByOne() {
         // Given
-        var sut = new UnsignedShort(0xBEEF);
+        var sut = UnsignedShort.of(0xBEEF);
 
         // When
-        UnsignedShort result = sut.multiply(new UnsignedShort(1));
+        UnsignedShort result = sut.multiply(UnsignedShort.of(1));
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());
@@ -320,10 +320,10 @@ class UnsignedShortTest {
     @Test
     void divideSimple() {
         // Given
-        var sut = new UnsignedShort(60_000);
+        var sut = UnsignedShort.of(60_000);
 
         // When
-        UnsignedShort result = sut.divide(new UnsignedShort(3));
+        UnsignedShort result = sut.divide(UnsignedShort.of(3));
 
         // Then
         assertThat(result.value()).isEqualTo(20_000);
@@ -333,10 +333,10 @@ class UnsignedShortTest {
     void divideAboveSignedMax() {
         // 40_000 / 2 = 20_000 — value above Short.MAX_VALUE
         // Given
-        var sut = new UnsignedShort(40_000);
+        var sut = UnsignedShort.of(40_000);
 
         // When
-        UnsignedShort result = sut.divide(new UnsignedShort(2));
+        UnsignedShort result = sut.divide(UnsignedShort.of(2));
 
         // Then
         assertThat(result.value()).isEqualTo(20_000);
@@ -345,20 +345,20 @@ class UnsignedShortTest {
     @Test
     void divideByZeroThrows() {
         // Given
-        var sut = new UnsignedShort(1);
+        var sut = UnsignedShort.of(1);
 
         // When / Then
-        assertThatThrownBy(() -> sut.divide(new UnsignedShort(0)))
+        assertThatThrownBy(() -> sut.divide(UnsignedShort.of(0)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
     void remainderSimple() {
         // Given
-        var sut = new UnsignedShort(65_000);
+        var sut = UnsignedShort.of(65_000);
 
         // When
-        UnsignedShort result = sut.remainder(new UnsignedShort(3));
+        UnsignedShort result = sut.remainder(UnsignedShort.of(3));
 
         // Then
         assertThat(result.value()).isEqualTo(65_000 % 3);
@@ -367,10 +367,10 @@ class UnsignedShortTest {
     @Test
     void remainderByZeroThrows() {
         // Given
-        var sut = new UnsignedShort(1);
+        var sut = UnsignedShort.of(1);
 
         // When / Then
-        assertThatThrownBy(() -> sut.remainder(new UnsignedShort(0)))
+        assertThatThrownBy(() -> sut.remainder(UnsignedShort.of(0)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
@@ -378,8 +378,8 @@ class UnsignedShortTest {
     void divideRemainderRelationship() {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
-        var sut = new UnsignedShort(65_000);
-        var divisor = new UnsignedShort(7);
+        var sut = UnsignedShort.of(65_000);
+        var divisor = UnsignedShort.of(7);
 
         // When
         UnsignedShort q = sut.divide(divisor);
@@ -395,7 +395,7 @@ class UnsignedShortTest {
     @Test
     void toUnsignedIntPreservesValue() {
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
         UnsignedInt result = sut.toUnsignedInt();
@@ -407,7 +407,7 @@ class UnsignedShortTest {
     @Test
     void toUnsignedLongPreservesValue() {
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
         UnsignedLong result = sut.toUnsignedLong();
@@ -420,8 +420,8 @@ class UnsignedShortTest {
     void wideningEnablesCrossTypeArithmetic() {
         // UnsignedShort + UnsignedInt — widen first, then add
         // Given
-        var sut = new UnsignedShort(1_000);
-        var other = new UnsignedInt(3_000_000_000L);
+        var sut = UnsignedShort.of(1_000);
+        var other = UnsignedInt.of(3_000_000_000L);
 
         // When
         UnsignedInt result = sut.toUnsignedInt().add(other);
@@ -435,7 +435,7 @@ class UnsignedShortTest {
     @Test
     void toStringShowsUnsignedRepresentation() {
         // Given
-        var sut = new UnsignedShort(UnsignedShort.MAX_VALUE);
+        var sut = UnsignedShort.of(UnsignedShort.MAX_VALUE);
 
         // When
         String result = sut.toString();
@@ -447,7 +447,7 @@ class UnsignedShortTest {
     @Test
     void toStringZero() {
         // Given
-        var sut = new UnsignedShort(0);
+        var sut = UnsignedShort.of(0);
 
         // When
         String result = sut.toString();

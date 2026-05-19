@@ -25,7 +25,7 @@ public value class Email implements RefinedString<Email> {
 
     private final String value;
 
-    public Email(String value) {
+    private Email(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("email must not be blank");
         }
@@ -41,6 +41,10 @@ public value class Email implements RefinedString<Email> {
             throw new IllegalArgumentException("email domain must contain a '.': " + value);
         }
         this.value = value;
+    }
+
+    public static Email of(String value) {
+        return new Email(value);
     }
 
     @Override

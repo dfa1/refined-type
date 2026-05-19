@@ -58,7 +58,7 @@ public class LayoutInspectorTest {
         // Given
         int n = 100;
         UnsignedInt[] sut = new UnsignedInt[n];
-        for (int i = 0; i < n; i++) sut[i] = new UnsignedInt(i);
+        for (int i = 0; i < n; i++) sut[i] = UnsignedInt.of(i);
         Integer[] boxedArray = new Integer[n];
         for (int i = 256; i < 256 + n; i++) boxedArray[i - 256] = i; // avoid JVM Integer cache
 

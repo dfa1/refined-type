@@ -13,6 +13,6 @@ public class AgeConverter extends AbstractRefinedShortConverter<Age> {
 
     @Override
     protected Age fromShort(short value) {
-        return new Age(value);
+        return Age.of(value);
     }
 }

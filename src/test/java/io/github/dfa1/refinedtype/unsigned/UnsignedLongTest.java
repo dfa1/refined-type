@@ -12,7 +12,7 @@ class UnsignedLongTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new UnsignedLong(0L);
+        var sut = UnsignedLong.of(0L);
 
         // When
         long result = sut.rawBits();
@@ -67,7 +67,7 @@ class UnsignedLongTest {
         // 2^63 > 1 in unsigned space even though raw bits are negative signed
         // Given
         var sut = UnsignedLong.fromString("9223372036854775808");
-        var other = new UnsignedLong(1L);
+        var other = UnsignedLong.of(1L);
 
         // When
         int result = sut.compareTo(other);
@@ -79,8 +79,8 @@ class UnsignedLongTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new UnsignedLong(42L);
-        var other = new UnsignedLong(42L);
+        var sut = UnsignedLong.of(42L);
+        var other = UnsignedLong.of(42L);
 
         // When
         int result = sut.compareTo(other);
@@ -93,7 +93,7 @@ class UnsignedLongTest {
     void maxIsGreaterThanSignedMax() {
         // Given
         var sut = UnsignedLong.MAX;
-        var signedMax = new UnsignedLong(Long.MAX_VALUE);
+        var signedMax = UnsignedLong.of(Long.MAX_VALUE);
 
         // When
         int result = sut.compareTo(signedMax);
@@ -107,10 +107,10 @@ class UnsignedLongTest {
     @Test
     void addSimple() {
         // Given
-        var sut = new UnsignedLong(Long.MAX_VALUE);
+        var sut = UnsignedLong.of(Long.MAX_VALUE);
 
         // When
-        UnsignedLong result = sut.add(new UnsignedLong(1L));
+        UnsignedLong result = sut.add(UnsignedLong.of(1L));
 
         // Then — 2^63, still a valid unsigned value
         assertThat(Long.toUnsignedString(result.rawBits())).isEqualTo("9223372036854775808");
@@ -123,7 +123,7 @@ class UnsignedLongTest {
         var sut = UnsignedLong.MAX;
 
         // When
-        UnsignedLong result = sut.add(new UnsignedLong(1L));
+        UnsignedLong result = sut.add(UnsignedLong.of(1L));
 
         // Then
         assertThat(result.rawBits()).isZero();
@@ -144,10 +144,10 @@ class UnsignedLongTest {
     @Test
     void subtractSimple() {
         // Given
-        var sut = new UnsignedLong(5L);
+        var sut = UnsignedLong.of(5L);
 
         // When
-        UnsignedLong result = sut.subtract(new UnsignedLong(3L));
+        UnsignedLong result = sut.subtract(UnsignedLong.of(3L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(2L);
@@ -160,7 +160,7 @@ class UnsignedLongTest {
         var sut = UnsignedLong.ZERO;
 
         // When
-        UnsignedLong result = sut.subtract(new UnsignedLong(1L));
+        UnsignedLong result = sut.subtract(UnsignedLong.of(1L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(UnsignedLong.MAX.rawBits());
@@ -181,10 +181,10 @@ class UnsignedLongTest {
     @Test
     void multiplySimple() {
         // Given
-        var sut = new UnsignedLong(1_000_000_000L);
+        var sut = UnsignedLong.of(1_000_000_000L);
 
         // When
-        UnsignedLong result = sut.multiply(new UnsignedLong(1_000_000_000L));
+        UnsignedLong result = sut.multiply(UnsignedLong.of(1_000_000_000L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000_000_000_000_000L);
@@ -209,7 +209,7 @@ class UnsignedLongTest {
         var sut = UnsignedLong.fromString("12345678901234567890");
 
         // When
-        UnsignedLong result = sut.multiply(new UnsignedLong(1L));
+        UnsignedLong result = sut.multiply(UnsignedLong.of(1L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(sut.rawBits());
@@ -218,10 +218,10 @@ class UnsignedLongTest {
     @Test
     void divideSimple() {
         // Given
-        var sut = new UnsignedLong(1_000_000_000_000L);
+        var sut = UnsignedLong.of(1_000_000_000_000L);
 
         // When
-        UnsignedLong result = sut.divide(new UnsignedLong(1_000_000L));
+        UnsignedLong result = sut.divide(UnsignedLong.of(1_000_000L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000L);
@@ -234,7 +234,7 @@ class UnsignedLongTest {
         var sut = UnsignedLong.fromString("9223372036854775808");
 
         // When
-        UnsignedLong result = sut.divide(new UnsignedLong(2L));
+        UnsignedLong result = sut.divide(UnsignedLong.of(2L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(Long.MAX_VALUE / 2 + 1);
@@ -243,7 +243,7 @@ class UnsignedLongTest {
     @Test
     void divideByZeroThrows() {
         // Given
-        var sut = new UnsignedLong(1L);
+        var sut = UnsignedLong.of(1L);
 
         // When / Then
         assertThatThrownBy(() -> sut.divide(UnsignedLong.ZERO))
@@ -253,10 +253,10 @@ class UnsignedLongTest {
     @Test
     void remainderSimple() {
         // Given
-        var sut = new UnsignedLong(1_000_000_007L);
+        var sut = UnsignedLong.of(1_000_000_007L);
 
         // When
-        UnsignedLong result = sut.remainder(new UnsignedLong(3L));
+        UnsignedLong result = sut.remainder(UnsignedLong.of(3L));
 
         // Then
         assertThat(result.rawBits()).isEqualTo(1_000_000_007L % 3L);
@@ -265,7 +265,7 @@ class UnsignedLongTest {
     @Test
     void remainderByZeroThrows() {
         // Given
-        var sut = new UnsignedLong(1L);
+        var sut = UnsignedLong.of(1L);
 
         // When / Then
         assertThatThrownBy(() -> sut.remainder(UnsignedLong.ZERO))
@@ -277,7 +277,7 @@ class UnsignedLongTest {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
         var sut = UnsignedLong.fromString("12345678901234567890");
-        var divisor = new UnsignedLong(1_000_000_007L);
+        var divisor = UnsignedLong.of(1_000_000_007L);
 
         // When
         UnsignedLong q = sut.divide(divisor);

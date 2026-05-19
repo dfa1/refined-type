@@ -30,7 +30,7 @@ public value class HostName implements RefinedString<HostName> {
 
     private final String value;
 
-    public HostName(String value) {
+    private HostName(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("hostname must not be empty");
         }
@@ -74,6 +74,10 @@ public value class HostName implements RefinedString<HostName> {
         }
 
         this.value = lower;
+    }
+
+    public static HostName of(String value) {
+        return new HostName(value);
     }
 
     private static boolean isLabelChar(char c) {

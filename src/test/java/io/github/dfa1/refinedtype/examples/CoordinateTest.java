@@ -8,19 +8,19 @@ import static org.assertj.core.api.Assertions.within;
 class CoordinateTest {
 
     // Real city coordinates used as reference points
-    private static final Coordinate LONDON = new Coordinate(new Latitude(51.5074),  new Longitude(  -0.1278));
-    private static final Coordinate PARIS  = new Coordinate(new Latitude(48.8566),  new Longitude(   2.3522));
-    private static final Coordinate NYC    = new Coordinate(new Latitude(40.7128),  new Longitude( -74.0060));
-    private static final Coordinate LA     = new Coordinate(new Latitude(34.0522),  new Longitude(-118.2437));
-    private static final Coordinate TOKYO  = new Coordinate(new Latitude(35.6762),  new Longitude( 139.6503));
-    private static final Coordinate SYDNEY = new Coordinate(new Latitude(-33.8688), new Longitude( 151.2093));
+    private static final Coordinate LONDON = Coordinate.of(Latitude.of(51.5074),  Longitude.of(  -0.1278));
+    private static final Coordinate PARIS  = Coordinate.of(Latitude.of(48.8566),  Longitude.of(   2.3522));
+    private static final Coordinate NYC    = Coordinate.of(Latitude.of(40.7128),  Longitude.of( -74.0060));
+    private static final Coordinate LA     = Coordinate.of(Latitude.of(34.0522),  Longitude.of(-118.2437));
+    private static final Coordinate TOKYO  = Coordinate.of(Latitude.of(35.6762),  Longitude.of( 139.6503));
+    private static final Coordinate SYDNEY = Coordinate.of(Latitude.of(-33.8688), Longitude.of( 151.2093));
 
     // ── construction ────────────────────────────────────────────────────────
 
     @Test
     void exposesLatitudeAndLongitude() {
         // Given
-        var sut = new Coordinate(new Latitude(51.5074), new Longitude(-0.1278));
+        var sut = Coordinate.of(Latitude.of(51.5074), Longitude.of(-0.1278));
 
         // When / Then
         assertThat(sut.latitude().value()).isEqualTo(51.5074);
@@ -98,8 +98,8 @@ class CoordinateTest {
     @Test
     void antipodalDistanceIsHalfCircumference() {
         // Given — south-pole equivalent of (0, 0) is (0, 180)
-        var origin = new Coordinate(Latitude.ZERO, Longitude.ZERO);
-        var antipode = new Coordinate(Latitude.ZERO, new Longitude(180.0));
+        var origin = Coordinate.of(Latitude.ZERO, Longitude.ZERO);
+        var antipode = Coordinate.of(Latitude.ZERO, Longitude.of(180.0));
 
         // When
         Distance result = origin.distanceTo(antipode);
@@ -113,7 +113,7 @@ class CoordinateTest {
     @Test
     void toStringIncludesBothAxes() {
         // Given
-        var sut = new Coordinate(new Latitude(40.7128), new Longitude(-74.0060));
+        var sut = Coordinate.of(Latitude.of(40.7128), Longitude.of(-74.0060));
 
         // When
         String result = sut.toString();

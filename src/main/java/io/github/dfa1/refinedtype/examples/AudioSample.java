@@ -23,8 +23,12 @@ public value class AudioSample implements RefinedShort<AudioSample> {
 
     private final short value;
 
-    public AudioSample(short value) {
+    private AudioSample(short value) {
         this.value = value;
+    }
+
+    public static AudioSample of(short value) {
+        return new AudioSample(value);
     }
 
     @Override

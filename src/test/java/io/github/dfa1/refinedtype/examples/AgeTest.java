@@ -13,7 +13,7 @@ class AgeTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Age(0);
+        var sut = Age.of(0);
 
         // When
         int result = sut.value();
@@ -25,7 +25,7 @@ class AgeTest {
     @Test
     void typicalAgeIsValid() {
         // Given
-        var sut = new Age(42);
+        var sut = Age.of(42);
 
         // When
         int result = sut.value();
@@ -37,7 +37,7 @@ class AgeTest {
     @Test
     void maxIsValid() {
         // Given
-        var sut = new Age(Age.MAX);
+        var sut = Age.of(Age.MAX);
 
         // When
         int result = sut.value();
@@ -49,14 +49,14 @@ class AgeTest {
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Age(-1))
+        assertThatThrownBy(() -> Age.of(-1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void aboveMaxRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Age(Age.MAX + 1))
+        assertThatThrownBy(() -> Age.of(Age.MAX + 1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -65,8 +65,8 @@ class AgeTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Age(20);
-        var other = new Age(30);
+        var sut = Age.of(20);
+        var other = Age.of(30);
 
         // When
         int result = sut.compareTo(other);
@@ -78,8 +78,8 @@ class AgeTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Age(50);
-        var other = new Age(50);
+        var sut = Age.of(50);
+        var other = Age.of(50);
 
         // When
         int result = sut.compareTo(other);
@@ -93,7 +93,7 @@ class AgeTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new Age(33);
+        var sut = Age.of(33);
 
         // When
         String result = sut.toString();
@@ -107,7 +107,7 @@ class AgeTest {
     @Test
     void implementsRefinedShort() {
         // Given
-        RefinedShort<?> sut = new Age(18);
+        RefinedShort<?> sut = Age.of(18);
 
         // When
         short result = sut.value();

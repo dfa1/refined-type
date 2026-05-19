@@ -13,7 +13,7 @@ class PercentageTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Percentage(0f);
+        var sut = Percentage.of(0f);
 
         // When
         float result = sut.value();
@@ -25,7 +25,7 @@ class PercentageTest {
     @Test
     void hundredIsValid() {
         // Given
-        var sut = new Percentage(100f);
+        var sut = Percentage.of(100f);
 
         // When
         float result = sut.value();
@@ -37,7 +37,7 @@ class PercentageTest {
     @Test
     void midRangeIsValid() {
         // Given
-        var sut = new Percentage(42.5f);
+        var sut = Percentage.of(42.5f);
 
         // When
         float result = sut.value();
@@ -49,35 +49,35 @@ class PercentageTest {
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Percentage(-0.0001f))
+        assertThatThrownBy(() -> Percentage.of(-0.0001f))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void aboveHundredRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Percentage(100.0001f))
+        assertThatThrownBy(() -> Percentage.of(100.0001f))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Percentage(Float.NaN))
+        assertThatThrownBy(() -> Percentage.of(Float.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Percentage(Float.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Percentage.of(Float.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Percentage(Float.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Percentage.of(Float.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -106,7 +106,7 @@ class PercentageTest {
     @Test
     void ofProbabilityScalesByHundred() {
         // Given
-        var input = new Probability(0.25f);
+        var input = Probability.of(0.25f);
 
         // When
         Percentage result = Percentage.ofProbability(input);
@@ -120,8 +120,8 @@ class PercentageTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Percentage(10f);
-        var other = new Percentage(90f);
+        var sut = Percentage.of(10f);
+        var other = Percentage.of(90f);
 
         // When
         int result = sut.compareTo(other);
@@ -135,7 +135,7 @@ class PercentageTest {
     @Test
     void toStringIncludesPercentSign() {
         // Given
-        var sut = new Percentage(42f);
+        var sut = Percentage.of(42f);
 
         // When
         String result = sut.toString();
@@ -149,7 +149,7 @@ class PercentageTest {
     @Test
     void implementsRefinedFloat() {
         // Given
-        RefinedFloat sut = new Percentage(33f);
+        RefinedFloat sut = Percentage.of(33f);
 
         // When
         float result = sut.value();

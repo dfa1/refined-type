@@ -26,7 +26,7 @@ class LongitudeTest {
     @Test
     void eastBoundaryAccepted() {
         // Given
-        var sut = new Longitude(180.0);
+        var sut = Longitude.of(180.0);
 
         // When
         double result = sut.value();
@@ -38,7 +38,7 @@ class LongitudeTest {
     @Test
     void westBoundaryAccepted() {
         // Given
-        var sut = new Longitude(-180.0);
+        var sut = Longitude.of(-180.0);
 
         // When
         double result = sut.value();
@@ -50,7 +50,7 @@ class LongitudeTest {
     @Test
     void typicalLongitudeAccepted() {
         // Given
-        var sut = new Longitude(-73.9857);
+        var sut = Longitude.of(-73.9857);
 
         // When
         double result = sut.value();
@@ -62,28 +62,28 @@ class LongitudeTest {
     @Test
     void aboveMaxRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Longitude(180.0001))
+        assertThatThrownBy(() -> Longitude.of(180.0001))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void belowMinRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Longitude(-180.0001))
+        assertThatThrownBy(() -> Longitude.of(-180.0001))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Longitude(Double.NaN))
+        assertThatThrownBy(() -> Longitude.of(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Longitude(Double.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Longitude.of(Double.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -92,8 +92,8 @@ class LongitudeTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Longitude(-122.4194);
-        var other = new Longitude(2.3522);
+        var sut = Longitude.of(-122.4194);
+        var other = Longitude.of(2.3522);
 
         // When
         int result = sut.compareTo(other);
@@ -105,8 +105,8 @@ class LongitudeTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Longitude(139.6917);
-        var other = new Longitude(139.6917);
+        var sut = Longitude.of(139.6917);
+        var other = Longitude.of(139.6917);
 
         // When
         int result = sut.compareTo(other);
@@ -120,7 +120,7 @@ class LongitudeTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new Longitude(-0.1278);
+        var sut = Longitude.of(-0.1278);
 
         // When
         String result = sut.toString();
@@ -134,7 +134,7 @@ class LongitudeTest {
     @Test
     void positiveLongitudeIsEastern() {
         // Given
-        var sut = new Longitude(139.6917); // Tokyo
+        var sut = Longitude.of(139.6917); // Tokyo
 
         // When / Then
         assertThat(sut.isEasternHemisphere()).isTrue();
@@ -145,7 +145,7 @@ class LongitudeTest {
     @Test
     void negativeLongitudeIsWestern() {
         // Given
-        var sut = new Longitude(-74.0060); // NYC
+        var sut = Longitude.of(-74.0060); // NYC
 
         // When / Then
         assertThat(sut.isWesternHemisphere()).isTrue();
@@ -181,7 +181,7 @@ class LongitudeTest {
     @Test
     void toRadiansOneEightyIsPi() {
         // Given
-        var sut = new Longitude(180.0);
+        var sut = Longitude.of(180.0);
 
         // When
         double result = sut.toRadians();
@@ -195,7 +195,7 @@ class LongitudeTest {
     @Test
     void implementsRefinedDouble() {
         // Given
-        RefinedDouble sut = new Longitude(56.78);
+        RefinedDouble sut = Longitude.of(56.78);
 
         // When
         double result = sut.value();

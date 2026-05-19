@@ -17,7 +17,7 @@ public value class CurrencyCode implements RefinedString<CurrencyCode> {
 
     private final String value;
 
-    public CurrencyCode(String value) {
+    private CurrencyCode(String value) {
         if (value == null || value.length() != 3) {
             throw new IllegalArgumentException("ISO 4217 currency code must be exactly 3 letters: " + value);
         }
@@ -28,6 +28,10 @@ public value class CurrencyCode implements RefinedString<CurrencyCode> {
             throw new IllegalArgumentException("ISO 4217 currency code must be three letters: " + value);
         }
         this.value = upper;
+    }
+
+    public static CurrencyCode of(String value) {
+        return new CurrencyCode(value);
     }
 
     @Override

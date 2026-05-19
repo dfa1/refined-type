@@ -16,12 +16,11 @@ import java.util.regex.Pattern;
 /// - `EEEEEEEEEEEEEE` — 14-char entity-specific part, letters or digits.
 /// - `CC`             — 2-digit check digits (ISO 7064 MOD 97-10, same algorithm as IBAN).
 ///
-/// Two entry points:
+/// Two factory methods are provided:
 ///
-/// - {@link #Lei(String)} — parse an already-complete 20-character LEI (shape check only;
-///   checksum is **not** verified, matching the approach of {@link Isin}).
-/// - {@link #of(String)} — compute valid check digits from an 18-character prefix and return
-///   a guaranteed-valid LEI.
+/// - {@link #of(String)} — parse and validate a complete 20-character LEI (structure + MOD 97-10 checksum).
+/// - {@link #ofPrefix(String)} — compute valid check digits from an 18-character prefix
+///   and return a guaranteed-valid LEI.
 ///
 /// Examples: `7H6GLXDRUGQFU57RNE97` (Deutsche Bank),
 /// `HWUPKR0MPOU8FGXBT394` (JPMorgan Chase).
@@ -34,7 +33,12 @@ public value class Lei implements RefinedString<Lei> {
 
     private final String value;
 
-    public Lei(String value) {
+    private Lei(String value) {
+        this.value = value;
+    }
+
+    /// Parse and validate a complete 20-character LEI (structure + MOD 97-10 checksum).
+    public static Lei of(String value) {
         if (value == null || value.length() != LENGTH) {
             throw new IllegalArgumentException("LEI must be exactly 20 characters: " + value);
         }
@@ -43,11 +47,10 @@ public value class Lei implements RefinedString<Lei> {
             throw new IllegalArgumentException(
                     "LEI must match ^[A-Z0-9]{18}[0-9]{2}$ (18 alphanumeric + 2 numeric check digits): " + value);
         }
-        this.value = upper;
-    }
-
-    private Lei(String prefix18, int checkDigits) {
-        this.value = prefix18 + String.format("%02d", checkDigits);
+        if (mod97(upper) != 1) {
+            throw new IllegalArgumentException("LEI checksum invalid (MOD 97-10): " + value);
+        }
+        return new Lei(upper);
     }
 
     /// Build a valid LEI from an 18-character alphanumeric prefix by computing
@@ -59,7 +62,7 @@ public value class Lei implements RefinedString<Lei> {
     /// 2. Replace each letter with its numeric value (`A`=10, …, `Z`=35).
     /// 3. Compute the resulting integer string modulo 97.
     /// 4. Check digits = `(98 − result) mod 97`, zero-padded to 2 digits.
-    public static Lei of(String prefix18) {
+    public static Lei ofPrefix(String prefix18) {
         if (prefix18 == null || prefix18.length() != PREFIX_LENGTH) {
             throw new IllegalArgumentException("LEI prefix must be exactly 18 characters: " + prefix18);
         }
@@ -69,7 +72,7 @@ public value class Lei implements RefinedString<Lei> {
                     "LEI prefix must be alphanumeric (A-Z, 0-9): " + prefix18);
         }
         int check = 98 - mod97(upper + "00");
-        return new Lei(upper, check);
+        return new Lei(upper + String.format("%02d", check));
     }
 
     @Override
@@ -87,21 +90,30 @@ public value class Lei implements RefinedString<Lei> {
         return value.substring(4, 18);
     }
 
-    /// The 2-digit check digits as an integer in [1, 97].
-    public int checkDigits() {
-        return Integer.parseInt(value.substring(18));
-    }
-
-    /// Returns `true` if the ISO 7064 MOD 97-10 checksum is valid.
+    /// Two-digit MOD 97-10 check digits as a string (positions 19–20), e.g. `"97"` or `"01"`.
     ///
-    /// The single-argument constructor does **not** verify this; use this
-    /// method when strict validation is required.
-    public boolean isChecksumValid() {
-        return mod97(value) == 1;
+    /// Returns `String` rather than `int` to preserve zero-padding (e.g. `"01"`, not `1`)
+    /// and for consistency with {@link Iban#checkDigits()}.
+    public String checkDigits() {
+        return value.substring(18);
     }
 
     private static int mod97(String s) {
-        return Mod97.compute(s);
+        // Process in chunks to avoid BigInteger; int is wide enough for 9-char blocks.
+        StringBuilder numeric = new StringBuilder(s.length() * 2);
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c >= '0' && c <= '9') {
+                numeric.append(c);
+            } else {
+                numeric.append(c - 'A' + 10);
+            }
+        }
+        int remainder = 0;
+        for (int i = 0; i < numeric.length(); i++) {
+            remainder = (remainder * 10 + (numeric.charAt(i) - '0')) % 97;
+        }
+        return remainder;
     }
 
     @Override

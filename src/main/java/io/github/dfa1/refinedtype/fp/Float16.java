@@ -49,13 +49,18 @@ public value class Float16 implements Comparable<Float16> {
     private final short bits;
 
     /// Construct from raw IEEE 754 half-precision bit pattern. Every bit-pattern is valid.
-    public Float16(short bits) {
+    private Float16(short bits) {
         this.bits = bits;
     }
 
     /// Convert float32 to float16, rounding to nearest even. May overflow to ±Infinity.
     public static Float16 of(float value) {
         return new Float16(Float.floatToFloat16(value));
+    }
+
+    /// Construct from raw IEEE 754 half-precision bit pattern. Every bit-pattern is valid.
+    public static Float16 ofBits(short bits) {
+        return new Float16(bits);
     }
 
     /// Expand to float32. Exact for all normal and subnormal float16 values.

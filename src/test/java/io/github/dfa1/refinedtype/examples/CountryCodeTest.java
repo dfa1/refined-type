@@ -11,7 +11,7 @@ class CountryCodeTest {
     @Test
     void valueReturnsUppercaseCode() {
         // Given
-        var sut = new CountryCode("DE");
+        var sut = CountryCode.of("DE");
 
         // When
         String result = sut.value();
@@ -23,7 +23,7 @@ class CountryCodeTest {
     @Test
     void lowercaseNormalizedToUppercase() {
         // Given
-        var sut = new CountryCode("it");
+        var sut = CountryCode.of("it");
 
         // When
         String result = sut.value();
@@ -35,7 +35,7 @@ class CountryCodeTest {
     @Test
     void mixedCaseNormalized() {
         // Given
-        var sut = new CountryCode("gB");
+        var sut = CountryCode.of("gB");
 
         // When
         String result = sut.value();
@@ -47,7 +47,7 @@ class CountryCodeTest {
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CountryCode(null))
+        assertThatThrownBy(() -> CountryCode.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,7 +57,7 @@ class CountryCodeTest {
         String input = "D";
 
         // When / Then
-        assertThatThrownBy(() -> new CountryCode(input))
+        assertThatThrownBy(() -> CountryCode.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,24 +67,24 @@ class CountryCodeTest {
         String input = "DEU";
 
         // When / Then
-        assertThatThrownBy(() -> new CountryCode(input))
+        assertThatThrownBy(() -> CountryCode.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nonLettersRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CountryCode("1T"))
+        assertThatThrownBy(() -> CountryCode.of("1T"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new CountryCode("D2"))
+        assertThatThrownBy(() -> CountryCode.of("D2"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new CountryCode("DE");
-        var other = new CountryCode("US");
+        var sut = CountryCode.of("DE");
+        var other = CountryCode.of("US");
 
         // When
         int result = sut.compareTo(other);
@@ -96,8 +96,8 @@ class CountryCodeTest {
     @Test
     void compareToReturnsPositiveWhenLexicographicallyGreater() {
         // Given
-        var sut = new CountryCode("US");
-        var other = new CountryCode("DE");
+        var sut = CountryCode.of("US");
+        var other = CountryCode.of("DE");
 
         // When
         int result = sut.compareTo(other);
@@ -109,8 +109,8 @@ class CountryCodeTest {
     @Test
     void compareToReturnsZeroRegardlessOfInputCase() {
         // Given
-        var sut = new CountryCode("DE");
-        var other = new CountryCode("de");
+        var sut = CountryCode.of("DE");
+        var other = CountryCode.of("de");
 
         // When
         int result = sut.compareTo(other);
@@ -122,7 +122,7 @@ class CountryCodeTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new CountryCode("FR");
+        var sut = CountryCode.of("FR");
 
         // When
         String result = sut.toString();
@@ -134,7 +134,7 @@ class CountryCodeTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new CountryCode("JP");
+        RefinedString sut = CountryCode.of("JP");
 
         // When
         String result = sut.value();

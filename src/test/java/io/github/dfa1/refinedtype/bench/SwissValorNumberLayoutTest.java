@@ -33,7 +33,7 @@ class SwissValorNumberLayoutTest {
         SwissValorNumber[] valueArr = new SwissValorNumber[n];
         SwissValorNumberIdentity[] identityArr = new SwissValorNumberIdentity[n];
         for (int i = 0; i < n; i++) {
-            valueArr[i]    = new SwissValorNumber(i + 1);
+            valueArr[i]    = SwissValorNumber.of(i + 1);
             identityArr[i] = new SwissValorNumberIdentity(i + 1);
         }
 

@@ -31,7 +31,7 @@ public value class CusipNumber implements RefinedString<CusipNumber> {
 
     private final String value;
 
-    public CusipNumber(String value) {
+    private CusipNumber(String value) {
         if (value == null || value.length() != LENGTH) {
             throw new IllegalArgumentException("CUSIP must be exactly 9 characters: " + value);
         }
@@ -42,17 +42,21 @@ public value class CusipNumber implements RefinedString<CusipNumber> {
         this.value = upper;
     }
 
+    public static CusipNumber of(String value) {
+        return new CusipNumber(value);
+    }
+
     @Override
     public String value() {
         return value;
     }
 
-    private static final CountryCode US = new CountryCode("US");
+    private static final CountryCode US = CountryCode.of("US");
 
     /// Build the ISO 6166 ISIN: country `US` + CUSIP + Luhn-mod-10 check
-    /// digit (see {@link Isin#Isin(CountryCode, String)}).
+    /// digit (see {@link Isin#of(CountryCode, String)}).
     public Isin toIsin() {
-        return new Isin(US, value);
+        return Isin.of(US, value);
     }
 
     @Override

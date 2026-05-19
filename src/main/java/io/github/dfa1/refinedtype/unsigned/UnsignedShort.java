@@ -9,11 +9,15 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
 
     private final short bits;
 
-    public UnsignedShort(int value) {
+    private UnsignedShort(int value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("out of unsigned short range [0, 65535]: " + value);
         }
         this.bits = (short) value;
+    }
+
+    public static UnsignedShort of(int value) {
+        return new UnsignedShort(value);
     }
 
     /// Unsigned value as int (always non-negative).
@@ -45,14 +49,14 @@ public value class UnsignedShort implements Comparable<UnsignedShort> {
     /// UnsignedInt result = s.toUnsignedInt().add(i);
     /// ```
     public UnsignedInt toUnsignedInt() {
-        return new UnsignedInt(Short.toUnsignedInt(bits));
+        return UnsignedInt.of(Short.toUnsignedInt(bits));
     }
 
     /// Widen to {@link UnsignedLong}.
     ///
     /// See {@link #toUnsignedInt()} for the rationale behind explicit widening.
     public UnsignedLong toUnsignedLong() {
-        return new UnsignedLong(Short.toUnsignedLong(bits));
+        return UnsignedLong.of(Short.toUnsignedLong(bits));
     }
 
     /// Wraps mod 2^16.

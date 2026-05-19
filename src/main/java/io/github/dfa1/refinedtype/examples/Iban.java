@@ -87,7 +87,7 @@ public value class Iban implements RefinedString<Iban> {
 
     /// ISO 3166-1 alpha-2 country code (positions 1–2).
     public CountryCode country() {
-        return new CountryCode(value.substring(0, 2));
+        return CountryCode.of(value.substring(0, 2));
     }
 
     /// Two-digit MOD 97-10 check digits as a string (positions 3–4), e.g. `"89"` or `"02"`.

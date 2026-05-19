@@ -44,7 +44,7 @@ public value class Temperature implements RefinedDouble<Temperature> {
 
     private final double kelvin;
 
-    public Temperature(double kelvin) {
+    private Temperature(double kelvin) {
         if (Double.isNaN(kelvin) || Double.isInfinite(kelvin)) {
             throw new IllegalArgumentException("temperature must be finite: " + kelvin);
         }
@@ -52,6 +52,11 @@ public value class Temperature implements RefinedDouble<Temperature> {
             throw new IllegalArgumentException("temperature cannot be below absolute zero: " + kelvin + " K");
         }
         this.kelvin = kelvin;
+    }
+
+    /// Construct from a value in Kelvin.
+    public static Temperature of(double kelvin) {
+        return new Temperature(kelvin);
     }
 
     /// Construct from a value in the given unit.

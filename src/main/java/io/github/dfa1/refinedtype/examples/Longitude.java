@@ -21,11 +21,15 @@ public value class Longitude implements RefinedDouble<Longitude> {
 
     private final double value;
 
-    public Longitude(double value) {
+    private Longitude(double value) {
         if (Double.isNaN(value) || value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("longitude must be in [-180, 180]: " + value);
         }
         this.value = value;
+    }
+
+    public static Longitude of(double value) {
+        return new Longitude(value);
     }
 
     @Override

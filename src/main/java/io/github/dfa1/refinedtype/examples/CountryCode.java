@@ -18,7 +18,7 @@ public value class CountryCode implements RefinedString<CountryCode> {
 
     private final String value;
 
-    public CountryCode(String value) {
+    private CountryCode(String value) {
         if (value == null || value.length() != 2) {
             throw new IllegalArgumentException("ISO 3166-1 alpha-2 code must be exactly 2 characters: " + value);
         }
@@ -27,6 +27,10 @@ public value class CountryCode implements RefinedString<CountryCode> {
             throw new IllegalArgumentException("ISO 3166-1 alpha-2 code must be two letters: " + value);
         }
         this.value = upper;
+    }
+
+    public static CountryCode of(String value) {
+        return new CountryCode(value);
     }
 
     @Override

@@ -25,11 +25,15 @@ public value class SwissValorNumber implements RefinedInt<SwissValorNumber> {
 
     private final int value;
 
-    public SwissValorNumber(int value) {
+    private SwissValorNumber(int value) {
         if (value < MIN_RAW || value > MAX_RAW) {
             throw new IllegalArgumentException("Swiss valor must be in [1, 999_999_999]: " + value);
         }
         this.value = value;
+    }
+
+    public static SwissValorNumber of(int value) {
+        return new SwissValorNumber(value);
     }
 
     @Override
@@ -37,12 +41,12 @@ public value class SwissValorNumber implements RefinedInt<SwissValorNumber> {
         return value;
     }
 
-    private static final CountryCode CH = new CountryCode("CH");
+    private static final CountryCode CH = CountryCode.of("CH");
 
     /// Build the ISO 6166 ISIN: country `CH` + 9-digit zero-padded valor +
-    /// Luhn-mod-10 check digit (see {@link Isin#Isin(CountryCode, String)}).
+    /// Luhn-mod-10 check digit (see {@link Isin#of(CountryCode, String)}).
     public Isin toIsin() {
-        return new Isin(CH, String.format("%09d", value));
+        return Isin.of(CH, String.format("%09d", value));
     }
 
     @Override

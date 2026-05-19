@@ -35,7 +35,7 @@ class CoordinateLayoutTest {
         for (int i = 0; i < n; i++) {
             double lat  = -90.0  + i * (180.0 / n);
             double lon  = -180.0 + i * (360.0 / n);
-            valueArr[i]    = new Coordinate(new Latitude(lat), new Longitude(lon));
+            valueArr[i]    = Coordinate.of(Latitude.of(lat), Longitude.of(lon));
             identityArr[i] = new CoordinateIdentity(lat, lon);
         }
 

@@ -13,7 +13,7 @@ class TemperatureTest {
     @Test
     void absoluteZeroAccepted() {
         // Given / When
-        var sut = new Temperature(0.0);
+        var sut = Temperature.of(0.0);
 
         // Then
         assertThat(sut.value()).isEqualTo(0.0);
@@ -22,7 +22,7 @@ class TemperatureTest {
     @Test
     void positiveKelvinAccepted() {
         // Given / When
-        var sut = new Temperature(300.0);
+        var sut = Temperature.of(300.0);
 
         // Then
         assertThat(sut.value()).isEqualTo(300.0);
@@ -31,21 +31,21 @@ class TemperatureTest {
     @Test
     void negativeKelvinRejected() {
         // Given / When / Then
-        assertThatThrownBy(() -> new Temperature(-1.0))
+        assertThatThrownBy(() -> Temperature.of(-1.0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("absolute zero");
     }
 
     @Test
     void nanRejected() {
-        assertThatThrownBy(() -> new Temperature(Double.NaN))
+        assertThatThrownBy(() -> Temperature.of(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("finite");
     }
 
     @Test
     void infinityRejected() {
-        assertThatThrownBy(() -> new Temperature(Double.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Temperature.of(Double.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("finite");
     }
@@ -196,7 +196,7 @@ class TemperatureTest {
     @Test
     void liquidNitrogenIsCryogenic() {
         // Given: liquid nitrogen boils at 77 K
-        var sut = new Temperature(77.0);
+        var sut = Temperature.of(77.0);
 
         // When / Then
         assertThat(sut.isCryogenic()).isTrue();

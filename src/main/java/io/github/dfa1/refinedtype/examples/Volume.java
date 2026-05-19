@@ -17,11 +17,15 @@ public value class Volume implements RefinedFloat<Volume> {
 
     private final float value;
 
-    public Volume(float value) {
+    private Volume(float value) {
         if (Float.isNaN(value) || Float.isInfinite(value) || value < 0f) {
             throw new IllegalArgumentException("volume must be finite and non-negative: " + value);
         }
         this.value = value;
+    }
+
+    public static Volume of(float value) {
+        return new Volume(value);
     }
 
     @Override

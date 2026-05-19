@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /// Generic deserializer for any refined type.
 ///
 /// Reads a single JSON token via `reader`, passes the value to the type's
-/// single-arg constructor, and lets the constructor validate the constraint.
-/// `IllegalArgumentException` from the constructor is re-thrown as-is so
+/// static `of(T)` factory method, and lets the factory validate the constraint.
+/// `IllegalArgumentException` from the factory is re-thrown as-is so
 /// callers see the domain validation message without Jackson wrapping.
 class GenericRefinedDeserializer<T> extends StdDeserializer<T> {
 
@@ -21,20 +21,21 @@ class GenericRefinedDeserializer<T> extends StdDeserializer<T> {
         Object read(JsonParser p) throws IOException;
     }
 
-    private final Constructor<T> ctor;
+    private final Method factory;
     private final TokenReader reader;
 
     @SuppressWarnings("unchecked")
-    GenericRefinedDeserializer(Constructor<?> ctor, TokenReader reader) {
-        super(ctor.getDeclaringClass());
-        this.ctor = (Constructor<T>) ctor;
+    GenericRefinedDeserializer(Method factory, TokenReader reader) {
+        super(factory.getDeclaringClass());
+        this.factory = factory;
         this.reader = reader;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
         try {
-            return ctor.newInstance(reader.read(p));
+            return (T) factory.invoke(null, reader.read(p));
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
             if (cause instanceof IllegalArgumentException iae) throw iae;

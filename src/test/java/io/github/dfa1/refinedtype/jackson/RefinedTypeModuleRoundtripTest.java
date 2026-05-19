@@ -2,7 +2,11 @@ package io.github.dfa1.refinedtype.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.dfa1.refinedtype.examples.*;
+import io.github.dfa1.refinedtype.examples.Age;
+import io.github.dfa1.refinedtype.examples.CountryCode;
+import io.github.dfa1.refinedtype.examples.CurrencyCode;
+import io.github.dfa1.refinedtype.examples.Email;
+import io.github.dfa1.refinedtype.examples.Port;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +22,7 @@ class RefinedTypeModuleRoundtripTest {
     @Test
     void serializesEmailAsString() throws JsonProcessingException {
         // Given
-        var sut = new Email("user@example.com");
+        var sut = Email.of("user@example.com");
 
         // When
         String result = MAPPER.writeValueAsString(sut);
@@ -30,7 +34,7 @@ class RefinedTypeModuleRoundtripTest {
     @Test
     void serializesCountryCodeAsString() throws JsonProcessingException {
         // Given
-        var sut = new CountryCode("DE");
+        var sut = CountryCode.of("DE");
 
         // When
         String result = MAPPER.writeValueAsString(sut);
@@ -42,7 +46,7 @@ class RefinedTypeModuleRoundtripTest {
     @Test
     void serializesCurrencyCodeAsString() throws JsonProcessingException {
         // Given
-        var sut = new CurrencyCode("EUR");
+        var sut = CurrencyCode.of("EUR");
 
         // When
         String result = MAPPER.writeValueAsString(sut);
@@ -54,7 +58,7 @@ class RefinedTypeModuleRoundtripTest {
     @Test
     void serializesAgeAsNumber() throws JsonProcessingException {
         // Given
-        var sut = new Age(30);
+        var sut = Age.of(30);
 
         // When
         String result = MAPPER.writeValueAsString(sut);
@@ -66,7 +70,7 @@ class RefinedTypeModuleRoundtripTest {
     @Test
     void serializesPortAsNumber() throws JsonProcessingException {
         // Given
-        var sut = new Port(8080);
+        var sut = Port.of(8080);
 
         // When
         String result = MAPPER.writeValueAsString(sut);
@@ -124,11 +128,11 @@ class RefinedTypeModuleRoundtripTest {
     void fullRoundtripPreservesAllFields() throws JsonProcessingException {
         // Given
         var dto = new PersonDto(
-                new Email("alice@example.com"),
-                new CountryCode("CH"),
-                new CurrencyCode("CHF"),
-                new Age(35),
-                new Port(9090)
+                Email.of("alice@example.com"),
+                CountryCode.of("CH"),
+                CurrencyCode.of("CHF"),
+                Age.of(35),
+                Port.of(9090)
         );
 
         // When
@@ -147,11 +151,11 @@ class RefinedTypeModuleRoundtripTest {
     void serializationProducesExpectedJsonShape() throws JsonProcessingException {
         // Given
         var dto = new PersonDto(
-                new Email("bob@example.com"),
-                new CountryCode("US"),
-                new CurrencyCode("USD"),
-                new Age(28),
-                new Port(8080)
+                Email.of("bob@example.com"),
+                CountryCode.of("US"),
+                CurrencyCode.of("USD"),
+                Age.of(28),
+                Port.of(8080)
         );
 
         // When
@@ -178,99 +182,6 @@ class RefinedTypeModuleRoundtripTest {
     void deserializationRejectsOutOfRangeAge() {
         // Given / When / Then
         assertThatThrownBy(() -> MAPPER.readValue("999", Age.class))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    // ── previously-unregistered types (generic deserializer) ────────────────
-
-    @Test
-    void serializesProbabilityAsNumber() throws JsonProcessingException {
-        // Given
-        var sut = new Probability(0.75f);
-
-        // When
-        String result = MAPPER.writeValueAsString(sut);
-
-        // Then
-        assertThat(result).isEqualTo("0.75");
-    }
-
-    @Test
-    void deserializesProbability() throws JsonProcessingException {
-        // Given / When
-        Probability result = MAPPER.readValue("0.5", Probability.class);
-
-        // Then
-        assertThat(result.value()).isEqualTo(0.5f);
-    }
-
-    @Test
-    void serializesLatitudeAsNumber() throws JsonProcessingException {
-        // Given
-        var sut = new Latitude(48.8566);
-
-        // When
-        String result = MAPPER.writeValueAsString(sut);
-
-        // Then
-        assertThat(result).isEqualTo("48.8566");
-    }
-
-    @Test
-    void deserializesLatitude() throws JsonProcessingException {
-        // Given / When
-        Latitude result = MAPPER.readValue("51.5", Latitude.class);
-
-        // Then
-        assertThat(result.value()).isEqualTo(51.5);
-    }
-
-    @Test
-    void serializesSwissValorNumberAsNumber() throws JsonProcessingException {
-        // Given
-        var sut = new SwissValorNumber(1_222_171);
-
-        // When
-        String result = MAPPER.writeValueAsString(sut);
-
-        // Then
-        assertThat(result).isEqualTo("1222171");
-    }
-
-    @Test
-    void deserializesSwissValorNumber() throws JsonProcessingException {
-        // Given / When
-        SwissValorNumber result = MAPPER.readValue("1222171", SwissValorNumber.class);
-
-        // Then
-        assertThat(result.value()).isEqualTo(1_222_171);
-    }
-
-    @Test
-    void serializesSizeAsNumber() throws JsonProcessingException {
-        // Given
-        var sut = new Size(1024L);
-
-        // When
-        String result = MAPPER.writeValueAsString(sut);
-
-        // Then
-        assertThat(result).isEqualTo("1024");
-    }
-
-    @Test
-    void deserializesSize() throws JsonProcessingException {
-        // Given / When
-        Size result = MAPPER.readValue("4096", Size.class);
-
-        // Then
-        assertThat(result.value()).isEqualTo(4096L);
-    }
-
-    @Test
-    void deserializationRejectsInvalidProbability() {
-        // Given / When / Then
-        assertThatThrownBy(() -> MAPPER.readValue("1.5", Probability.class))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

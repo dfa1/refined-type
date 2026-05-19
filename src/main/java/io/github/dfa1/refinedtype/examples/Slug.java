@@ -36,7 +36,7 @@ public value class Slug implements RefinedString<Slug> {
 
     private final String value;
 
-    public Slug(String value) {
+    private Slug(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("slug must not be empty");
         }
@@ -48,6 +48,10 @@ public value class Slug implements RefinedString<Slug> {
                     "slug must match ^[a-z0-9](-?[a-z0-9])*$ (lowercase, single hyphens): " + value);
         }
         this.value = value;
+    }
+
+    public static Slug of(String value) {
+        return new Slug(value);
     }
 
     @Override

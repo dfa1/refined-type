@@ -16,7 +16,7 @@ class LeiTest {
     @Test
     void validLeiAccepted() {
         // Given / When
-        var sut = new Lei(DEUTSCHE_BANK);
+        var sut = Lei.of(DEUTSCHE_BANK);
 
         // Then
         assertThat(sut.value()).isEqualTo(DEUTSCHE_BANK);
@@ -25,7 +25,7 @@ class LeiTest {
     @Test
     void lowercaseNormalizedToUppercase() {
         // Given / When
-        var sut = new Lei(DEUTSCHE_BANK.toLowerCase());
+        var sut = Lei.of(DEUTSCHE_BANK.toLowerCase());
 
         // Then
         assertThat(sut.value()).isEqualTo(DEUTSCHE_BANK);
@@ -33,69 +33,67 @@ class LeiTest {
 
     @Test
     void tooShortRejected() {
-        assertThatThrownBy(() -> new Lei("7H6GLXDRUGQFU57RNE9"))
+        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RNE9"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("20 characters");
     }
 
     @Test
     void tooLongRejected() {
-        assertThatThrownBy(() -> new Lei("7H6GLXDRUGQFU57RNE970"))
+        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RNE970"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("20 characters");
     }
 
     @Test
     void nonAlphanumericRejected() {
-        assertThatThrownBy(() -> new Lei("7H6GLXDRUGQFU57RN-97"))
+        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RN-97"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void letterCheckDigitsRejected() {
         // Check digits (last 2 chars) must be numeric
-        assertThatThrownBy(() -> new Lei("7H6GLXDRUGQFU57RNEAB"))
+        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RNEAB"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    // --- factory Lei.of ---
+    // --- factory Lei.ofPrefix ---
 
     @Test
-    void ofComputesValidChecksum() {
+    void ofPrefixComputesValidChecksum() {
         // Given: Deutsche Bank prefix without check digits
         String prefix = DEUTSCHE_BANK.substring(0, 18);
 
         // When
-        var sut = Lei.of(prefix);
+        var sut = Lei.ofPrefix(prefix);
 
         // Then
         assertThat(sut.value()).isEqualTo(DEUTSCHE_BANK);
-        assertThat(sut.isChecksumValid()).isTrue();
     }
 
     @Test
-    void ofJpMorganComputesValidChecksum() {
+    void ofPrefixJpMorganComputesValidChecksum() {
         // Given
         String prefix = JPMORGAN.substring(0, 18);
 
         // When
-        var sut = Lei.of(prefix);
+        var sut = Lei.ofPrefix(prefix);
 
         // Then
         assertThat(sut.value()).isEqualTo(JPMORGAN);
-        assertThat(sut.isChecksumValid()).isTrue();
     }
 
     @Test
-    void ofRejectsTooShortPrefix() {
-        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RN"))
+    void ofPrefixRejectsTooShortPrefix() {
+        assertThatThrownBy(() -> Lei.ofPrefix("7H6GLXDRUGQFU57RN"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("18 characters");
     }
 
     @Test
-    void ofRejectsNonAlphanumericPrefix() {
-        assertThatThrownBy(() -> Lei.of("7H6GLXDRUGQFU57RN-"))
+    void ofPrefixRejectsNonAlphanumericPrefix() {
+        assertThatThrownBy(() -> Lei.ofPrefix("7H6GLXDRUGQFU57RN-"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,7 +102,7 @@ class LeiTest {
     @Test
     void louIsFirst4Chars() {
         // Given
-        var sut = new Lei(DEUTSCHE_BANK);
+        var sut = Lei.of(DEUTSCHE_BANK);
 
         // When
         String result = sut.lou();
@@ -116,7 +114,7 @@ class LeiTest {
     @Test
     void entityCodeIs14Chars() {
         // Given
-        var sut = new Lei(DEUTSCHE_BANK);
+        var sut = Lei.of(DEUTSCHE_BANK);
 
         // When
         String result = sut.entityCode();
@@ -129,33 +127,26 @@ class LeiTest {
     @Test
     void checkDigitsParsedCorrectly() {
         // Given
-        var sut = new Lei(DEUTSCHE_BANK);
+        var sut = Lei.of(DEUTSCHE_BANK);
 
         // When
-        int result = sut.checkDigits();
+        String result = sut.checkDigits();
 
         // Then
-        assertThat(result).isEqualTo(97);
+        assertThat(result).isEqualTo("97");
     }
 
     // --- checksum validation ---
 
     @Test
-    void parsedLeiChecksumValid() {
-        assertThat(new Lei(DEUTSCHE_BANK).isChecksumValid()).isTrue();
-        assertThat(new Lei(JPMORGAN).isChecksumValid()).isTrue();
-    }
-
-    @Test
-    void corruptedLeiFailsChecksum() {
-        // Given: flip one digit in the entity part
+    void corruptedLeiRejected() {
+        // Given: valid shape but wrong check digits
         String corrupted = "7H6GLXDRUGQFU57RNE07"; // was ...97
 
-        // When
-        var sut = new Lei(corrupted);
-
-        // Then: shape is valid but checksum fails
-        assertThat(sut.isChecksumValid()).isFalse();
+        // When / Then
+        assertThatThrownBy(() -> Lei.of(corrupted))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("checksum invalid");
     }
 
     // --- comparison ---
@@ -163,8 +154,8 @@ class LeiTest {
     @Test
     void compareToOrdering() {
         // Given
-        var a = new Lei(DEUTSCHE_BANK);
-        var b = new Lei(JPMORGAN);
+        var a = Lei.of(DEUTSCHE_BANK);
+        var b = Lei.of(JPMORGAN);
 
         // When / Then
         assertThat(a.compareTo(b)).isNotEqualTo(0);
@@ -173,7 +164,7 @@ class LeiTest {
 
     @Test
     void toStringContainsValue() {
-        var sut = new Lei(DEUTSCHE_BANK);
+        var sut = Lei.of(DEUTSCHE_BANK);
         assertThat(sut.toString()).contains(DEUTSCHE_BANK);
     }
 }

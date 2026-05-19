@@ -11,7 +11,7 @@ class CurrencyCodeTest {
     @Test
     void valueReturnsUppercaseCode() {
         // Given
-        var sut = new CurrencyCode("EUR");
+        var sut = CurrencyCode.of("EUR");
 
         // When
         String result = sut.value();
@@ -23,7 +23,7 @@ class CurrencyCodeTest {
     @Test
     void lowercaseNormalizedToUppercase() {
         // Given
-        var sut = new CurrencyCode("usd");
+        var sut = CurrencyCode.of("usd");
 
         // When
         String result = sut.value();
@@ -35,7 +35,7 @@ class CurrencyCodeTest {
     @Test
     void mixedCaseNormalized() {
         // Given
-        var sut = new CurrencyCode("gBp");
+        var sut = CurrencyCode.of("gBp");
 
         // When
         String result = sut.value();
@@ -47,7 +47,7 @@ class CurrencyCodeTest {
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CurrencyCode(null))
+        assertThatThrownBy(() -> CurrencyCode.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,7 +57,7 @@ class CurrencyCodeTest {
         String input = "EU";
 
         // When / Then
-        assertThatThrownBy(() -> new CurrencyCode(input))
+        assertThatThrownBy(() -> CurrencyCode.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,24 +67,24 @@ class CurrencyCodeTest {
         String input = "EURO";
 
         // When / Then
-        assertThatThrownBy(() -> new CurrencyCode(input))
+        assertThatThrownBy(() -> CurrencyCode.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nonLettersRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CurrencyCode("US1"))
+        assertThatThrownBy(() -> CurrencyCode.of("US1"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new CurrencyCode("1SD"))
+        assertThatThrownBy(() -> CurrencyCode.of("1SD"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new CurrencyCode("EUR");
-        var other = new CurrencyCode("USD");
+        var sut = CurrencyCode.of("EUR");
+        var other = CurrencyCode.of("USD");
 
         // When
         int result = sut.compareTo(other);
@@ -96,8 +96,8 @@ class CurrencyCodeTest {
     @Test
     void compareToReturnsPositiveWhenLexicographicallyGreater() {
         // Given
-        var sut = new CurrencyCode("USD");
-        var other = new CurrencyCode("EUR");
+        var sut = CurrencyCode.of("USD");
+        var other = CurrencyCode.of("EUR");
 
         // When
         int result = sut.compareTo(other);
@@ -109,8 +109,8 @@ class CurrencyCodeTest {
     @Test
     void compareToReturnsZeroRegardlessOfInputCase() {
         // Given
-        var sut = new CurrencyCode("EUR");
-        var other = new CurrencyCode("eur");
+        var sut = CurrencyCode.of("EUR");
+        var other = CurrencyCode.of("eur");
 
         // When
         int result = sut.compareTo(other);
@@ -122,7 +122,7 @@ class CurrencyCodeTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new CurrencyCode("CHF");
+        var sut = CurrencyCode.of("CHF");
 
         // When
         String result = sut.toString();
@@ -134,7 +134,7 @@ class CurrencyCodeTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new CurrencyCode("JPY");
+        RefinedString sut = CurrencyCode.of("JPY");
 
         // When
         String result = sut.value();

@@ -39,7 +39,7 @@ class UnsignedByteTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new UnsignedByte(0);
+        var sut = UnsignedByte.of(0);
 
         // When
         int result = sut.value();
@@ -51,7 +51,7 @@ class UnsignedByteTest {
     @Test
     void maxValueIsValid() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
         int result = sut.value();
@@ -66,7 +66,7 @@ class UnsignedByteTest {
         int input = -1;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedByte(input))
+        assertThatThrownBy(() -> UnsignedByte.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,7 +76,7 @@ class UnsignedByteTest {
         int input = 256;
 
         // When / Then
-        assertThatThrownBy(() -> new UnsignedByte(input))
+        assertThatThrownBy(() -> UnsignedByte.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ class UnsignedByteTest {
         // 2^7 = 128 — raw bits are Byte.MIN_VALUE (negative signed),
         // but Byte.toUnsignedInt must recover the correct unsigned value.
         // Given
-        var sut = new UnsignedByte(128);
+        var sut = UnsignedByte.of(128);
 
         // When
         int result = sut.value();
@@ -101,7 +101,7 @@ class UnsignedByteTest {
     void valuePreservesAll8Bits() {
         // 0xBE = 190
         // Given
-        var sut = new UnsignedByte(0xBE);
+        var sut = UnsignedByte.of(0xBE);
 
         // When
         int result = sut.value();
@@ -117,8 +117,8 @@ class UnsignedByteTest {
     void compareToReturnsPositiveWhenUnsignedGreater() {
         // 128 > 1 in unsigned space even though raw bits are negative
         // Given
-        var sut = new UnsignedByte(128);
-        var other = new UnsignedByte(1);
+        var sut = UnsignedByte.of(128);
+        var other = UnsignedByte.of(1);
 
         // When
         int result = sut.compareTo(other);
@@ -130,8 +130,8 @@ class UnsignedByteTest {
     @Test
     void compareToReturnsNegativeWhenUnsignedSmaller() {
         // Given
-        var sut = new UnsignedByte(1);
-        var other = new UnsignedByte(128);
+        var sut = UnsignedByte.of(1);
+        var other = UnsignedByte.of(128);
 
         // When
         int result = sut.compareTo(other);
@@ -143,8 +143,8 @@ class UnsignedByteTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new UnsignedByte(200);
-        var other = new UnsignedByte(200);
+        var sut = UnsignedByte.of(200);
+        var other = UnsignedByte.of(200);
 
         // When
         int result = sut.compareTo(other);
@@ -156,8 +156,8 @@ class UnsignedByteTest {
     @Test
     void maxIsGreaterThanSignedMax() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
-        var signedMax = new UnsignedByte(Byte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
+        var signedMax = UnsignedByte.of(Byte.MAX_VALUE);
 
         // When
         int result = sut.compareTo(signedMax);
@@ -171,10 +171,10 @@ class UnsignedByteTest {
     @Test
     void addSimple() {
         // Given
-        var sut = new UnsignedByte(100);
+        var sut = UnsignedByte.of(100);
 
         // When
-        UnsignedByte result = sut.add(new UnsignedByte(50));
+        UnsignedByte result = sut.add(UnsignedByte.of(50));
 
         // Then
         assertThat(result.value()).isEqualTo(150);
@@ -184,10 +184,10 @@ class UnsignedByteTest {
     void addWrapsAroundMax() {
         // MAX + 1 must wrap to 0
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
-        UnsignedByte result = sut.add(new UnsignedByte(1));
+        UnsignedByte result = sut.add(UnsignedByte.of(1));
 
         // Then
         assertThat(result.value()).isZero();
@@ -196,10 +196,10 @@ class UnsignedByteTest {
     @Test
     void addIdentity() {
         // Given
-        var sut = new UnsignedByte(0xBE);
+        var sut = UnsignedByte.of(0xBE);
 
         // When
-        UnsignedByte result = sut.add(new UnsignedByte(0));
+        UnsignedByte result = sut.add(UnsignedByte.of(0));
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());
@@ -208,10 +208,10 @@ class UnsignedByteTest {
     @Test
     void subtractSimple() {
         // Given
-        var sut = new UnsignedByte(10);
+        var sut = UnsignedByte.of(10);
 
         // When
-        UnsignedByte result = sut.subtract(new UnsignedByte(3));
+        UnsignedByte result = sut.subtract(UnsignedByte.of(3));
 
         // Then
         assertThat(result.value()).isEqualTo(7);
@@ -221,10 +221,10 @@ class UnsignedByteTest {
     void subtractWrapsAroundZero() {
         // 0 - 1 must wrap to MAX
         // Given
-        var sut = new UnsignedByte(0);
+        var sut = UnsignedByte.of(0);
 
         // When
-        UnsignedByte result = sut.subtract(new UnsignedByte(1));
+        UnsignedByte result = sut.subtract(UnsignedByte.of(1));
 
         // Then
         assertThat(result.value()).isEqualTo(UnsignedByte.MAX_VALUE);
@@ -233,7 +233,7 @@ class UnsignedByteTest {
     @Test
     void subtractSelf() {
         // Given
-        var sut = new UnsignedByte(200);
+        var sut = UnsignedByte.of(200);
 
         // When
         UnsignedByte result = sut.subtract(sut);
@@ -245,10 +245,10 @@ class UnsignedByteTest {
     @Test
     void multiplySimple() {
         // Given
-        var sut = new UnsignedByte(12);
+        var sut = UnsignedByte.of(12);
 
         // When
-        UnsignedByte result = sut.multiply(new UnsignedByte(10));
+        UnsignedByte result = sut.multiply(UnsignedByte.of(10));
 
         // Then
         assertThat(result.value()).isEqualTo(120);
@@ -258,10 +258,10 @@ class UnsignedByteTest {
     void multiplyWrapsAroundMax() {
         // MAX * MAX mod 2^8 = (2^8-1)^2 mod 2^8 = 1
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
-        UnsignedByte result = sut.multiply(new UnsignedByte(UnsignedByte.MAX_VALUE));
+        UnsignedByte result = sut.multiply(UnsignedByte.of(UnsignedByte.MAX_VALUE));
 
         // Then
         assertThat(result.value()).isEqualTo(1);
@@ -270,10 +270,10 @@ class UnsignedByteTest {
     @Test
     void multiplyByZero() {
         // Given
-        var sut = new UnsignedByte(0xBE);
+        var sut = UnsignedByte.of(0xBE);
 
         // When
-        UnsignedByte result = sut.multiply(new UnsignedByte(0));
+        UnsignedByte result = sut.multiply(UnsignedByte.of(0));
 
         // Then
         assertThat(result.value()).isZero();
@@ -282,10 +282,10 @@ class UnsignedByteTest {
     @Test
     void multiplyByOne() {
         // Given
-        var sut = new UnsignedByte(0xBE);
+        var sut = UnsignedByte.of(0xBE);
 
         // When
-        UnsignedByte result = sut.multiply(new UnsignedByte(1));
+        UnsignedByte result = sut.multiply(UnsignedByte.of(1));
 
         // Then
         assertThat(result.value()).isEqualTo(sut.value());
@@ -294,10 +294,10 @@ class UnsignedByteTest {
     @Test
     void divideSimple() {
         // Given
-        var sut = new UnsignedByte(200);
+        var sut = UnsignedByte.of(200);
 
         // When
-        UnsignedByte result = sut.divide(new UnsignedByte(4));
+        UnsignedByte result = sut.divide(UnsignedByte.of(4));
 
         // Then
         assertThat(result.value()).isEqualTo(50);
@@ -307,10 +307,10 @@ class UnsignedByteTest {
     void divideAboveSignedMax() {
         // 200 / 2 = 100 — value above Byte.MAX_VALUE
         // Given
-        var sut = new UnsignedByte(200);
+        var sut = UnsignedByte.of(200);
 
         // When
-        UnsignedByte result = sut.divide(new UnsignedByte(2));
+        UnsignedByte result = sut.divide(UnsignedByte.of(2));
 
         // Then
         assertThat(result.value()).isEqualTo(100);
@@ -319,20 +319,20 @@ class UnsignedByteTest {
     @Test
     void divideByZeroThrows() {
         // Given
-        var sut = new UnsignedByte(1);
+        var sut = UnsignedByte.of(1);
 
         // When / Then
-        assertThatThrownBy(() -> sut.divide(new UnsignedByte(0)))
+        assertThatThrownBy(() -> sut.divide(UnsignedByte.of(0)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
     @Test
     void remainderSimple() {
         // Given
-        var sut = new UnsignedByte(200);
+        var sut = UnsignedByte.of(200);
 
         // When
-        UnsignedByte result = sut.remainder(new UnsignedByte(7));
+        UnsignedByte result = sut.remainder(UnsignedByte.of(7));
 
         // Then
         assertThat(result.value()).isEqualTo(200 % 7);
@@ -341,10 +341,10 @@ class UnsignedByteTest {
     @Test
     void remainderByZeroThrows() {
         // Given
-        var sut = new UnsignedByte(1);
+        var sut = UnsignedByte.of(1);
 
         // When / Then
-        assertThatThrownBy(() -> sut.remainder(new UnsignedByte(0)))
+        assertThatThrownBy(() -> sut.remainder(UnsignedByte.of(0)))
                 .isInstanceOf(ArithmeticException.class);
     }
 
@@ -352,8 +352,8 @@ class UnsignedByteTest {
     void divideRemainderRelationship() {
         // a = (a / b) * b + (a % b)  for all b != 0
         // Given
-        var sut = new UnsignedByte(200);
-        var divisor = new UnsignedByte(7);
+        var sut = UnsignedByte.of(200);
+        var divisor = UnsignedByte.of(7);
 
         // When
         UnsignedByte q = sut.divide(divisor);
@@ -369,7 +369,7 @@ class UnsignedByteTest {
     @Test
     void toUnsignedShortPreservesValue() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
         UnsignedShort result = sut.toUnsignedShort();
@@ -381,7 +381,7 @@ class UnsignedByteTest {
     @Test
     void toUnsignedIntPreservesValue() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
         UnsignedInt result = sut.toUnsignedInt();
@@ -393,7 +393,7 @@ class UnsignedByteTest {
     @Test
     void toUnsignedLongPreservesValue() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
         UnsignedLong result = sut.toUnsignedLong();
@@ -406,8 +406,8 @@ class UnsignedByteTest {
     void wideningEnablesCrossTypeArithmetic() {
         // UnsignedByte + UnsignedShort — widen first, then add
         // Given
-        var sut = new UnsignedByte(200);
-        var other = new UnsignedShort(1_000);
+        var sut = UnsignedByte.of(200);
+        var other = UnsignedShort.of(1_000);
 
         // When
         UnsignedShort result = sut.toUnsignedShort().add(other);
@@ -421,7 +421,7 @@ class UnsignedByteTest {
     @Test
     void toStringShowsUnsignedRepresentation() {
         // Given
-        var sut = new UnsignedByte(UnsignedByte.MAX_VALUE);
+        var sut = UnsignedByte.of(UnsignedByte.MAX_VALUE);
 
         // When
         String result = sut.toString();
@@ -433,7 +433,7 @@ class UnsignedByteTest {
     @Test
     void toStringZero() {
         // Given
-        var sut = new UnsignedByte(0);
+        var sut = UnsignedByte.of(0);
 
         // When
         String result = sut.toString();

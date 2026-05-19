@@ -23,11 +23,15 @@ public value class Latitude implements RefinedDouble<Latitude> {
 
     private final double value;
 
-    public Latitude(double value) {
+    private Latitude(double value) {
         if (Double.isNaN(value) || value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("latitude must be in [-90, 90]: " + value);
         }
         this.value = value;
+    }
+
+    public static Latitude of(double value) {
+        return new Latitude(value);
     }
 
     @Override

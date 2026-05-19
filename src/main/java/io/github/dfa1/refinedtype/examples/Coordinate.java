@@ -19,9 +19,13 @@ public value class Coordinate {
     private final Latitude latitude;
     private final Longitude longitude;
 
-    public Coordinate(Latitude latitude, Longitude longitude) {
+    private Coordinate(Latitude latitude, Longitude longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public static Coordinate of(Latitude latitude, Longitude longitude) {
+        return new Coordinate(latitude, longitude);
     }
 
     public Latitude latitude() {
@@ -45,7 +49,7 @@ public value class Coordinate {
         double a = sinDPhi2 * sinDPhi2
                  + Math.cos(phi1) * Math.cos(phi2) * sinDLambda2 * sinDLambda2;
         double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-        return new Distance(EARTH_RADIUS_METERS * c);
+        return Distance.of(EARTH_RADIUS_METERS * c);
     }
 
     @Override

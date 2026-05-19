@@ -13,7 +13,7 @@ class CusipNumberTest {
     @Test
     void allDigitCusipAccepted() {
         // Given
-        var sut = new CusipNumber("037833100");
+        var sut = CusipNumber.of("037833100");
 
         // When
         String result = sut.value();
@@ -25,7 +25,7 @@ class CusipNumberTest {
     @Test
     void alphanumericCusipAccepted() {
         // Given — Alphabet Class A contains the letter K
-        var sut = new CusipNumber("02079K305");
+        var sut = CusipNumber.of("02079K305");
 
         // When
         String result = sut.value();
@@ -37,7 +37,7 @@ class CusipNumberTest {
     @Test
     void lowercaseInputUppercased() {
         // Given
-        var sut = new CusipNumber("02079k305");
+        var sut = CusipNumber.of("02079k305");
 
         // When
         String result = sut.value();
@@ -49,28 +49,28 @@ class CusipNumberTest {
     @Test
     void shortInputRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CusipNumber("12345678"))
+        assertThatThrownBy(() -> CusipNumber.of("12345678"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void longInputRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CusipNumber("1234567890"))
+        assertThatThrownBy(() -> CusipNumber.of("1234567890"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void invalidCharRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CusipNumber("12345-789"))
+        assertThatThrownBy(() -> CusipNumber.of("12345-789"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new CusipNumber(null))
+        assertThatThrownBy(() -> CusipNumber.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,7 +79,7 @@ class CusipNumberTest {
     @Test
     void appleCusipProducesAppleIsin() {
         // Given
-        var sut = new CusipNumber("037833100");
+        var sut = CusipNumber.of("037833100");
 
         // When
         Isin result = sut.toIsin();
@@ -91,7 +91,7 @@ class CusipNumberTest {
     @Test
     void microsoftCusipProducesMicrosoftIsin() {
         // Given
-        var sut = new CusipNumber("594918104");
+        var sut = CusipNumber.of("594918104");
 
         // When
         Isin result = sut.toIsin();
@@ -103,7 +103,7 @@ class CusipNumberTest {
     @Test
     void alphabetCusipWithLetterProducesAlphabetIsin() {
         // Given
-        var sut = new CusipNumber("02079K305");
+        var sut = CusipNumber.of("02079K305");
 
         // When
         Isin result = sut.toIsin();
@@ -115,7 +115,7 @@ class CusipNumberTest {
     @Test
     void ibmCusipProducesIbmIsin() {
         // Given
-        var sut = new CusipNumber("459200101");
+        var sut = CusipNumber.of("459200101");
 
         // When
         Isin result = sut.toIsin();
@@ -127,7 +127,7 @@ class CusipNumberTest {
     @Test
     void teslaCusipWithLetterProducesTeslaIsin() {
         // Given
-        var sut = new CusipNumber("88160R101");
+        var sut = CusipNumber.of("88160R101");
 
         // When
         Isin result = sut.toIsin();
@@ -139,7 +139,7 @@ class CusipNumberTest {
     @Test
     void toIsinExposesCountryCodePrefix() {
         // Given
-        var sut = new CusipNumber("037833100");
+        var sut = CusipNumber.of("037833100");
 
         // When
         CountryCode result = sut.toIsin().country();
@@ -153,8 +153,8 @@ class CusipNumberTest {
     @Test
     void compareToReturnsNegativeWhenSmallerLexicographically() {
         // Given
-        var sut = new CusipNumber("037833100");
-        var other = new CusipNumber("594918104");
+        var sut = CusipNumber.of("037833100");
+        var other = CusipNumber.of("594918104");
 
         // When
         int result = sut.compareTo(other);
@@ -166,8 +166,8 @@ class CusipNumberTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new CusipNumber("037833100");
-        var other = new CusipNumber("037833100");
+        var sut = CusipNumber.of("037833100");
+        var other = CusipNumber.of("037833100");
 
         // When
         int result = sut.compareTo(other);
@@ -181,7 +181,7 @@ class CusipNumberTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new CusipNumber("037833100");
+        var sut = CusipNumber.of("037833100");
 
         // When
         String result = sut.toString();
@@ -195,7 +195,7 @@ class CusipNumberTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString<CusipNumber> sut = new CusipNumber("037833100");
+        RefinedString<CusipNumber> sut = CusipNumber.of("037833100");
 
         // When
         String result = sut.value();

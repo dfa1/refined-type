@@ -13,6 +13,6 @@ public class EmailConverter extends AbstractRefinedStringConverter<Email> {
 
     @Override
     protected Email fromString(String value) {
-        return new Email(value);
+        return Email.of(value);
     }
 }

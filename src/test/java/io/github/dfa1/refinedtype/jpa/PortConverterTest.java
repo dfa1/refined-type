@@ -12,7 +12,7 @@ class PortConverterTest {
     void convertToDatabaseColumnReturnsInt() {
         // Given
         var sut = new PortConverter();
-        var port = new Port(8080);
+        var port = Port.of(8080);
 
         // When
         Integer result = sut.convertToDatabaseColumn(port);
@@ -71,7 +71,7 @@ class PortConverterTest {
     void roundtripPreservesValue() {
         // Given
         var sut = new PortConverter();
-        var port = new Port(8080);
+        var port = Port.of(8080);
 
         // When
         Port result = sut.convertToEntityAttribute(sut.convertToDatabaseColumn(port));

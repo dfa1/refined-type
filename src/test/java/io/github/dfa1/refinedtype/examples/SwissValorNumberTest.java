@@ -37,7 +37,7 @@ class SwissValorNumberTest {
     @Test
     void typicalValorAccepted() {
         // Given
-        var sut = new SwissValorNumber(1_222_171);
+        var sut = SwissValorNumber.of(1_222_171);
 
         // When
         int result = sut.value();
@@ -49,21 +49,21 @@ class SwissValorNumberTest {
     @Test
     void zeroRejected() {
         // When / Then
-        assertThatThrownBy(() -> new SwissValorNumber(0))
+        assertThatThrownBy(() -> SwissValorNumber.of(0))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new SwissValorNumber(-1))
+        assertThatThrownBy(() -> SwissValorNumber.of(-1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void aboveMaxRejected() {
         // When / Then
-        assertThatThrownBy(() -> new SwissValorNumber(1_000_000_000))
+        assertThatThrownBy(() -> SwissValorNumber.of(1_000_000_000))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,7 +72,7 @@ class SwissValorNumberTest {
     @Test
     void abbValorProducesAbbIsin() {
         // Given
-        var sut = new SwissValorNumber(1_222_171);
+        var sut = SwissValorNumber.of(1_222_171);
 
         // When
         Isin result = sut.toIsin();
@@ -84,7 +84,7 @@ class SwissValorNumberTest {
     @Test
     void nestleValorProducesNestleIsin() {
         // Given
-        var sut = new SwissValorNumber(3_886_335);
+        var sut = SwissValorNumber.of(3_886_335);
 
         // When
         Isin result = sut.toIsin();
@@ -96,7 +96,7 @@ class SwissValorNumberTest {
     @Test
     void rocheValorProducesRocheIsin() {
         // Given
-        var sut = new SwissValorNumber(1_203_204);
+        var sut = SwissValorNumber.of(1_203_204);
 
         // When
         Isin result = sut.toIsin();
@@ -108,7 +108,7 @@ class SwissValorNumberTest {
     @Test
     void novartisValorProducesNovartisIsin() {
         // Given
-        var sut = new SwissValorNumber(1_200_526);
+        var sut = SwissValorNumber.of(1_200_526);
 
         // When
         Isin result = sut.toIsin();
@@ -120,7 +120,7 @@ class SwissValorNumberTest {
     @Test
     void shortValorIsZeroPaddedToNineDigits() {
         // Given — single-digit valor exercises the left-pad
-        var sut = new SwissValorNumber(1);
+        var sut = SwissValorNumber.of(1);
 
         // When
         Isin result = sut.toIsin();
@@ -133,7 +133,7 @@ class SwissValorNumberTest {
     @Test
     void toIsinExposesCountryCodePrefix() {
         // Given
-        var sut = new SwissValorNumber(1_222_171);
+        var sut = SwissValorNumber.of(1_222_171);
 
         // When
         CountryCode result = sut.toIsin().country();
@@ -147,8 +147,8 @@ class SwissValorNumberTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new SwissValorNumber(100);
-        var other = new SwissValorNumber(200);
+        var sut = SwissValorNumber.of(100);
+        var other = SwissValorNumber.of(200);
 
         // When
         int result = sut.compareTo(other);
@@ -160,8 +160,8 @@ class SwissValorNumberTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new SwissValorNumber(1_222_171);
-        var other = new SwissValorNumber(1_222_171);
+        var sut = SwissValorNumber.of(1_222_171);
+        var other = SwissValorNumber.of(1_222_171);
 
         // When
         int result = sut.compareTo(other);
@@ -175,7 +175,7 @@ class SwissValorNumberTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new SwissValorNumber(1_222_171);
+        var sut = SwissValorNumber.of(1_222_171);
 
         // When
         String result = sut.toString();
@@ -189,7 +189,7 @@ class SwissValorNumberTest {
     @Test
     void implementsRefinedInt() {
         // Given
-        RefinedInt<SwissValorNumber> sut = new SwissValorNumber(42_000);
+        RefinedInt<SwissValorNumber> sut = SwissValorNumber.of(42_000);
 
         // When
         int result = sut.value();

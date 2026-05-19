@@ -15,11 +15,15 @@ public value class Price implements RefinedDouble<Price> {
 
     private final double value;
 
-    public Price(double value) {
+    private Price(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             throw new IllegalArgumentException("price must be finite: " + value);
         }
         this.value = value;
+    }
+
+    public static Price of(double value) {
+        return new Price(value);
     }
 
     @Override

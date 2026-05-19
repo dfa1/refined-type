@@ -17,8 +17,8 @@ public class UnsignedIntBenchmark {
 
     private int rawA = 1_000_000_007;
     private int rawB = 31;
-    private UnsignedInt unsignedA = new UnsignedInt(1_000_000_007L);
-    private UnsignedInt unsignedB = new UnsignedInt(31L);
+    private UnsignedInt unsignedA = UnsignedInt.of(1_000_000_007L);
+    private UnsignedInt unsignedB = UnsignedInt.of(31L);
 
     @Benchmark
     public int rawAdd() {

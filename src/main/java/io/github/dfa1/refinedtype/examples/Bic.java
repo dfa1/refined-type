@@ -58,7 +58,7 @@ public value class Bic implements RefinedString<Bic> {
 
     /// ISO 3166-1 alpha-2 country code embedded in the BIC (positions 5–6).
     public CountryCode country() {
-        return new CountryCode(value.substring(4, 6));
+        return CountryCode.of(value.substring(4, 6));
     }
 
     /// 2-character location code (positions 7–8, letters or digits).

@@ -27,7 +27,7 @@ public class ArrayTraversalBenchmark {
         valueArray = new UnsignedInt[size];
         boxedArray = new Integer[size];
         for (int i = 0; i < size; i++) {
-            valueArray[i] = new UnsignedInt(i);
+            valueArray[i] = UnsignedInt.of(i);
             boxedArray[i] = i;
         }
     }

@@ -13,7 +13,7 @@ class PortTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Port(0);
+        var sut = Port.of(0);
 
         // When
         int result = sut.value();
@@ -25,7 +25,7 @@ class PortTest {
     @Test
     void maxValueIsValid() {
         // Given
-        var sut = new Port(Port.MAX_VALUE);
+        var sut = Port.of(Port.MAX_VALUE);
 
         // When
         int result = sut.value();
@@ -37,7 +37,7 @@ class PortTest {
     @Test
     void httpPortIsValid() {
         // Given
-        var sut = new Port(80);
+        var sut = Port.of(80);
 
         // When
         int result = sut.value();
@@ -52,7 +52,7 @@ class PortTest {
         int input = -1;
 
         // When / Then
-        assertThatThrownBy(() -> new Port(input))
+        assertThatThrownBy(() -> Port.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -62,7 +62,7 @@ class PortTest {
         int input = 65_536;
 
         // When / Then
-        assertThatThrownBy(() -> new Port(input))
+        assertThatThrownBy(() -> Port.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,7 +96,7 @@ class PortTest {
     @Test
     void wellKnownTrueForLowPort() {
         // Given
-        var sut = new Port(22);
+        var sut = Port.of(22);
 
         // When
         boolean result = sut.isWellKnown();
@@ -108,7 +108,7 @@ class PortTest {
     @Test
     void wellKnownFalseAboveBoundary() {
         // Given
-        var sut = new Port(1024);
+        var sut = Port.of(1024);
 
         // When
         boolean result = sut.isWellKnown();
@@ -120,7 +120,7 @@ class PortTest {
     @Test
     void ephemeralTrueForHighPort() {
         // Given
-        var sut = new Port(60_000);
+        var sut = Port.of(60_000);
 
         // When
         boolean result = sut.isEphemeral();
@@ -132,7 +132,7 @@ class PortTest {
     @Test
     void ephemeralFalseBelowBoundary() {
         // Given
-        var sut = new Port(49_151);
+        var sut = Port.of(49_151);
 
         // When
         boolean result = sut.isEphemeral();
@@ -146,8 +146,8 @@ class PortTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Port(80);
-        var other = new Port(443);
+        var sut = Port.of(80);
+        var other = Port.of(443);
 
         // When
         int result = sut.compareTo(other);
@@ -159,8 +159,8 @@ class PortTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Port(8080);
-        var other = new Port(8080);
+        var sut = Port.of(8080);
+        var other = Port.of(8080);
 
         // When
         int result = sut.compareTo(other);
@@ -174,7 +174,7 @@ class PortTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Port(443);
+        var sut = Port.of(443);
 
         // When
         String result = sut.toString();
@@ -188,7 +188,7 @@ class PortTest {
     @Test
     void implementsRefinedInt() {
         // Given
-        RefinedInt sut = new Port(22);
+        RefinedInt sut = Port.of(22);
 
         // When
         int result = sut.value();

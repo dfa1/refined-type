@@ -13,7 +13,7 @@ class ProbabilityTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Probability(0f);
+        var sut = Probability.of(0f);
 
         // When
         float result = sut.value();
@@ -25,7 +25,7 @@ class ProbabilityTest {
     @Test
     void oneIsValid() {
         // Given
-        var sut = new Probability(1f);
+        var sut = Probability.of(1f);
 
         // When
         float result = sut.value();
@@ -37,7 +37,7 @@ class ProbabilityTest {
     @Test
     void midRangeIsValid() {
         // Given
-        var sut = new Probability(0.5f);
+        var sut = Probability.of(0.5f);
 
         // When
         float result = sut.value();
@@ -49,14 +49,14 @@ class ProbabilityTest {
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Probability(-0.0001f))
+        assertThatThrownBy(() -> Probability.of(-0.0001f))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void aboveOneRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Probability(1.0001f))
+        assertThatThrownBy(() -> Probability.of(1.0001f))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -64,28 +64,28 @@ class ProbabilityTest {
     void percentageScaleRejected() {
         // 50 belongs to Percentage, not Probability — exactly the bug class this type prevents
         // When / Then
-        assertThatThrownBy(() -> new Probability(50f))
+        assertThatThrownBy(() -> Probability.of(50f))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Probability(Float.NaN))
+        assertThatThrownBy(() -> Probability.of(Float.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Probability(Float.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Probability.of(Float.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Probability(Float.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Probability.of(Float.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -114,7 +114,7 @@ class ProbabilityTest {
     @Test
     void complementOfQuarterIsThreeQuarters() {
         // Given
-        var sut = new Probability(0.25f);
+        var sut = Probability.of(0.25f);
 
         // When
         Probability result = sut.complement();
@@ -138,7 +138,7 @@ class ProbabilityTest {
     @Test
     void doubleComplementIsIdentity() {
         // Given
-        var sut = new Probability(0.3f);
+        var sut = Probability.of(0.3f);
 
         // When
         Probability result = sut.complement().complement();
@@ -152,8 +152,8 @@ class ProbabilityTest {
     @Test
     void andMultipliesProbabilities() {
         // Given
-        var sut = new Probability(0.5f);
-        var other = new Probability(0.4f);
+        var sut = Probability.of(0.5f);
+        var other = Probability.of(0.4f);
 
         // When
         Probability result = sut.and(other);
@@ -165,7 +165,7 @@ class ProbabilityTest {
     @Test
     void andWithZeroIsZero() {
         // Given
-        var sut = new Probability(0.7f);
+        var sut = Probability.of(0.7f);
 
         // When
         Probability result = sut.and(Probability.ZERO);
@@ -178,8 +178,8 @@ class ProbabilityTest {
     void orFollowsInclusionExclusion() {
         // P(A or B) = P(A) + P(B) - P(A) * P(B)  for independent events
         // Given
-        var sut = new Probability(0.5f);
-        var other = new Probability(0.4f);
+        var sut = Probability.of(0.5f);
+        var other = Probability.of(0.4f);
 
         // When
         Probability result = sut.or(other);
@@ -192,7 +192,7 @@ class ProbabilityTest {
     void orWithOneIsOne() {
         // 0.5 chosen for exact float arithmetic: 0.5 + 1 - 0.5 = 1 with no roundoff
         // Given
-        var sut = new Probability(0.5f);
+        var sut = Probability.of(0.5f);
 
         // When
         Probability result = sut.or(Probability.ONE);
@@ -205,8 +205,8 @@ class ProbabilityTest {
     void orClampsToOneAgainstFloatRoundoff() {
         // Two near-one probabilities; arithmetic could exceed 1f by epsilon.
         // Given
-        var sut = new Probability(1f);
-        var other = new Probability(1f);
+        var sut = Probability.of(1f);
+        var other = Probability.of(1f);
 
         // When
         Probability result = sut.or(other);
@@ -220,8 +220,8 @@ class ProbabilityTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Probability(0.1f);
-        var other = new Probability(0.9f);
+        var sut = Probability.of(0.1f);
+        var other = Probability.of(0.9f);
 
         // When
         int result = sut.compareTo(other);
@@ -235,7 +235,7 @@ class ProbabilityTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Probability(0.5f);
+        var sut = Probability.of(0.5f);
 
         // When
         String result = sut.toString();
@@ -249,7 +249,7 @@ class ProbabilityTest {
     @Test
     void implementsRefinedFloat() {
         // Given
-        RefinedFloat sut = new Probability(0.42f);
+        RefinedFloat sut = Probability.of(0.42f);
 
         // When
         float result = sut.value();

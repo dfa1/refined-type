@@ -50,7 +50,7 @@ class LatitudeTest {
     @Test
     void typicalLatitudeAccepted() {
         // Given
-        var sut = new Latitude(45.4642);
+        var sut = Latitude.of(45.4642);
 
         // When
         double result = sut.value();
@@ -62,28 +62,28 @@ class LatitudeTest {
     @Test
     void aboveMaxRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Latitude(90.0001))
+        assertThatThrownBy(() -> Latitude.of(90.0001))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void belowMinRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Latitude(-90.0001))
+        assertThatThrownBy(() -> Latitude.of(-90.0001))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Latitude(Double.NaN))
+        assertThatThrownBy(() -> Latitude.of(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Latitude(Double.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Latitude.of(Double.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -92,8 +92,8 @@ class LatitudeTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Latitude(0.0);
-        var other = new Latitude(45.0);
+        var sut = Latitude.of(0.0);
+        var other = Latitude.of(45.0);
 
         // When
         int result = sut.compareTo(other);
@@ -105,8 +105,8 @@ class LatitudeTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Latitude(51.5074);
-        var other = new Latitude(51.5074);
+        var sut = Latitude.of(51.5074);
+        var other = Latitude.of(51.5074);
 
         // When
         int result = sut.compareTo(other);
@@ -120,7 +120,7 @@ class LatitudeTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new Latitude(40.7128);
+        var sut = Latitude.of(40.7128);
 
         // When
         String result = sut.toString();
@@ -134,7 +134,7 @@ class LatitudeTest {
     @Test
     void positiveLatitudeIsNorthern() {
         // Given
-        var sut = new Latitude(45.0);
+        var sut = Latitude.of(45.0);
 
         // When / Then
         assertThat(sut.isNorthernHemisphere()).isTrue();
@@ -145,7 +145,7 @@ class LatitudeTest {
     @Test
     void negativeLatitudeIsSouthern() {
         // Given
-        var sut = new Latitude(-33.8688); // Sydney
+        var sut = Latitude.of(-33.8688); // Sydney
 
         // When / Then
         assertThat(sut.isSouthernHemisphere()).isTrue();
@@ -195,7 +195,7 @@ class LatitudeTest {
     @Test
     void implementsRefinedDouble() {
         // Given
-        RefinedDouble sut = new Latitude(12.34);
+        RefinedDouble sut = Latitude.of(12.34);
 
         // When
         double result = sut.value();

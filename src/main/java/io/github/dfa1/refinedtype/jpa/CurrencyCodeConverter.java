@@ -13,6 +13,6 @@ public class CurrencyCodeConverter extends AbstractRefinedStringConverter<Curren
 
     @Override
     protected CurrencyCode fromString(String value) {
-        return new CurrencyCode(value);
+        return CurrencyCode.of(value);
     }
 }

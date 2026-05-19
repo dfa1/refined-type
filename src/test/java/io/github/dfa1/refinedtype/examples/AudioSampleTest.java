@@ -48,7 +48,7 @@ class AudioSampleTest {
     @Test
     void arbitrarySampleAccepted() {
         // Given
-        var sut = new AudioSample((short) 12_345);
+        var sut = AudioSample.of((short) 12_345);
 
         // When
         short result = sut.value();
@@ -101,8 +101,8 @@ class AudioSampleTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new AudioSample((short) -100);
-        var other = new AudioSample((short) 100);
+        var sut = AudioSample.of((short) -100);
+        var other = AudioSample.of((short) 100);
 
         // When
         int result = sut.compareTo(other);
@@ -114,8 +114,8 @@ class AudioSampleTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new AudioSample((short) 42);
-        var other = new AudioSample((short) 42);
+        var sut = AudioSample.of((short) 42);
+        var other = AudioSample.of((short) 42);
 
         // When
         int result = sut.compareTo(other);
@@ -142,7 +142,7 @@ class AudioSampleTest {
     @Test
     void toStringIncludesValue() {
         // Given
-        var sut = new AudioSample((short) -7_777);
+        var sut = AudioSample.of((short) -7_777);
 
         // When
         String result = sut.toString();
@@ -156,7 +156,7 @@ class AudioSampleTest {
     @Test
     void implementsRefinedShort() {
         // Given
-        RefinedShort sut = new AudioSample((short) 1234);
+        RefinedShort sut = AudioSample.of((short) 1234);
 
         // When
         short result = sut.value();

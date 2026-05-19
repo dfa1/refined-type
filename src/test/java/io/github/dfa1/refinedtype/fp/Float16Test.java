@@ -49,7 +49,7 @@ class Float16Test {
         // 0x3C00 is the bit-pattern for 1.0 in float16
         // Given
         short input = 0x3C00;
-        var sut = new Float16(input);
+        var sut = Float16.ofBits(input);
 
         // When
         short result = sut.rawBits();

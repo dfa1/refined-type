@@ -15,11 +15,15 @@ public value class UnsignedInt implements RefinedInt<UnsignedInt> {
 
     private final int bits;
 
-    public UnsignedInt(long value) {
+    private UnsignedInt(long value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("out of unsigned int range [0, 4294967295]: " + value);
         }
         this.bits = (int) value;
+    }
+
+    public static UnsignedInt of(long value) {
+        return new UnsignedInt(value);
     }
 
     /// Raw 32-bit pattern, signed interpretation. Negative for values > 2^31 - 1.
@@ -51,7 +55,7 @@ public value class UnsignedInt implements RefinedInt<UnsignedInt> {
     /// UnsignedLong result = i.toUnsignedLong().add(l);
     /// ```
     public UnsignedLong toUnsignedLong() {
-        return new UnsignedLong(Integer.toUnsignedLong(bits));
+        return UnsignedLong.of(Integer.toUnsignedLong(bits));
     }
 
     /// Wraps mod 2^32.

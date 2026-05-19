@@ -14,7 +14,7 @@ class SizeTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Size(0L);
+        var sut = Size.of(0L);
 
         // When
         long result = sut.value();
@@ -26,7 +26,7 @@ class SizeTest {
     @Test
     void positiveBytesAccepted() {
         // Given
-        var sut = new Size(1234L);
+        var sut = Size.of(1234L);
 
         // When
         long result = sut.value();
@@ -38,7 +38,7 @@ class SizeTest {
     @Test
     void maxLongAccepted() {
         // Given
-        var sut = new Size(Long.MAX_VALUE);
+        var sut = Size.of(Long.MAX_VALUE);
 
         // When
         long result = sut.value();
@@ -50,7 +50,7 @@ class SizeTest {
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Size(-1L))
+        assertThatThrownBy(() -> Size.of(-1L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -178,10 +178,10 @@ class SizeTest {
     @Test
     void plusOverflowDetected() {
         // Given
-        var sut = new Size(Long.MAX_VALUE);
+        var sut = Size.of(Long.MAX_VALUE);
 
         // When / Then
-        assertThatThrownBy(() -> sut.plus(new Size(1L)))
+        assertThatThrownBy(() -> sut.plus(Size.of(1L)))
                 .isInstanceOf(ArithmeticException.class);
     }
 

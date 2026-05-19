@@ -13,7 +13,7 @@ class VelocityTest {
     @Test
     void zeroIsValid() {
         // Given
-        var sut = new Velocity(0f);
+        var sut = Velocity.of(0f);
 
         // When
         float result = sut.value();
@@ -25,7 +25,7 @@ class VelocityTest {
     @Test
     void positiveValueIsValid() {
         // Given
-        var sut = new Velocity(299_792_458f); // speed of light m/s
+        var sut = Velocity.of(299_792_458f); // speed of light m/s
 
         // When
         float result = sut.value();
@@ -40,28 +40,28 @@ class VelocityTest {
         float input = -1f;
 
         // When / Then
-        assertThatThrownBy(() -> new Velocity(input))
+        assertThatThrownBy(() -> Velocity.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Velocity(Float.NaN))
+        assertThatThrownBy(() -> Velocity.of(Float.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Velocity(Float.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Velocity.of(Float.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Velocity(Float.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Velocity.of(Float.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -70,8 +70,8 @@ class VelocityTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = new Velocity(1f);
-        var other = new Velocity(2f);
+        var sut = Velocity.of(1f);
+        var other = Velocity.of(2f);
 
         // When
         int result = sut.compareTo(other);
@@ -83,8 +83,8 @@ class VelocityTest {
     @Test
     void compareToReturnsPositiveWhenGreater() {
         // Given
-        var sut = new Velocity(2f);
-        var other = new Velocity(1f);
+        var sut = Velocity.of(2f);
+        var other = Velocity.of(1f);
 
         // When
         int result = sut.compareTo(other);
@@ -96,8 +96,8 @@ class VelocityTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = new Velocity(42f);
-        var other = new Velocity(42f);
+        var sut = Velocity.of(42f);
+        var other = Velocity.of(42f);
 
         // When
         int result = sut.compareTo(other);
@@ -111,7 +111,7 @@ class VelocityTest {
     @Test
     void toStringIncludesUnit() {
         // Given
-        var sut = new Velocity(10f);
+        var sut = Velocity.of(10f);
 
         // When
         String result = sut.toString();
@@ -125,7 +125,7 @@ class VelocityTest {
     @Test
     void implementsRefinedFloat() {
         // Given
-        RefinedFloat sut = new Velocity(5f);
+        RefinedFloat sut = Velocity.of(5f);
 
         // When
         float result = sut.value();

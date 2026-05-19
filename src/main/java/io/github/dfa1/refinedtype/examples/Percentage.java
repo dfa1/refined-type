@@ -15,11 +15,15 @@ public value class Percentage implements RefinedFloat<Percentage> {
 
     private final float value;
 
-    public Percentage(float value) {
+    private Percentage(float value) {
         if (Float.isNaN(value) || Float.isInfinite(value) || value < 0f || value > 100f) {
             throw new IllegalArgumentException("percentage must be finite and in [0, 100]: " + value);
         }
         this.value = value;
+    }
+
+    public static Percentage of(float value) {
+        return new Percentage(value);
     }
 
     /// Convert a probability in [0, 1] to a percentage in [0, 100].

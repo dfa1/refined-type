@@ -13,7 +13,7 @@ class IsinTest {
     @Test
     void valueReturnsNormalizedCode() {
         // Given
-        var sut = new Isin("US0378331005");
+        var sut = Isin.of("US0378331005");
 
         // When
         String result = sut.value();
@@ -25,7 +25,7 @@ class IsinTest {
     @Test
     void lowercaseNormalizedToUppercase() {
         // Given
-        var sut = new Isin("us0378331005");
+        var sut = Isin.of("us0378331005");
 
         // When
         String result = sut.value();
@@ -37,7 +37,7 @@ class IsinTest {
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Isin(null))
+        assertThatThrownBy(() -> Isin.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -47,7 +47,7 @@ class IsinTest {
         String input = "US037833100"; // 11 chars
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(input))
+        assertThatThrownBy(() -> Isin.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -57,7 +57,7 @@ class IsinTest {
         String input = "US03783310055"; // 13 chars
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(input))
+        assertThatThrownBy(() -> Isin.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -68,7 +68,7 @@ class IsinTest {
         String input = "1S0378331005";
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(input))
+        assertThatThrownBy(() -> Isin.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,7 +79,7 @@ class IsinTest {
         String input = "US037833100A";
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(input))
+        assertThatThrownBy(() -> Isin.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,7 +89,7 @@ class IsinTest {
         String input = "US03783310-5";
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(input))
+        assertThatThrownBy(() -> Isin.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -98,10 +98,10 @@ class IsinTest {
     @Test
     void countryNsinConstructorComputesCheckDigit() {
         // Given — Apple Inc., CUSIP 037833100, US prefix
-        var country = new CountryCode("US");
+        var country = CountryCode.of("US");
 
         // When
-        Isin result = new Isin(country, "037833100");
+        Isin result = Isin.of(country, "037833100");
 
         // Then
         assertThat(result.value()).isEqualTo("US0378331005");
@@ -110,10 +110,10 @@ class IsinTest {
     @Test
     void countryNsinConstructorAcceptsLowercaseNsin() {
         // Given — Alphabet Class A, embedded 'k'
-        var country = new CountryCode("US");
+        var country = CountryCode.of("US");
 
         // When
-        Isin result = new Isin(country, "02079k305");
+        Isin result = Isin.of(country, "02079k305");
 
         // Then
         assertThat(result.value()).isEqualTo("US02079K3059");
@@ -122,30 +122,30 @@ class IsinTest {
     @Test
     void countryNsinConstructorRejectsShortNsin() {
         // Given
-        var country = new CountryCode("US");
+        var country = CountryCode.of("US");
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(country, "12345678"))
+        assertThatThrownBy(() -> Isin.of(country, "12345678"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void countryNsinConstructorRejectsInvalidChar() {
         // Given
-        var country = new CountryCode("US");
+        var country = CountryCode.of("US");
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(country, "12345-789"))
+        assertThatThrownBy(() -> Isin.of(country, "12345-789"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void countryNsinConstructorRejectsNull() {
         // Given
-        var country = new CountryCode("US");
+        var country = CountryCode.of("US");
 
         // When / Then
-        assertThatThrownBy(() -> new Isin(country, null))
+        assertThatThrownBy(() -> Isin.of(country, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -154,7 +154,7 @@ class IsinTest {
     @Test
     void countryExtractedFromPrefix() {
         // Given
-        var sut = new Isin("US0378331005");
+        var sut = Isin.of("US0378331005");
 
         // When
         CountryCode result = sut.country();
@@ -166,7 +166,7 @@ class IsinTest {
     @Test
     void countryWorksForDifferentPrefixes() {
         // Given
-        var sut = new Isin("DE0005140008"); // Deutsche Bank
+        var sut = Isin.of("DE0005140008"); // Deutsche Bank
 
         // When
         CountryCode result = sut.country();
@@ -180,8 +180,8 @@ class IsinTest {
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new Isin("DE0005140008");
-        var other = new Isin("US0378331005");
+        var sut = Isin.of("DE0005140008");
+        var other = Isin.of("US0378331005");
 
         // When
         int result = sut.compareTo(other);
@@ -193,8 +193,8 @@ class IsinTest {
     @Test
     void compareToReturnsZeroForEqualCodes() {
         // Given
-        var sut = new Isin("US0378331005");
-        var other = new Isin("us0378331005"); // lowercase normalized
+        var sut = Isin.of("US0378331005");
+        var other = Isin.of("us0378331005"); // lowercase normalized
 
         // When
         int result = sut.compareTo(other);
@@ -208,7 +208,7 @@ class IsinTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Isin("US0378331005");
+        var sut = Isin.of("US0378331005");
 
         // When
         String result = sut.toString();
@@ -222,7 +222,7 @@ class IsinTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new Isin("US0378331005");
+        RefinedString sut = Isin.of("US0378331005");
 
         // When
         String result = sut.value();

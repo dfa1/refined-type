@@ -7,11 +7,15 @@ public value class Velocity implements RefinedFloat<Velocity> {
 
     private final float value;
 
-    public Velocity(float value) {
+    private Velocity(float value) {
         if (Float.isNaN(value) || Float.isInfinite(value) || value < 0f) {
             throw new IllegalArgumentException("velocity must be non-negative and finite: " + value);
         }
         this.value = value;
+    }
+
+    public static Velocity of(float value) {
+        return new Velocity(value);
     }
 
     @Override

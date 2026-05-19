@@ -14,11 +14,11 @@ import java.util.regex.Pattern;
 ///   Number — letters or digits, assigned by the local numbering agency.
 /// - `D` is a single check digit.
 ///
-/// Two constructors are provided:
+/// Two factory methods are provided:
 ///
-/// - {@link #Isin(String)} parses an already-complete 12-character ISIN
+/// - {@link #of(String)} parses an already-complete 12-character ISIN
 ///   and verifies the shape (not the check digit).
-/// - {@link #Isin(CountryCode, String)} accepts a {@link CountryCode} and the
+/// - {@link #of(CountryCode, String)} accepts a {@link CountryCode} and the
 ///   9-character NSIN, and **computes** the check digit, so the
 ///   resulting ISIN is guaranteed valid by construction.
 ///
@@ -33,7 +33,12 @@ public value class Isin implements RefinedString<Isin> {
 
     private final String value;
 
-    public Isin(String value) {
+    private Isin(String value) {
+        this.value = value;
+    }
+
+    /// Parse an already-complete 12-character ISIN, verifying shape (not check digit).
+    public static Isin of(String value) {
         if (value == null || value.length() != LENGTH) {
             throw new IllegalArgumentException("ISIN must be exactly 12 characters: " + value);
         }
@@ -41,7 +46,7 @@ public value class Isin implements RefinedString<Isin> {
         if (!PATTERN.matcher(upper).matches()) {
             throw new IllegalArgumentException("ISIN must match ^[A-Z]{2}[A-Z0-9]{9}[0-9]$: " + value);
         }
-        this.value = upper;
+        return new Isin(upper);
     }
 
     /// Build a valid ISIN from a country prefix and a 9-character NSIN,
@@ -55,7 +60,7 @@ public value class Isin implements RefinedString<Isin> {
     /// 3. From the right, multiply every other digit by 2; sum the
     ///    digits of every result (`14 → 1 + 4 = 5`).
     /// 4. Check digit = `(10 − sum mod 10) mod 10`.
-    public Isin(CountryCode country, String nsin) {
+    public static Isin of(CountryCode country, String nsin) {
         if (nsin == null || nsin.length() != NSIN_LENGTH) {
             throw new IllegalArgumentException("NSIN must be exactly 9 characters: " + nsin);
         }
@@ -64,7 +69,7 @@ public value class Isin implements RefinedString<Isin> {
             throw new IllegalArgumentException("NSIN must match ^[A-Z0-9]{9}$: " + nsin);
         }
         String base = country.value() + upperNsin;
-        this.value = base + computeCheckDigit(base);
+        return new Isin(base + computeCheckDigit(base));
     }
 
     private static int computeCheckDigit(String base) {
@@ -98,7 +103,7 @@ public value class Isin implements RefinedString<Isin> {
 
     /// Two-letter ISO 3166-1 alpha-2 country prefix.
     public CountryCode country() {
-        return new CountryCode(value.substring(0, 2));
+        return CountryCode.of(value.substring(0, 2));
     }
 
     @Override

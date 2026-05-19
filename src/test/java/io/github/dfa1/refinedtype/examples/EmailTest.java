@@ -11,7 +11,7 @@ class EmailTest {
     @Test
     void valueReturnsAddress() {
         // Given
-        var sut = new Email("user@example.com");
+        var sut = Email.of("user@example.com");
 
         // When
         String result = sut.value();
@@ -23,16 +23,16 @@ class EmailTest {
     @Test
     void blankRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Email(""))
+        assertThatThrownBy(() -> Email.of(""))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new Email("   "))
+        assertThatThrownBy(() -> Email.of("   "))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nullRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Email(null))
+        assertThatThrownBy(() -> Email.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -42,7 +42,7 @@ class EmailTest {
         String input = "@example.com";
 
         // When / Then
-        assertThatThrownBy(() -> new Email(input))
+        assertThatThrownBy(() -> Email.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -52,7 +52,7 @@ class EmailTest {
         String input = "a@b@example.com";
 
         // When / Then
-        assertThatThrownBy(() -> new Email(input))
+        assertThatThrownBy(() -> Email.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -62,7 +62,7 @@ class EmailTest {
         String input = "user@localhost";
 
         // When / Then
-        assertThatThrownBy(() -> new Email(input))
+        assertThatThrownBy(() -> Email.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,15 +72,15 @@ class EmailTest {
         String input = "user@";
 
         // When / Then
-        assertThatThrownBy(() -> new Email(input))
+        assertThatThrownBy(() -> Email.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void compareToReturnsNegativeWhenLexicographicallySmaller() {
         // Given
-        var sut = new Email("a@example.com");
-        var other = new Email("b@example.com");
+        var sut = Email.of("a@example.com");
+        var other = Email.of("b@example.com");
 
         // When
         int result = sut.compareTo(other);
@@ -92,8 +92,8 @@ class EmailTest {
     @Test
     void compareToReturnsPositiveWhenLexicographicallyGreater() {
         // Given
-        var sut = new Email("b@example.com");
-        var other = new Email("a@example.com");
+        var sut = Email.of("b@example.com");
+        var other = Email.of("a@example.com");
 
         // When
         int result = sut.compareTo(other);
@@ -105,8 +105,8 @@ class EmailTest {
     @Test
     void compareToReturnsZeroForEqualAddresses() {
         // Given
-        var sut = new Email("a@example.com");
-        var other = new Email("a@example.com");
+        var sut = Email.of("a@example.com");
+        var other = Email.of("a@example.com");
 
         // When
         int result = sut.compareTo(other);
@@ -118,7 +118,7 @@ class EmailTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = new Email("user@example.com");
+        var sut = Email.of("user@example.com");
 
         // When
         String result = sut.toString();
@@ -130,7 +130,7 @@ class EmailTest {
     @Test
     void implementsRefinedString() {
         // Given
-        RefinedString sut = new Email("user@example.com");
+        RefinedString sut = Email.of("user@example.com");
 
         // When
         String result = sut.value();

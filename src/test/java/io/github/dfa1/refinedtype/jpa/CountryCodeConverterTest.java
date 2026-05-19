@@ -12,7 +12,7 @@ class CountryCodeConverterTest {
     void convertToDatabaseColumnReturnsCountryCode() {
         // Given
         var sut = new CountryCodeConverter();
-        var countryCode = new CountryCode("DE");
+        var countryCode = CountryCode.of("DE");
 
         // When
         String result = sut.convertToDatabaseColumn(countryCode);
@@ -83,7 +83,7 @@ class CountryCodeConverterTest {
     void roundtripPreservesValue() {
         // Given
         var sut = new CountryCodeConverter();
-        var countryCode = new CountryCode("IT");
+        var countryCode = CountryCode.of("IT");
 
         // When
         CountryCode result = sut.convertToEntityAttribute(sut.convertToDatabaseColumn(countryCode));

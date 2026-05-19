@@ -87,7 +87,7 @@ class IbanTest {
     @Test
     void factoryComputesCorrectCheckDigits() {
         // Given — BBAN from the known German IBAN
-        var result = Iban.of(new CountryCode("DE"), "370400440532013000");
+        var result = Iban.of(CountryCode.of("DE"), "370400440532013000");
 
         // Then — check digits must match the known value
         assertThat(result.checkDigits()).isEqualTo("89");
@@ -97,7 +97,7 @@ class IbanTest {
     @Test
     void factoryRoundtrip() {
         // Given — build from country + BBAN, then re-parse
-        Iban built = Iban.of(new CountryCode("GB"), "WEST12345698765432");
+        Iban built = Iban.of(CountryCode.of("GB"), "WEST12345698765432");
 
         // When
         var reparsed = new Iban(built.value());
@@ -109,7 +109,7 @@ class IbanTest {
     @Test
     void factoryStripsSpacesFromBban() {
         // Given
-        var result = Iban.of(new CountryCode("DE"), "3704 0044 0532 0130 00");
+        var result = Iban.of(CountryCode.of("DE"), "3704 0044 0532 0130 00");
 
         // Then
         assertThat(result.value()).isEqualTo(DE_IBAN);
@@ -118,14 +118,14 @@ class IbanTest {
     @Test
     void factoryRejectsNullBban() {
         // When / Then
-        assertThatThrownBy(() -> Iban.of(new CountryCode("DE"), null))
+        assertThatThrownBy(() -> Iban.of(CountryCode.of("DE"), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void factoryRejectsNonAlphanumericBban() {
         // When / Then
-        assertThatThrownBy(() -> Iban.of(new CountryCode("DE"), "!invalid!"))
+        assertThatThrownBy(() -> Iban.of(CountryCode.of("DE"), "!invalid!"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

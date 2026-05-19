@@ -27,7 +27,7 @@ class DistanceTest {
     @Test
     void positiveAccepted() {
         // Given
-        var sut = new Distance(1_234.5);
+        var sut = Distance.of(1_234.5);
 
         // When
         double result = sut.value();
@@ -39,21 +39,21 @@ class DistanceTest {
     @Test
     void negativeRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Distance(-1.0))
+        assertThatThrownBy(() -> Distance.of(-1.0))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Distance(Double.NaN))
+        assertThatThrownBy(() -> Distance.of(Double.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void infinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> new Distance(Double.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Distance.of(Double.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -13,11 +13,15 @@ public value class Age implements RefinedShort<Age> {
 
     private final short value;
 
-    public Age(int value) {
+    private Age(int value) {
         if (value < 0 || value > MAX) {
             throw new IllegalArgumentException("age must be in [0, " + MAX + "]: " + value);
         }
         this.value = (short) value;
+    }
+
+    public static Age of(int value) {
+        return new Age(value);
     }
 
     @Override

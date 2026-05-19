@@ -31,11 +31,16 @@ public value class Distance implements RefinedDouble<Distance> {
 
     private final double meters;
 
-    public Distance(double meters) {
+    private Distance(double meters) {
         if (Double.isNaN(meters) || Double.isInfinite(meters) || meters < 0.0) {
             throw new IllegalArgumentException("distance must be finite and non-negative: " + meters);
         }
         this.meters = meters;
+    }
+
+    /// Construct from a value in metres.
+    public static Distance of(double meters) {
+        return new Distance(meters);
     }
 
     /// Construct from a quantity in the given unit.

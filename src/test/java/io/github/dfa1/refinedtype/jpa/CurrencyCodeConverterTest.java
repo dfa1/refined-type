@@ -12,7 +12,7 @@ class CurrencyCodeConverterTest {
     void convertToDatabaseColumnReturnsCurrencyCode() {
         // Given
         var sut = new CurrencyCodeConverter();
-        var currencyCode = new CurrencyCode("EUR");
+        var currencyCode = CurrencyCode.of("EUR");
 
         // When
         String result = sut.convertToDatabaseColumn(currencyCode);
@@ -83,7 +83,7 @@ class CurrencyCodeConverterTest {
     void roundtripPreservesValue() {
         // Given
         var sut = new CurrencyCodeConverter();
-        var currencyCode = new CurrencyCode("CHF");
+        var currencyCode = CurrencyCode.of("CHF");
 
         // When
         CurrencyCode result = sut.convertToEntityAttribute(sut.convertToDatabaseColumn(currencyCode));
