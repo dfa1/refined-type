@@ -28,10 +28,6 @@ public value class Money {
         return new Money(amount, currency);
     }
 
-    public static Money of(double amount, CurrencyCode currency) {
-        return new Money(Price.of(amount), currency);
-    }
-
     public Price amount() {
         return amount;
     }

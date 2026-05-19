@@ -24,19 +24,9 @@ class MoneyTest {
     }
 
     @Test
-    void constructFromDoubleAndCurrency() {
-        // Given / When
-        var sut = Money.of(99.99, USD);
-
-        // Then
-        assertThat(sut.amount().value()).isEqualTo(99.99);
-        assertThat(sut.currency()).isEqualTo(USD);
-    }
-
-    @Test
     void negativeAmountAllowed() {
         // Given / When — overdraft, negative P&L
-        var sut = Money.of(-50.0, USD);
+        var sut = Money.of(Price.of(-50.0), USD);
 
         // Then
         assertThat(sut.amount().value()).isEqualTo(-50.0);
@@ -59,8 +49,8 @@ class MoneyTest {
     @Test
     void addSameCurrency() {
         // Given
-        var sut = Money.of(100.0, USD);
-        var other = Money.of(50.0, USD);
+        var sut = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(50.0), USD);
 
         // When
         Money result = sut.add(other);
@@ -73,8 +63,8 @@ class MoneyTest {
     @Test
     void addDifferentCurrencyRejected() {
         // Given
-        var sut = Money.of(100.0, USD);
-        var other = Money.of(100.0, EUR);
+        var sut = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(100.0), EUR);
 
         // When / Then
         assertThatThrownBy(() -> sut.add(other))
@@ -88,8 +78,8 @@ class MoneyTest {
     @Test
     void subtractSameCurrency() {
         // Given
-        var sut = Money.of(100.0, USD);
-        var other = Money.of(30.0, USD);
+        var sut = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(30.0), USD);
 
         // When
         Money result = sut.subtract(other);
@@ -102,8 +92,8 @@ class MoneyTest {
     @Test
     void subtractProducesNegative() {
         // Given
-        var sut = Money.of(10.0, USD);
-        var other = Money.of(20.0, USD);
+        var sut = Money.of(Price.of(10.0), USD);
+        var other = Money.of(Price.of(20.0), USD);
 
         // When
         Money result = sut.subtract(other);
@@ -115,8 +105,8 @@ class MoneyTest {
     @Test
     void subtractDifferentCurrencyRejected() {
         // Given
-        var sut = Money.of(100.0, USD);
-        var other = Money.of(100.0, EUR);
+        var sut = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(100.0), EUR);
 
         // When / Then
         assertThatThrownBy(() -> sut.subtract(other))
@@ -128,7 +118,7 @@ class MoneyTest {
     @Test
     void multiplyByPositiveFactor() {
         // Given
-        var sut = Money.of(50.0, USD);
+        var sut = Money.of(Price.of(50.0), USD);
 
         // When
         Money result = sut.multiply(3.0);
@@ -141,7 +131,7 @@ class MoneyTest {
     @Test
     void multiplyByZeroGivesZero() {
         // Given
-        var sut = Money.of(100.0, USD);
+        var sut = Money.of(Price.of(100.0), USD);
 
         // When
         Money result = sut.multiply(0.0);
@@ -153,7 +143,7 @@ class MoneyTest {
     @Test
     void multiplyByNegativeFactorNegatesAmount() {
         // Given
-        var sut = Money.of(100.0, USD);
+        var sut = Money.of(Price.of(100.0), USD);
 
         // When
         Money result = sut.multiply(-1.0);
@@ -167,7 +157,7 @@ class MoneyTest {
     @Test
     void negateFlipsSign() {
         // Given
-        var sut = Money.of(100.0, USD);
+        var sut = Money.of(Price.of(100.0), USD);
 
         // When
         Money result = sut.negate();
@@ -180,7 +170,7 @@ class MoneyTest {
     @Test
     void negateNegativeGivesPositive() {
         // Given
-        var sut = Money.of(-40.0, USD);
+        var sut = Money.of(Price.of(-40.0), USD);
 
         // When
         Money result = sut.negate();
@@ -193,32 +183,32 @@ class MoneyTest {
 
     @Test
     void isPositiveTrue() {
-        assertThat(Money.of(1.0, USD).isPositive()).isTrue();
+        assertThat(Money.of(Price.of(1.0), USD).isPositive()).isTrue();
     }
 
     @Test
     void isPositiveFalseForNegative() {
-        assertThat(Money.of(-1.0, USD).isPositive()).isFalse();
+        assertThat(Money.of(Price.of(-1.0), USD).isPositive()).isFalse();
     }
 
     @Test
     void isNegativeTrue() {
-        assertThat(Money.of(-1.0, USD).isNegative()).isTrue();
+        assertThat(Money.of(Price.of(-1.0), USD).isNegative()).isTrue();
     }
 
     @Test
     void isNegativeFalseForPositive() {
-        assertThat(Money.of(1.0, USD).isNegative()).isFalse();
+        assertThat(Money.of(Price.of(1.0), USD).isNegative()).isFalse();
     }
 
     @Test
     void isZeroTrue() {
-        assertThat(Money.of(0.0, USD).isZero()).isTrue();
+        assertThat(Money.of(Price.of(0.0), USD).isZero()).isTrue();
     }
 
     @Test
     void isZeroFalseForNonZero() {
-        assertThat(Money.of(0.01, USD).isZero()).isFalse();
+        assertThat(Money.of(Price.of(0.01), USD).isZero()).isFalse();
     }
 
     // ── equality ─────────────────────────────────────────────────────────────
@@ -226,8 +216,8 @@ class MoneyTest {
     @Test
     void equalsSameAmountAndCurrency() {
         // Given
-        var sut   = Money.of(100.0, USD);
-        var other = Money.of(100.0, USD);
+        var sut   = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(100.0), USD);
 
         // Then
         assertThat(sut).isEqualTo(other);
@@ -235,19 +225,19 @@ class MoneyTest {
 
     @Test
     void equalsDifferentAmount() {
-        assertThat(Money.of(100.0, USD)).isNotEqualTo(Money.of(200.0, USD));
+        assertThat(Money.of(Price.of(100.0), USD)).isNotEqualTo(Money.of(Price.of(200.0), USD));
     }
 
     @Test
     void equalsDifferentCurrency() {
-        assertThat(Money.of(100.0, USD)).isNotEqualTo(Money.of(100.0, EUR));
+        assertThat(Money.of(Price.of(100.0), USD)).isNotEqualTo(Money.of(Price.of(100.0), EUR));
     }
 
     @Test
     void hashCodeConsistentForEqualValues() {
         // Given
-        var sut   = Money.of(100.0, USD);
-        var other = Money.of(100.0, USD);
+        var sut   = Money.of(Price.of(100.0), USD);
+        var other = Money.of(Price.of(100.0), USD);
 
         // Then
         assertThat(sut.hashCode()).isEqualTo(other.hashCode());
@@ -258,7 +248,7 @@ class MoneyTest {
     @Test
     void toStringFormat() {
         // Given
-        var sut = Money.of(99.99, USD);
+        var sut = Money.of(Price.of(99.99), USD);
 
         // When
         String result = sut.toString();
