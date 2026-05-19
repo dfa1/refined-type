@@ -90,12 +90,18 @@ public value class Iban implements RefinedString<Iban> {
         return new CountryCode(value.substring(0, 2));
     }
 
-    /// Two-digit MOD 97-10 check digits as a string (positions 3–4).
+    /// Two-digit MOD 97-10 check digits as a string (positions 3–4), e.g. `"89"` or `"02"`.
+    ///
+    /// Returns `String` rather than `int` to preserve zero-padding (e.g. `"02"`, not `2`);
+    /// the IBAN spec treats this as a 2-character string in the rearrangement step.
     public String checkDigits() {
         return value.substring(2, 4);
     }
 
     /// Basic Bank Account Number — the country-specific part (positions 5+).
+    ///
+    /// Returns `String` because the BBAN is alphanumeric and country-specific;
+    /// no universal numeric or structural invariant exists beyond what the parent `Iban` already enforces.
     public String bban() {
         return value.substring(4);
     }
