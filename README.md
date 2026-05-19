@@ -188,6 +188,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 | `Iban`              | ISO 13616 bank account number (MOD 97-10 checksum, `country`/`checkDigits`/`bban`; `of()` computes check digits) |
 | `Isin`              | ISO 6166 securities identifier (12 chars)                 |
 | `Latitude`          | decimal degrees in `[-90, 90]`                            |
+| `MacAddress`        | IEEE 802 MAC address (colon/hyphen/plain input, canonical `aa:bb:cc:dd:ee:ff`; `isMulticast`, `isLocallyAdministered`, `isBroadcast`) |
 | `Lei`               | ISO 17442 Legal Entity Identifier (20 chars, MOD 97-10 check digits) |
 | `Longitude`         | decimal degrees in `[-180, 180]`                          |
 | `Percentage`        | finite float in `[0, 100]`                                |
