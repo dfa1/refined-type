@@ -26,6 +26,7 @@
 /// | {@link io.github.dfa1.refinedtype.examples.Size}               | non-negative byte count (with `Unit` enum)           |
 /// | {@link io.github.dfa1.refinedtype.examples.Slug}               | URL-safe lowercase identifier                        |
 /// | {@link io.github.dfa1.refinedtype.examples.SwissValorNumber}   | SIX Valoren-Nummer, `[1, 999_999_999]`, → ISIN       |
+/// | {@link io.github.dfa1.refinedtype.examples.Money}              | `Price` + `CurrencyCode`; arithmetic enforces currency matching |
 /// | {@link io.github.dfa1.refinedtype.examples.Speed}              | non-negative float (m/s)                             |
 /// | {@link io.github.dfa1.refinedtype.examples.Volume}             | non-negative, finite float                           |
 ///
