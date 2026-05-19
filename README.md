@@ -219,6 +219,84 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 
 ---
 
+## Framework integration
+
+Refined types are opaque to frameworks that expect primitives or `String`. Two opt-in adapters ship in this repo.
+
+### Jackson (`jackson` package)
+
+Register `RefinedTypeModule` once:
+
+```java
+ObjectMapper mapper = new ObjectMapper()
+        .registerModule(new RefinedTypeModule());
+```
+
+**Serializers** are shared via marker interface — one serializer covers all `RefinedInt` (or `RefinedString`, `RefinedShort`) implementations:
+
+```java
+// Age(42) → 42, Port(8080) → 8080, Email("a@b.com") → "a@b.com"
+mapper.writeValueAsString(new Age(42));        // "42"
+mapper.writeValueAsString(new Email("a@b.com")); // "\"a@b.com\""
+```
+
+**Deserializers** are per concrete type — the constructor is the only valid factory and each type has its own constraint:
+
+```java
+mapper.readValue("42", Age.class);          // Age(42)
+mapper.readValue("\"a@b.com\"", Email.class); // Email("a@b.com")
+mapper.readValue("151", Age.class);         // throws InvalidDefinitionException (> 150)
+```
+
+Currently registered: `Age`, `Port`, `Email`, `CountryCode`, `CurrencyCode`.
+
+To add a new type, implement `StdDeserializer<YourType>` and register it in `RefinedTypeModule`:
+
+```java
+class PortDeserializer extends StdDeserializer<Port> {
+    PortDeserializer() { super(Port.class); }
+
+    @Override
+    public Port deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+        return new Port(p.getIntValue());
+    }
+}
+```
+
+### JPA (`jpa` package)
+
+Abstract base converters handle the `null` column ↔ `null` attribute contract.
+Concrete converters are one-liners:
+
+```java
+@Converter
+public class AgeConverter extends AbstractRefinedShortConverter<Age> {
+    @Override
+    protected Age fromShort(short value) { return new Age(value); }
+}
+```
+
+Apply with `@Convert` on the entity field:
+
+```java
+@Entity
+public class Person {
+    @Convert(converter = AgeConverter.class)
+    private Age age;
+
+    @Convert(converter = EmailConverter.class)
+    private Email email;
+}
+```
+
+`NULL` in the column maps to `null` in the entity field; non-null values are reconstructed through the constructor so the constraint is re-validated on load.
+
+Currently provided: `AgeConverter`, `PortConverter`, `EmailConverter`, `CountryCodeConverter`, `CurrencyCodeConverter`.
+
+Abstract bases available for new types: `AbstractRefinedIntConverter`, `AbstractRefinedShortConverter`, `AbstractRefinedStringConverter`.
+
+---
+
 ## Benchmark results
 
 Measured on JDK 27-jep401ea3 (Valhalla EA3), macOS Darwin 25.4.0, Apple Silicon.
