@@ -221,6 +221,48 @@ The wrong-type bug `swissValor.toIsin().equals(cusip)` doesn't compile; both ISI
 
 ---
 
+## Value-class semantics
+
+### Equality and hash codes
+
+JEP 401 value objects have no identity — two instances with identical field values **are** the same object at the JVM level. `==`, `equals`, and `hashCode` all work correctly without any override:
+
+```java
+Age.of(30) == Age.of(30)                           // true
+Age.of(30).equals(Age.of(30))                       // true
+Age.of(30).hashCode() == Age.of(30).hashCode()      // true
+
+Email.of("a@b.com").equals(Email.of("a@b.com"))     // true — String field compared by value
+
+Coordinate.of(Latitude.of(1.0), Longitude.of(2.0))
+    .equals(Coordinate.of(Latitude.of(1.0), Longitude.of(2.0)))  // true — multi-field
+```
+
+No class in this repo overrides `equals` or `hashCode`. Only `toString` is overridden for human-readable output like `Age(30)`.
+
+### Pattern matching
+
+Value classes participate in Java's pattern-matching features:
+
+```java
+Object obj = Age.of(42);
+
+// instanceof pattern
+if (obj instanceof Age a) {
+    System.out.println(a.value());   // 42
+}
+
+// switch expression
+String label = switch (obj) {
+    case Age a -> "age: " + a.value();
+    default    -> "other";
+};
+```
+
+Works for both primitive-backed types (`Age` wraps `short`) and `String`-backed types (`Email`).
+
+---
+
 ## Framework integration
 
 Refined types are opaque to frameworks that expect primitives or `String`. Two opt-in adapters ship in this repo.
@@ -380,7 +422,7 @@ This pattern is a net positive in the right place, with real costs. Don't apply 
 
 ### Costs to take seriously
 
-- **Boilerplate per type.** Constructor, `value()`, `toString`, test class, sometimes `equals`. Eighteen refined types ≈ eighteen near-identical skeletons. Languages with first-class refinement (Scala 3 opaque types, Rust newtype, Kotlin value class) say this in one line.
+- **Boilerplate per type.** Constructor, `value()`, `toString`, test class. Eighteen refined types ≈ eighteen near-identical skeletons. Languages with first-class refinement (Scala 3 opaque types, Rust newtype, Kotlin value class) say this in one line.
 - **Boundary friction.** Jackson, JPA, JDBC, Bean Validation, MapStruct all expect primitives and `String`. Each refined type needs an adapter — or you pay deserialization tax at every external edge.
 - **Generic noise leaks.** `RefinedFloat<T extends RefinedFloat<T>>` is the right shape but ugly in error messages — new contributors stare at it.
 - **Sweet spot is narrow.** Big API surfaces, regulated domains (finance, geo, medical), public libraries — huge win. Internal scripts, throwaway endpoints, glue code — boilerplate eats the win.
