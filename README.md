@@ -200,7 +200,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 | `Slug`              | URL-safe lowercase identifier                             |
 | `SwissValorNumber`  | SIX Valoren-Nummer, `[1, 999 999 999]`, → `Isin`          |
 | `Temperature`       | non-negative Kelvin; construct/convert via `Unit` (K/°C/°F) |
-| `Velocity`          | non-negative float (m/s)                                  |
+| `Speed`             | non-negative float (m/s)                                  |
 | `Volume`            | non-negative, finite float                                |
 
 #### A worked example — securities identifiers

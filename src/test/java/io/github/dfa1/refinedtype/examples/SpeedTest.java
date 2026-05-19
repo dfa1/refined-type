@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class VelocityTest {
+class SpeedTest {
 
     // ── construction ────────────────────────────────────────────────────────
 
     @Test
     void zeroIsValid() {
         // Given
-        var sut = Velocity.of(0f);
+        var sut = Speed.of(0f);
 
         // When
         float result = sut.value();
@@ -25,7 +25,7 @@ class VelocityTest {
     @Test
     void positiveValueIsValid() {
         // Given
-        var sut = Velocity.of(299_792_458f); // speed of light m/s
+        var sut = Speed.of(299_792_458f); // speed of light m/s
 
         // When
         float result = sut.value();
@@ -40,28 +40,28 @@ class VelocityTest {
         float input = -1f;
 
         // When / Then
-        assertThatThrownBy(() -> Velocity.of(input))
+        assertThatThrownBy(() -> Speed.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void nanRejected() {
         // When / Then
-        assertThatThrownBy(() -> Velocity.of(Float.NaN))
+        assertThatThrownBy(() -> Speed.of(Float.NaN))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void positiveInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> Velocity.of(Float.POSITIVE_INFINITY))
+        assertThatThrownBy(() -> Speed.of(Float.POSITIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void negativeInfinityRejected() {
         // When / Then
-        assertThatThrownBy(() -> Velocity.of(Float.NEGATIVE_INFINITY))
+        assertThatThrownBy(() -> Speed.of(Float.NEGATIVE_INFINITY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -70,8 +70,8 @@ class VelocityTest {
     @Test
     void compareToReturnsNegativeWhenSmaller() {
         // Given
-        var sut = Velocity.of(1f);
-        var other = Velocity.of(2f);
+        var sut = Speed.of(1f);
+        var other = Speed.of(2f);
 
         // When
         int result = sut.compareTo(other);
@@ -83,8 +83,8 @@ class VelocityTest {
     @Test
     void compareToReturnsPositiveWhenGreater() {
         // Given
-        var sut = Velocity.of(2f);
-        var other = Velocity.of(1f);
+        var sut = Speed.of(2f);
+        var other = Speed.of(1f);
 
         // When
         int result = sut.compareTo(other);
@@ -96,8 +96,8 @@ class VelocityTest {
     @Test
     void compareToReturnsZeroForEqualValues() {
         // Given
-        var sut = Velocity.of(42f);
-        var other = Velocity.of(42f);
+        var sut = Speed.of(42f);
+        var other = Speed.of(42f);
 
         // When
         int result = sut.compareTo(other);
@@ -111,13 +111,13 @@ class VelocityTest {
     @Test
     void toStringIncludesUnit() {
         // Given
-        var sut = Velocity.of(10f);
+        var sut = Speed.of(10f);
 
         // When
         String result = sut.toString();
 
         // Then
-        assertThat(result).isEqualTo("Velocity(10.0 m/s)");
+        assertThat(result).isEqualTo("Speed(10.0 m/s)");
     }
 
     // ── RefinedFloat ─────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ class VelocityTest {
     @Test
     void implementsRefinedFloat() {
         // Given
-        RefinedFloat sut = Velocity.of(5f);
+        RefinedFloat sut = Speed.of(5f);
 
         // When
         float result = sut.value();

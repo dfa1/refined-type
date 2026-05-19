@@ -37,7 +37,7 @@ public class LayoutInspectorTest {
         groups.put("RefinedShort (raw: 2 bytes)", new Class<?>[]{ AudioSample.class, UnsignedShort.class });
         groups.put("RefinedLong  (raw: 8 bytes)", new Class<?>[]{ Size.class, UnsignedLong.class });
         groups.put("RefinedDouble (raw: 8 bytes)", new Class<?>[]{ Distance.class, Latitude.class, Longitude.class, Price.class });
-        groups.put("RefinedFloat (raw: 4 bytes)", new Class<?>[]{ Percentage.class, Probability.class, Velocity.class, Volume.class });
+        groups.put("RefinedFloat (raw: 4 bytes)", new Class<?>[]{ Percentage.class, Probability.class, Speed.class, Volume.class });
         groups.put("RefinedString (raw: ref)", new Class<?>[]{ CountryCode.class, CurrencyCode.class, CusipNumber.class, Email.class, HostName.class, Isin.class, Slug.class });
         groups.put("Other", new Class<?>[]{ Coordinate.class, Float16.class, UnsignedByte.class });
 
