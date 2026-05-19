@@ -7,6 +7,7 @@
 /// |-----------------------------------------------------------------|------------------------------------------------------|
 /// | {@link io.github.dfa1.refinedtype.examples.Age}                | integer in `[0, 150]`                                |
 /// | {@link io.github.dfa1.refinedtype.examples.AudioSample}        | signed 16-bit PCM sample                             |
+/// | {@link io.github.dfa1.refinedtype.examples.Bic}                | ISO 9362 bank identifier (8 or 11 chars, canonical 11-char) |
 /// | {@link io.github.dfa1.refinedtype.examples.CountryCode}        | ISO 3166-1 alpha-2 code (two uppercase letters)      |
 /// | {@link io.github.dfa1.refinedtype.examples.CurrencyCode}       | ISO 4217 currency code (three uppercase letters)     |
 /// | {@link io.github.dfa1.refinedtype.examples.CusipNumber}        | 9-char CUSIP (US/Canadian securities), → ISIN        |
@@ -14,6 +15,7 @@
 /// | {@link io.github.dfa1.refinedtype.examples.Email}              | coarse syntactic email check                         |
 /// | {@link io.github.dfa1.refinedtype.examples.Coordinate}         | (Latitude, Longitude) pair with haversine `Distance` |
 /// | {@link io.github.dfa1.refinedtype.examples.HostName}           | RFC 1123 hostname with SSRF guards                   |
+/// | {@link io.github.dfa1.refinedtype.examples.Iban}               | ISO 13616 bank account number (MOD 97-10 checksum)   |
 /// | {@link io.github.dfa1.refinedtype.examples.Isin}               | ISO 6166 securities identifier                       |
 /// | {@link io.github.dfa1.refinedtype.examples.Latitude}           | decimal degrees in `[-90, 90]`                       |
 /// | {@link io.github.dfa1.refinedtype.examples.Longitude}          | decimal degrees in `[-180, 180]`                     |

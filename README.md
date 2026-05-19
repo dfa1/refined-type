@@ -177,6 +177,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 |---------------------|-----------------------------------------------------------|
 | `Age`               | integer in `[0, 150]`                                     |
 | `AudioSample`       | signed 16-bit PCM sample                                  |
+| `Bic`               | ISO 9362 bank identifier (8- or 11-char input, canonical 11-char storage, `bankCode`/`country`/`locationCode`/`branchCode`) |
 | `CountryCode`       | ISO 3166-1 alpha-2 (two uppercase letters)                |
 | `CurrencyCode`      | ISO 4217 currency code (three uppercase letters)          |
 | `CusipNumber`       | 9-char CUSIP (US/Canadian securities), → `Isin`           |
@@ -184,6 +185,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 | `Email`             | coarse syntactic check                                    |
 | `GeoPoint`          | (Latitude, Longitude) pair with haversine `Distance`      |
 | `HostName`          | RFC 1123 hostname with SSRF guards                        |
+| `Iban`              | ISO 13616 bank account number (MOD 97-10 checksum, `country`/`checkDigits`/`bban`; `of()` computes check digits) |
 | `Isin`              | ISO 6166 securities identifier (12 chars)                 |
 | `Latitude`          | decimal degrees in `[-90, 90]`                            |
 | `Lei`               | ISO 17442 Legal Entity Identifier (20 chars, MOD 97-10 check digits) |

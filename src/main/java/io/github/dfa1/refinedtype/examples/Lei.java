@@ -101,21 +101,7 @@ public value class Lei implements RefinedString<Lei> {
     }
 
     private static int mod97(String s) {
-        // Process in chunks to avoid BigInteger; int is wide enough for 9-char blocks.
-        StringBuilder numeric = new StringBuilder(s.length() * 2);
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c >= '0' && c <= '9') {
-                numeric.append(c);
-            } else {
-                numeric.append(c - 'A' + 10);
-            }
-        }
-        int remainder = 0;
-        for (int i = 0; i < numeric.length(); i++) {
-            remainder = (remainder * 10 + (numeric.charAt(i) - '0')) % 97;
-        }
-        return remainder;
+        return Mod97.compute(s);
     }
 
     @Override
