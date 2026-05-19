@@ -183,7 +183,7 @@ Arithmetic promotes through `float32` internally — the value-class benefit is 
 | `CusipNumber`       | 9-char CUSIP (US/Canadian securities), → `Isin`           |
 | `Distance`          | non-negative metres (with `Unit` enum: M/KM/MILE/NM)      |
 | `Email`             | coarse syntactic check                                    |
-| `GeoPoint`          | (Latitude, Longitude) pair with haversine `Distance`      |
+| `Coordinate`        | (Latitude, Longitude) pair with haversine `Distance`      |
 | `HostName`          | RFC 1123 hostname with SSRF guards                        |
 | `Iban`              | ISO 13616 bank account number (MOD 97-10 checksum, `country`/`checkDigits`/`bban`; `of()` computes check digits) |
 | `Isin`              | ISO 6166 securities identifier (12 chars)                 |
