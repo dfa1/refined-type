@@ -56,10 +56,6 @@ public value class Iban implements RefinedString<Iban> {
         this.value = upper;
     }
 
-    private Iban(String upper, boolean validated) {
-        this.value = upper;
-    }
-
     /// Build a valid IBAN from a country code and a BBAN by computing the
     /// MOD 97-10 check digits.
     ///
@@ -81,7 +77,7 @@ public value class Iban implements RefinedString<Iban> {
         int r = Mod97.compute(upperBban + country.value() + "00");
         int check = 98 - r;
         String full = country.value() + String.format("%02d", check) + upperBban;
-        return new Iban(full, true);
+        return new Iban(full);
     }
 
     @Override
