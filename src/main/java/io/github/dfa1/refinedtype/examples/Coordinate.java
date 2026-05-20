@@ -1,5 +1,7 @@
 package io.github.dfa1.refinedtype.examples;
 
+import java.util.Objects;
+
 /// Geographic coordinate — a {@link Latitude}/{@link Longitude} pair.
 ///
 /// The pair is the natural carrier for geo operations that need both
@@ -20,8 +22,8 @@ public value class Coordinate {
     private final Longitude longitude;
 
     private Coordinate(Latitude latitude, Longitude longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = Objects.requireNonNull(latitude, "latitude");
+        this.longitude = Objects.requireNonNull(longitude, "longitude");
     }
 
     public static Coordinate of(Latitude latitude, Longitude longitude) {

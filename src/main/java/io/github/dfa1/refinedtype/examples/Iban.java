@@ -2,6 +2,7 @@ package io.github.dfa1.refinedtype.examples;
 
 import io.github.dfa1.refinedtype.RefinedString;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /// International Bank Account Number (ISO 13616) — the standard for
@@ -56,6 +57,12 @@ public value class Iban implements RefinedString<Iban> {
         this.value = upper;
     }
 
+    /// Parse and validate an IBAN string — convenience alias for the constructor,
+    /// required for Jackson auto-deserialization via {@code RefinedTypeDeserializers}.
+    public static Iban of(String value) {
+        return new Iban(value);
+    }
+
     /// Build a valid IBAN from a country code and a BBAN by computing the
     /// MOD 97-10 check digits.
     ///
@@ -66,6 +73,7 @@ public value class Iban implements RefinedString<Iban> {
     /// 3. Compute the result modulo 97.
     /// 4. Check digits = 98 − result (always in [2, 98], zero-padded to 2 digits).
     public static Iban of(CountryCode country, String bban) {
+        Objects.requireNonNull(country, "country");
         if (bban == null) {
             throw new IllegalArgumentException("BBAN must not be null");
         }

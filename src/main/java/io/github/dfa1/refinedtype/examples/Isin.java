@@ -1,6 +1,8 @@
 package io.github.dfa1.refinedtype.examples;
 
 import io.github.dfa1.refinedtype.RefinedString;
+
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /// International Securities Identification Number (ISO 6166) — the
@@ -61,6 +63,7 @@ public value class Isin implements RefinedString<Isin> {
     ///    digits of every result (`14 → 1 + 4 = 5`).
     /// 4. Check digit = `(10 − sum mod 10) mod 10`.
     public static Isin of(CountryCode country, String nsin) {
+        Objects.requireNonNull(country, "country");
         if (nsin == null || nsin.length() != NSIN_LENGTH) {
             throw new IllegalArgumentException("NSIN must be exactly 9 characters: " + nsin);
         }

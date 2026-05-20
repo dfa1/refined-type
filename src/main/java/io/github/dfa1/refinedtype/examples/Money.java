@@ -1,5 +1,7 @@
 package io.github.dfa1.refinedtype.examples;
 
+import java.util.Objects;
+
 /// An amount of money: a {@link Price} paired with a {@link CurrencyCode}.
 ///
 /// Arithmetic operations (`add`, `subtract`, `multiply`) require matching
@@ -14,14 +16,8 @@ public value class Money {
     private final CurrencyCode currency;
 
     private Money(Price amount, CurrencyCode currency) {
-        if (amount == null) {
-            throw new IllegalArgumentException("amount must not be null");
-        }
-        if (currency == null) {
-            throw new IllegalArgumentException("currency must not be null");
-        }
-        this.amount = amount;
-        this.currency = currency;
+        this.amount = Objects.requireNonNull(amount, "amount");
+        this.currency = Objects.requireNonNull(currency, "currency");
     }
 
     public static Money of(Price amount, CurrencyCode currency) {

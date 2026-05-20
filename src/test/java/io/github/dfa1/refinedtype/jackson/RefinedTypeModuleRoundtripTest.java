@@ -6,6 +6,7 @@ import io.github.dfa1.refinedtype.examples.Age;
 import io.github.dfa1.refinedtype.examples.CountryCode;
 import io.github.dfa1.refinedtype.examples.CurrencyCode;
 import io.github.dfa1.refinedtype.examples.Email;
+import io.github.dfa1.refinedtype.examples.Iban;
 import io.github.dfa1.refinedtype.examples.Port;
 import org.junit.jupiter.api.Test;
 
@@ -183,5 +184,25 @@ class RefinedTypeModuleRoundtripTest {
         // Given / When / Then
         assertThatThrownBy(() -> MAPPER.readValue("999", Age.class))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    // Value classes have no identity but their *reference projections* are still nullable.
+    // The "cannot be null" guarantee applies to primitive (val) projections — a future
+    // Valhalla feature not yet available in EA3. In the meantime, Jackson can bypass the
+    // constructor entirely for null JSON tokens, leaving value-class fields null.
+    record Person(String name, Age age, Iban iban) {}
+
+    @Test
+    void nullJsonTokenBypassesConstructorLeavingValueClassFieldNull() throws JsonProcessingException {
+        // Given
+        String json = "{\"name\":\"SuperMario\",\"age\":null,\"iban\":null}";
+
+        // When
+        Person result = MAPPER.readValue(json, Person.class);
+
+        // Then — value classes are nullable references in EA3; constructor was never called
+        assertThat(result.name()).isEqualTo("SuperMario");
+        assertThat(result.age()).isNull();
+        assertThat(result.iban()).isNull();
     }
 }

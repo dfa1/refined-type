@@ -35,13 +35,13 @@ class MoneyTest {
     @Test
     void nullAmountRejected() {
         assertThatThrownBy(() -> Money.of(null, USD))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void nullCurrencyRejected() {
         assertThatThrownBy(() -> Money.of(Price.of(1.0), null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     // ── add ──────────────────────────────────────────────────────────────────
