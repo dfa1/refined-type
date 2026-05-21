@@ -71,6 +71,6 @@ if $BENCH; then
     "$JAVA" --enable-preview -Djol.magicFieldOffset=true \
         -cp "$CP" \
         org.openjdk.jmh.Main "$FILTER" \
-        "${PROF_ARGS[@]}" \
+        ${PROF_ARGS[@]+"${PROF_ARGS[@]}"} \
         -rf json -rff target/benchmark-results.json
 fi
