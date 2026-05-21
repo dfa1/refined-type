@@ -74,6 +74,15 @@ class CusipNumberTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void wrongCheckDigitRejected() {
+        // Given — Apple CUSIP is 037833100; last digit tampered to 1
+        // When / Then
+        assertThatThrownBy(() -> CusipNumber.of("037833101"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("check digit invalid");
+    }
+
     // ── toIsin ──────────────────────────────────────────────────────────────
 
     @Test
